@@ -1,0 +1,816 @@
+<title>MS-102 控えめの法則</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Murecho:wght@500;700;900&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Barlow+Condensed:wght@700;800&display=swap">
+<style>
+/* Layout: 交通広告のキャンペーン冊子。1面に1メッセージのポスターを縦に積み、コピーは大きく、補足は小さく。 */
+:root{
+  --ground:#EBEEF7;
+  --paper:#FFFFFF;
+  --ink:#0E1430;
+  --ink-2:#4B5474;
+  --line:#D3D9EA;
+  --accent:#2440F0;
+  --hero-bg:#2440F0;
+  --hero-fg:#FFFFFF;
+  --sticker:#FFC93C;
+  --sticker-ink:#0E1430;
+  --lose:#8F98B5;
+  --c1:#2440F0;
+  --c2:#00866F;
+  --c3:#D4540A;
+  --c4:#B02F7A;
+  --on-c:#FFFFFF;
+
+  --display:"Murecho","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  --body:"IBM Plex Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  --num:"Barlow Condensed","Arial Narrow","Murecho",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#090D1C;
+    --paper:#131A31;
+    --ink:#EDF0FA;
+    --ink-2:#A3ACC9;
+    --line:#29315A;
+    --accent:#93A4FF;
+    --hero-bg:#1E35CC;
+    --hero-fg:#FFFFFF;
+    --sticker:#FFC93C;
+    --sticker-ink:#0E1430;
+    --lose:#5F6890;
+    --c1:#93A4FF;
+    --c2:#45CFB4;
+    --c3:#FF9C5B;
+    --c4:#F07FC2;
+    --on-c:#0A0E1D;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#090D1C;
+  --paper:#131A31;
+  --ink:#EDF0FA;
+  --ink-2:#A3ACC9;
+  --line:#29315A;
+  --accent:#93A4FF;
+  --hero-bg:#1E35CC;
+  --hero-fg:#FFFFFF;
+  --sticker:#FFC93C;
+  --sticker-ink:#0E1430;
+  --lose:#5F6890;
+  --c1:#93A4FF;
+  --c2:#45CFB4;
+  --c3:#FF9C5B;
+  --c4:#F07FC2;
+  --on-c:#0A0E1D;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;
+  word-break:auto-phrase;
+  line-break:strict;
+}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{font-family:var(--display);text-wrap:balance}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:3px solid var(--sticker);outline-offset:3px}
+
+.wrap{
+  max-width:1120px;
+  margin:0 auto;
+  padding-inline:clamp(16px,4vw,40px);
+  padding-block:24px 72px;
+  display:grid;
+  gap:clamp(20px,3vw,32px);
+}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;
+  overflow:hidden;
+  background:var(--hero-bg);
+  color:var(--hero-fg);
+  padding:clamp(28px,6vw,72px);
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:24px 40px;
+  align-items:start;
+}
+.ghost{
+  position:absolute;
+  right:-.04em;
+  bottom:-.2em;
+  font-family:var(--num);
+  font-weight:800;
+  font-size:clamp(11rem,36vw,27rem);
+  line-height:.8;
+  letter-spacing:-.02em;
+  color:transparent;
+  -webkit-text-stroke:2px color-mix(in srgb,var(--hero-fg) 26%,transparent);
+  pointer-events:none;
+  user-select:none;
+}
+.hero-copy{position:relative;display:grid;gap:clamp(18px,3vw,28px);min-width:0}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.2em}
+.hero h1{
+  font-weight:900;
+  font-size:clamp(2.3rem,7.4vw,5.4rem);
+  line-height:1.08;
+  letter-spacing:-.01em;
+}
+.hero h1 em{font-style:normal;color:var(--sticker)}
+.nw{white-space:nowrap}
+.nots{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.nots li{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(1.15rem,2.8vw,1.6rem);
+  line-height:1.45;
+}
+.nots li::before{content:"×";display:inline-block;width:1.4em;color:var(--sticker);font-weight:900}
+.hero .after{max-width:34em;font-size:clamp(.95rem,1.8vw,1.05rem);color:color-mix(in srgb,var(--hero-fg) 86%,var(--hero-bg))}
+
+.sticker{
+  position:relative;
+  width:clamp(128px,15vw,164px);
+  aspect-ratio:1;
+  max-width:100%;
+  border-radius:50%;
+  background:var(--sticker);
+  color:var(--sticker-ink);
+  display:grid;
+  place-content:center;
+  text-align:center;
+  line-height:1.15;
+  transform:rotate(8deg);
+  box-shadow:0 0 0 4px var(--hero-bg),0 0 0 7px var(--sticker);
+  animation:pop .7s cubic-bezier(.2,1.6,.4,1) .15s both;
+}
+.sticker small{display:block;font-size:.74rem;font-weight:700;letter-spacing:.06em}
+.sticker b{display:block;font-family:var(--num);font-weight:800;font-size:clamp(3rem,6vw,4rem);line-height:.95}
+.sticker b span{font-family:var(--display);font-size:.32em;font-weight:900;margin-left:2px}
+@keyframes pop{
+  from{transform:rotate(8deg) scale(.55)}
+  to{transform:rotate(8deg) scale(1)}
+}
+
+/* ---------- panels ---------- */
+.panel{
+  background:var(--paper);
+  padding:clamp(24px,5vw,56px);
+  display:grid;
+  gap:clamp(20px,3vw,32px);
+  min-width:0;
+}
+.head{display:grid;gap:12px;max-width:44rem}
+.label{
+  justify-self:start;
+  padding:2px 12px;
+  background:var(--ink);
+  color:var(--paper);
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.14em;
+}
+.head h2{font-weight:900;font-size:clamp(1.8rem,4.6vw,3rem);line-height:1.22}
+.head p{color:var(--ink-2)}
+
+/* ---------- 合言葉 ---------- */
+.pillars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.pillar{
+  border-top:8px solid var(--accent);
+  padding-top:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  min-width:0;
+}
+.pillar .who{font-family:var(--display);font-weight:700;font-size:1.05rem;color:var(--ink-2)}
+.pillar h3{font-weight:900;font-size:clamp(1.9rem,3.6vw,2.6rem);line-height:1.15;margin-top:-6px}
+.pillar p{font-size:.95rem}
+.eg{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:.88rem}
+.eg li{display:grid;gap:0;padding:8px 12px;background:color-mix(in srgb,var(--accent) 9%,var(--paper))}
+.eg b{font-weight:700}
+.eg span{color:var(--ink-2)}
+.eg.ladder li{position:relative;padding-left:40px}
+.eg.ladder li::before{
+  content:"";
+  position:absolute;
+  left:12px;top:12px;bottom:12px;
+  width:var(--lv);
+  max-width:16px;
+  background:var(--accent);
+}
+
+/* ---------- 売場 ---------- */
+.bar{display:flex;gap:3px;height:clamp(44px,7vw,64px)}
+.bar span{
+  flex:var(--w) 1 0;
+  min-width:0;
+  background:var(--c);
+  color:var(--on-c);
+  display:flex;
+  align-items:center;
+  padding-inline:10px;
+  font-family:var(--num);
+  font-weight:800;
+  font-size:clamp(.8rem,2.6vw,1.5rem);
+  white-space:nowrap;
+  overflow:hidden;
+}
+.domains{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.domain{border:2px solid var(--c);display:flex;flex-direction:column;min-width:0}
+.domain header{
+  background:var(--c);
+  color:var(--on-c);
+  padding:10px 16px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:2px 14px;
+}
+.domain header b{font-family:var(--display);font-weight:900;font-size:1.15rem}
+.domain header .pct{font-family:var(--num);font-weight:800;font-size:1.3rem}
+.domain header code{margin-left:auto;font-family:var(--mono);font-size:.76rem;opacity:.9}
+.domain .body{padding:16px 16px 18px;display:grid;gap:12px}
+.domain h3{font-weight:900;font-size:clamp(1.4rem,2.8vw,1.8rem);line-height:1.3}
+.domain ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.93rem}
+.domain li{padding-left:18px;position:relative}
+.domain li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;background:var(--c)}
+.domain li b{font-weight:700;background:linear-gradient(transparent 60%,color-mix(in srgb,var(--c) 26%,transparent) 60%)}
+.big-slice{
+  align-self:flex-start;
+  margin-left:auto;
+  padding:0 8px;
+  background:var(--sticker);
+  color:var(--sticker-ink);
+  font-size:.74rem;
+  font-weight:700;
+}
+
+/* ---------- 勝敗表 ---------- */
+.fights{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.fight{border:2px solid var(--ink);padding:14px 16px 16px;display:grid;gap:12px;min-width:0}
+.fight .ctx{font-size:.78rem;font-weight:700;letter-spacing:.08em;color:var(--ink-2)}
+.ring{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:stretch;gap:8px}
+.side{
+  padding:10px 12px;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(1rem,2.2vw,1.2rem);
+  line-height:1.35;
+  display:flex;
+  align-items:center;
+  min-width:0;
+}
+.side.l{color:var(--lose);border:2px dashed var(--lose);text-decoration:line-through;text-decoration-thickness:2px}
+.side.w{
+  position:relative;
+  background:var(--accent);
+  color:var(--paper);
+  font-weight:900;
+}
+.side.w::after{
+  content:"WIN";
+  position:absolute;
+  top:-12px;right:-6px;
+  padding:0 6px;
+  background:var(--sticker);
+  color:var(--sticker-ink);
+  font-family:var(--num);
+  font-weight:800;
+  font-size:.85rem;
+  letter-spacing:.06em;
+  transform:rotate(6deg);
+}
+.vs{align-self:center;font-family:var(--num);font-weight:800;font-size:1.2rem;color:var(--ink-2)}
+.fight p{font-size:.92rem}
+.chain{display:flex;flex-wrap:wrap;gap:4px 6px;font-size:.8rem;font-weight:700}
+.chain span{padding:1px 8px;border:1.5px solid var(--ink)}
+.chain span:first-child{background:var(--ink);color:var(--paper)}
+.chain i{font-style:normal;color:var(--ink-2)}
+
+.fight.draw{grid-column:1/-1;border-style:dashed;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:center;gap:12px 24px}
+.fight.draw .ctx{grid-column:1/-1}
+.fight.draw .ring .side{color:var(--ink);border:2px solid var(--ink);text-decoration:none}
+.fight.draw .verdict{font-family:var(--display);font-weight:900;font-size:clamp(1.3rem,2.8vw,1.8rem);line-height:1.3}
+.fight.draw .verdict small{display:block;margin-top:6px;font-family:var(--body);font-weight:500;font-size:.9rem;color:var(--ink-2)}
+
+.stairs-wrap{display:grid;gap:14px;padding-top:8px}
+.stairs-wrap h3{font-weight:900;font-size:clamp(1.4rem,3vw,2rem)}
+.chant{font-family:var(--display);font-weight:900;font-size:clamp(1.1rem,2.6vw,1.5rem);color:var(--accent)}
+.stairs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}
+.stairs li{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:12px 14px 14px;
+  background:color-mix(in srgb,var(--accent) calc(var(--s) * 5%),var(--paper));
+  border-top:6px solid var(--accent);
+  min-height:calc(7.5rem + var(--s) * 1.6rem);
+  min-width:0;
+}
+.stairs .n{font-family:var(--num);font-weight:800;font-size:2rem;line-height:1;color:var(--accent)}
+.stairs b{font-family:var(--display);font-weight:900;font-size:1.12rem;line-height:1.35}
+.stairs small{font-size:.84rem;color:var(--ink-2);line-height:1.6}
+
+/* ---------- そっくりさん ---------- */
+.flip-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-size:.88rem;color:var(--ink-2)}
+.btn{
+  font:inherit;
+  font-weight:700;
+  font-size:.9rem;
+  color:var(--paper);
+  background:var(--ink);
+  border:0;
+  padding:8px 18px;
+  cursor:pointer;
+}
+.btn:hover{background:var(--accent)}
+.twins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.flip{
+  display:grid;
+  perspective:1000px;
+  padding:0;
+  border:0;
+  background:none;
+  color:inherit;
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+  min-width:0;
+}
+.face{
+  grid-area:1/1;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:14px 14px 16px;
+  min-height:11.5rem;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transition:transform .55s cubic-bezier(.3,.7,.3,1);
+}
+.front{background:var(--paper);border:2px solid var(--ink)}
+.front .hook{font-family:var(--display);font-weight:900;font-size:clamp(1.4rem,2.4vw,1.7rem);line-height:1.25}
+.front .pair{margin-top:auto;font-size:.84rem;font-weight:700;line-height:1.5;color:var(--ink-2)}
+.front .pair i{font-style:normal;color:var(--accent);margin:0 .3em}
+.front .tap{font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--accent)}
+.back{background:var(--ink);color:var(--paper);transform:rotateY(180deg);font-size:.86rem;line-height:1.55}
+.back .row{display:grid;gap:0}
+.back .row b{font-weight:700;font-size:.78rem;color:var(--sticker)}
+.back .row + .row{padding-top:8px;border-top:1px solid color-mix(in srgb,var(--paper) 25%,transparent)}
+.flip[aria-pressed="true"] .front{transform:rotateY(-180deg)}
+.flip[aria-pressed="true"] .back{transform:rotateY(0deg)}
+
+/* ---------- 数字 ---------- */
+.nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.num{border-left:6px solid var(--accent);padding:6px 0 6px 14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.num .v{font-family:var(--num);font-weight:800;font-size:clamp(3.4rem,7vw,5rem);line-height:.9;color:var(--accent);font-variant-numeric:tabular-nums}
+.num .v small{font-family:var(--display);font-weight:900;font-size:.3em;color:var(--ink);margin-left:4px}
+.num p{font-size:.9rem}
+.num.wide{grid-column:span 2;background:color-mix(in srgb,var(--sticker) 22%,var(--paper));border-left-color:var(--sticker);padding:12px 16px}
+.num.wide .v{color:var(--ink)}
+.num.wide ul{margin:2px 0 0;padding-left:1.2em;font-size:.9rem}
+
+/* ---------- 値札 ---------- */
+.tags{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;padding-block:6px}
+.price{
+  position:relative;
+  background:var(--sticker);
+  color:var(--sticker-ink);
+  padding:20px 20px 20px 48px;
+  clip-path:polygon(28px 0,100% 0,100% 100%,28px 100%,0 50%);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  transform:rotate(var(--r));
+  min-width:0;
+}
+.price::before{
+  content:"";
+  position:absolute;
+  left:16px;top:50%;
+  width:14px;height:14px;
+  margin-top:-7px;
+  border-radius:50%;
+  background:var(--paper);
+}
+.price b{font-family:var(--display);font-weight:900;font-size:clamp(1.45rem,2.8vw,1.9rem);line-height:1.25}
+.price p{font-size:.88rem;line-height:1.6}
+.price small{font-size:.76rem;opacity:.8;line-height:1.5}
+
+/* ---------- 締め ---------- */
+.finale{
+  background:var(--hero-bg);
+  color:var(--hero-fg);
+  padding:clamp(28px,6vw,64px);
+  display:grid;
+  gap:clamp(18px,3vw,28px);
+}
+.finale .label{background:var(--sticker);color:var(--sticker-ink)}
+.finale h2{font-weight:900;font-size:clamp(2rem,5vw,3.2rem);line-height:1.2}
+.mottos{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.mottos li{
+  font-family:var(--display);
+  font-weight:900;
+  font-size:clamp(1.5rem,4.4vw,2.6rem);
+  line-height:1.3;
+}
+.mottos li span{color:var(--sticker)}
+.finale .count{font-weight:700;font-size:1.05rem}
+.finale .count b{font-family:var(--num);font-weight:800;font-size:1.8em;color:var(--sticker);margin:0 2px;vertical-align:-.08em}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.links a{
+  display:inline-block;
+  padding:8px 16px;
+  border:2px solid var(--hero-fg);
+  color:var(--hero-fg);
+  font-weight:700;
+  font-size:.92rem;
+  text-decoration:none;
+}
+.links a:hover{background:var(--hero-fg);color:var(--hero-bg)}
+.links a.main{background:var(--sticker);border-color:var(--sticker);color:var(--sticker-ink)}
+
+.source{font-size:.78rem;color:var(--ink-2);line-height:1.65;max-width:46rem}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .pillars{grid-template-columns:1fr}
+  .twins{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nums{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tags{grid-template-columns:1fr;max-width:30rem}
+  .stairs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stairs li{min-height:0}
+}
+@media (max-width:720px){
+  .hero{grid-template-columns:1fr}
+  .sticker{grid-row:1;justify-self:end;margin-bottom:-12px}
+  .domains,.fights{grid-template-columns:1fr}
+  .fight.draw{grid-template-columns:1fr}
+}
+@media (max-width:440px){
+  .twins{grid-template-columns:1fr}
+  .stairs{grid-template-columns:1fr}
+  .face{min-height:0}
+  .ring{grid-template-columns:1fr;gap:6px}
+  .vs{justify-self:center}
+}
+@media (prefers-reduced-motion:reduce){
+  .sticker{animation:none}
+  .face{transition:none}
+}
+</style>
+
+<div class="wrap">
+
+  <!-- ===== HERO ===== -->
+  <header class="hero">
+    <div class="ghost" aria-hidden="true">102</div>
+    <div class="hero-copy">
+      <p class="eyebrow">EXAM MS-102 ｜ Microsoft 365 管理者</p>
+      <h1>正解は、<br><span class="nw">いつも<em>控えめ</em>。</span></h1>
+      <ul class="nots">
+        <li>全体管理者を、選ばない。</li>
+        <li>いきなり本番に、しない。</li>
+        <li>丸ごと、買い替えない。</li>
+      </ul>
+      <p class="after">MS-102 の選択肢は、このクセを知っているだけでぐっと減ります。4つの領域ぜんぶに効く、出題者のクセです。</p>
+    </div>
+    <div class="sticker" role="note" aria-label="試験の廃止予定">
+      <div data-live>
+        <small>廃止まで あと</small>
+        <b><span data-days>51</span><span>日</span></b>
+        <small>2026.11.30</small>
+      </div>
+      <div data-past hidden>
+        <small>廃止予定日</small>
+        <b style="font-size:1.6rem">11.30</b>
+        <small>を過ぎました</small>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== 合言葉 ===== -->
+  <section class="panel" aria-labelledby="h-rules">
+    <div class="head">
+      <span class="label">合言葉</span>
+      <h2 id="h-rules">迷ったら、この3行に戻る。</h2>
+      <p>どの章の問題でも、正解はたいていこの3つのどれかに沿っています。</p>
+    </div>
+    <div class="pillars">
+      <article class="pillar">
+        <span class="who">権限は、</span>
+        <h3>狭く渡す。</h3>
+        <p>求められた操作ができる、<b>いちばん狭いロール</b>が正解。グローバル管理者は5人未満に。</p>
+        <ul class="eg ladder">
+          <li style="--lv:4px"><b>パスワード管理者</b><span>一般ユーザーの PW だけ</span></li>
+          <li style="--lv:9px"><b>認証管理者</b><span>＋ MFA の再登録も</span></li>
+          <li style="--lv:16px"><b>特権認証管理者</b><span>管理者の PW・MFA まで</span></li>
+        </ul>
+      </article>
+      <article class="pillar">
+        <span class="who">設定は、</span>
+        <h3>試してから。</h3>
+        <p>新しいポリシーは、まず<b>効かせずに記録だけ</b>するモードで様子を見る。名前は違っても考え方は同じ。</p>
+        <ul class="eg">
+          <li><b>条件付きアクセス</b><span>→ レポート専用モード／What If</span></li>
+          <li><b>DLP</b><span>→ シミュレーション モード</span></li>
+        </ul>
+      </article>
+      <article class="pillar">
+        <span class="who">ライセンスは、</span>
+        <h3>足りない分だけ。</h3>
+        <p>機能が1つ足りないなら、<b>その分のアドオン</b>を足す。上位プランへの丸ごと移行は、ほかも全部要るときだけ。</p>
+        <ul class="eg">
+          <li><b>E3 で Identity Protection</b><span>→ Entra ID P2 を追加</span></li>
+          <li><b>Business Standard で Intune</b><span>→ Intune Plan 1 を追加</span></li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== 4つの売場 ===== -->
+  <section class="panel" aria-labelledby="h-domains">
+    <div class="head">
+      <span class="label">4つの売場</span>
+      <h2 id="h-domains">配点の3分の1は、Defender。</h2>
+      <p>帯の幅は配点の比率どおりです。各売場で覚えるのは3行だけ。</p>
+    </div>
+    <div class="bar" role="img" aria-label="配点比率：テナント25〜30%、Entra ID 25〜30%、Defender XDR 30〜35%、Purview 10〜15%">
+      <span style="--w:27.5;--c:var(--c1)">25–30%</span>
+      <span style="--w:27.5;--c:var(--c2)">25–30%</span>
+      <span style="--w:32.5;--c:var(--c3)">30–35%</span>
+      <span style="--w:12.5;--c:var(--c4)">10–15%</span>
+    </div>
+    <div class="domains">
+      <article class="domain" style="--c:var(--c1)">
+        <header><b>テナント</b><span class="pct">25–30%</span><code>admin.microsoft.com</code></header>
+        <div class="body">
+          <h3>器を作り、人を入れ、鍵を配る。</h3>
+          <ul>
+            <li>国／地域と初期ドメインは<b>あとから変えられない</b>。変えたいなら新しいテナントへ。</li>
+            <li>削除したユーザーは<b>30日以内</b>なら戻せる。</li>
+            <li>退職者は<b>ライセンス解放と削除が最後</b>。先に共有メールボックス化と OneDrive の引き継ぎ。</li>
+          </ul>
+        </div>
+      </article>
+      <article class="domain" style="--c:var(--c2)">
+        <header><b>Entra ID</b><span class="pct">25–30%</span><code>entra.microsoft.com</code></header>
+        <div class="body">
+          <h3>誰が、どこから、どう入るか。</h3>
+          <ul>
+            <li>漏洩した資格情報を見つけたいなら<b>パスワード ハッシュ同期（PHS）</b>。</li>
+            <li>同期ユーザーの属性は<b>オンプレミス AD 側</b>で直す。</li>
+            <li>同期フィルターを変える前に<b>スケジューラーを止める</b>。</li>
+          </ul>
+        </div>
+      </article>
+      <article class="domain" style="--c:var(--c3)">
+        <header><b>Defender XDR</b><span class="pct">30–35%</span><span class="big-slice">最大配点</span><code>security.microsoft.com</code></header>
+        <div class="body">
+          <h3>守って、見つけて、止める。</h3>
+          <ul>
+            <li>守る相手は4つ。<b>メール・端末・オンプレ AD・SaaS</b>（Office 365／Endpoint／Identity／Cloud Apps）。</li>
+            <li>既定では、フィッシングは<b>迷惑メール</b>、高確度フィッシングは<b>検疫</b>。</li>
+            <li>未承認アプリを実際に止めるのは<b>Defender for Endpoint 連携</b>。セッション ポリシーでは止まらない。</li>
+          </ul>
+        </div>
+      </article>
+      <article class="domain" style="--c:var(--c4)">
+        <header><b>Purview</b><span class="pct">10–15%</span><code>purview.microsoft.com</code></header>
+        <div class="body">
+          <h3>どれだけ秘密で、どれだけ残すか。</h3>
+          <ul>
+            <li>秘密度ラベルは<b>ラベル ポリシーで発行</b>するまで誰にも見えない。</li>
+            <li>エンドポイント DLP は<b>デバイスのオンボードと E5</b> が前提。</li>
+            <li>保持ロックと<b>アダプティブ スコープは併用できない</b>。</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== 勝敗表 ===== -->
+  <section class="panel" aria-labelledby="h-fights">
+    <div class="head">
+      <span class="label">勝敗表</span>
+      <h2 id="h-fights">ぶつかったら、どっちが勝つ？</h2>
+      <p>設定が2つ当たったときの優先順位は、そのまま設問になります。</p>
+    </div>
+    <div class="fights">
+      <article class="fight">
+        <span class="ctx">条件付きアクセス</span>
+        <div class="ring">
+          <span class="side l">許可</span><span class="vs">VS</span><span class="side w">ブロック</span>
+        </div>
+        <p>1つでもブロックが当たれば、ブロック。</p>
+      </article>
+      <article class="fight">
+        <span class="ctx">条件付きアクセス</span>
+        <div class="ring">
+          <span class="side w">除外</span><span class="vs">VS</span><span class="side l">対象に含める</span>
+        </div>
+        <p>除外は包含より強い。緊急アクセス用アカウントは必ず除外しておく。</p>
+      </article>
+      <article class="fight">
+        <span class="ctx">メールの脅威ポリシー</span>
+        <div class="ring">
+          <span class="side l">カスタム ポリシー</span><span class="vs">VS</span><span class="side w">プリセット</span>
+        </div>
+        <p>「カスタムが効かない」ときの定番の原因。</p>
+        <div class="chain" aria-label="優先順位">
+          <span>厳格</span><i>＞</i><span>標準</span><i>＞</i><span>評価</span><i>＞</i><span>カスタム</span><i>＞</i><span>組み込み</span><i>＞</i><span>既定</span>
+        </div>
+      </article>
+      <article class="fight">
+        <span class="ctx">ロールの割り当て</span>
+        <div class="ring">
+          <span class="side w">Entra ロール</span><span class="vs">VS</span><span class="side l">Purview ロールグループ</span>
+        </div>
+        <p>両方にあると Entra 側が優先。Entra から Purview へは流れ込むが、逆は流れない。</p>
+      </article>
+      <article class="fight draw">
+        <span class="ctx">番外編 ｜ ID の保護</span>
+        <div class="ring">
+          <span class="side">セキュリティ既定値群</span><span class="vs">VS</span><span class="side">条件付きアクセス</span>
+        </div>
+        <p class="verdict">勝負にならない。同時には使えない。
+          <small>既定値群は無料で全員一律、条件付きアクセスは P1 で条件ごとに細かく。どちらか一方を選ぶ。</small>
+        </p>
+      </article>
+    </div>
+
+    <div class="stairs-wrap">
+      <h3>保持でもめたら、上から順に。</h3>
+      <p class="chant">残す → 長く → 名指し → 早く消す</p>
+      <ol class="stairs" aria-label="保持の4原則">
+        <li style="--s:1"><span class="n">1</span><b>保持が、削除に勝つ。</b><small>保持の対象なら、削除設定があっても期間中は消えない。</small></li>
+        <li style="--s:2"><span class="n">2</span><b>長い保持が勝つ。</b><small>5年と10年が当たっていれば、10年。</small></li>
+        <li style="--s:3"><span class="n">3</span><b>削除は、名指しが勝つ。</b><small>保持ラベル ＞ 保持ポリシー。対象を絞ったポリシー ＞ 組織全体。</small></li>
+        <li style="--s:4"><span class="n">4</span><b>最後は、早い削除。</b><small>ここまでで決まらなければ、いちばん早い削除期限。</small></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== そっくりさん ===== -->
+  <section class="panel" aria-labelledby="h-twins">
+    <div class="head">
+      <span class="label">そっくりさん</span>
+      <h2 id="h-twins">似た名前は、ひと言で切り分ける。</h2>
+      <p>カードの問いに答えてから、タップしてめくってください。思い出そうとした分だけ記憶に残ります。</p>
+    </div>
+    <div class="flip-tools">
+      <button class="btn" type="button" id="flip-all">全部めくる</button>
+      <span>8組。誤答の多くはこの取り違えから生まれます。</span>
+    </div>
+    <div class="twins">
+      <button class="flip" type="button" aria-pressed="false">
+        <span class="face front"><span class="tap">TAP</span><span class="hook">今か、<br>これからか。</span><span class="pair">サービス正常性<i>／</i>メッセージ センター</span></span>
+        <span class="face back"><span class="row"><b>サービス正常性</b>今起きている障害</span><span class="row"><b>メッセージ センター</b>これから起きる変更の予告</span></span>
+      </button>
+      <button class="flip" type="button" aria-pressed="false">
+        <span class="face front"><span class="tap">TAP</span><span class="hook">人か、<br>今回か。</span><span class="pair">ユーザー リスク<i>／</i>サインイン リスク</span></span>
+        <span class="face back"><span class="row"><b>ユーザー リスク</b>ID そのものが侵害された疑い → パスワード変更</span><span class="row"><b>サインイン リスク</b>今回のサインインが怪しい → MFA</span></span>
+      </button>
+      <button class="flip" type="button" aria-pressed="false">
+        <span class="face front"><span class="tap">TAP</span><span class="hook">秘密か、<br>寿命か。</span><span class="pair">秘密度ラベル<i>／</i>保持ラベル</span></span>
+        <span class="face back"><span class="row"><b>秘密度ラベル</b>どれだけ機密か（暗号化・透かし）</span><span class="row"><b>保持ラベル</b>どれだけ残すか（保持・削除）。両方同時に付けられる</span></span>
+      </button>
+      <button class="flip" type="button" aria-pressed="false">
+        <span class="face front"><span class="tap">TAP</span><span class="hook">箱か、<br>中身か。</span><span class="pair">保持ポリシー<i>／</i>保持ラベル</span></span>
+        <span class="face back"><span class="row"><b>保持ポリシー</b>サイトやメールボックスなど入れ物ごと</span><span class="row"><b>保持ラベル</b>アイテム1つずつ。移動してもついてくる</span></span>
+      </button>
+      <button class="flip" type="button" aria-pressed="false">
+        <span class="face front"><span class="tap">TAP</span><span class="hook">上げるか、<br>下げるか。</span><span class="pair">セキュア スコア<i>／</i>露出スコア</span></span>
+        <span class="face back"><span class="row"><b>セキュア スコア</b>高いほど良い（設定の充実度）</span><span class="row"><b>露出スコア</b>低いほど良い（攻撃されやすさ）</span></span>
+      </button>
+      <button class="flip" type="button" aria-pressed="false">
+        <span class="face front"><span class="tap">TAP</span><span class="hook">オンプレか、<br>クラウドか。</span><span class="pair">Defender for Identity<i>／</i>Entra ID Protection</span></span>
+        <span class="face back"><span class="row"><b>Defender for Identity</b>オンプレミス AD への攻撃を検知（DC にセンサー）</span><span class="row"><b>Entra ID Protection</b>クラウドのサインインのリスクを判定</span></span>
+      </button>
+      <button class="flip" type="button" aria-pressed="false">
+        <span class="face front"><span class="tap">TAP</span><span class="hook">ファイルか、<br>URL か。</span><span class="pair">安全な添付ファイル<i>／</i>安全なリンク</span></span>
+        <span class="face back"><span class="row"><b>安全な添付ファイル</b>添付をサンドボックスで実行して検査</span><span class="row"><b>安全なリンク</b>URL をクリックの瞬間に再評価</span></span>
+      </button>
+      <button class="flip" type="button" aria-pressed="false">
+        <span class="face front"><span class="tap">TAP</span><span class="hook">状態か、<br>出来事か。</span><span class="pair">コンテンツ エクスプローラー<i>／</i>アクティビティ エクスプローラー</span></span>
+        <span class="face back"><span class="row"><b>コンテンツ エクスプローラー</b>今どこに何があるか</span><span class="row"><b>アクティビティ エクスプローラー</b>誰が何をしたか</span></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== 数字 ===== -->
+  <section class="panel" aria-labelledby="h-nums">
+    <div class="head">
+      <span class="label">数字</span>
+      <h2 id="h-nums">数字は、そのまま選択肢になる。</h2>
+    </div>
+    <div class="nums">
+      <div class="num wide">
+        <span class="v">30<small>日</small></span>
+        <p><b>3回出てくる30。</b></p>
+        <ul>
+          <li>削除したユーザーを復元できる期間</li>
+          <li>Entra サインイン ログの保持期間</li>
+          <li>保持ポリシーを外した後の猶予期間</li>
+        </ul>
+      </div>
+      <div class="num"><span class="v">700</span><p>合格ライン（1000点中）。</p></div>
+      <div class="num"><span class="v">5<small>人未満</small></span><p>グローバル管理者の推奨人数。</p></div>
+      <div class="num"><span class="v">93<small>日</small></span><p>ごみ箱の話。保持の猶予30日と混ぜない。</p></div>
+      <div class="num"><span class="v">180<small>日</small></span><p>統合監査ログの保持（E3）。</p></div>
+      <div class="num"><span class="v">50<small>GB</small></span><p>共有メールボックスは、ここまでライセンス不要。</p></div>
+      <div class="num"><span class="v">250<small>人</small></span><p>優先アカウントに登録できる上限。</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 値札 ===== -->
+  <section class="panel" aria-labelledby="h-tags">
+    <div class="head">
+      <span class="label">値札</span>
+      <h2 id="h-tags">ライセンスは、3枚の値札で足りる。</h2>
+      <p>「E3 で足りるか、E5（P2）が要るか」の線引きは、このリズムで覚えます。</p>
+    </div>
+    <div class="tags">
+      <div class="price" style="--r:-1.5deg">
+        <b>手動は E3、<br>自動は E5。</b>
+        <p>秘密度ラベルも保持ラベルも、手で付けるなら E3、自動で付けるなら E5。</p>
+      </div>
+      <div class="price" style="--r:1deg">
+        <b>Plan 1 は E3、<br>Plan 2 は E5。</b>
+        <p>Defender for Office 365 も Defender for Endpoint も同じ並び。</p>
+        <small>E3 の Defender for Office 365 Plan 1 は 2026年7月1日から（Safe Documents を除く）。</small>
+      </div>
+      <div class="price" style="--r:-.8deg">
+        <b>P2 は、<br>リスクと特権。</b>
+        <p>Identity Protection・PIM・アクセス レビューが P2。条件付きアクセス・動的グループ・SSPR・管理単位は P1 で足りる。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 締め ===== -->
+  <section class="finale" aria-labelledby="h-end">
+    <span class="label">最後に</span>
+    <h2 id="h-end">声に出して、3回。</h2>
+    <ul class="mottos">
+      <li><span>権限は、</span>狭く渡す。</li>
+      <li><span>設定は、</span>試してから。</li>
+      <li><span>ライセンスは、</span>足りない分だけ。</li>
+    </ul>
+    <p class="count" data-live>廃止まで あと<b data-days>51</b>日。今日はここまで覚えれば十分です。</p>
+    <p class="count" data-past hidden>MS-102 は 2026年11月30日に廃止予定でした。後継試験の情報は Microsoft Learn で確認してください。</p>
+    <div class="links">
+      <a class="main" href="https://claude.ai/artifact/KDPE54u1mEf7dMf21PuYJp" target="_blank" rel="noopener">総合テキストで深掘りする</a>
+      <a href="https://claude.ai/artifact/Nzpf1jbjYVadj4nKQbn9CM" target="_blank" rel="noopener">M365 ロール百貨店</a>
+      <a href="https://learn.microsoft.com/ja-jp/credentials/certifications/exams/ms-102/" target="_blank" rel="noopener">試験ページ（Microsoft Learn）</a>
+    </div>
+  </section>
+
+  <p class="source">出典：MS-102 総合テキスト（公式スキル測定 2026年4月28日版に準拠）から要点を抜き出して再構成しました。製品名・ライセンス要件・画面は変わることがあるため、受験前に Microsoft Learn の学習ガイドで最新の情報を確認してください。</p>
+
+</div>
+
+<script>
+(function(){
+  // 2026-11-30 00:00 JST
+  var target = Date.UTC(2026, 10, 29, 15, 0, 0);
+  var days = Math.ceil((target - Date.now()) / 86400000);
+  var past = days <= 0;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-days]'), function(el){
+    el.textContent = past ? '0' : String(days);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-live]'), function(el){ el.hidden = past; });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-past]'), function(el){ el.hidden = !past; });
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.flip'));
+  var all = document.getElementById('flip-all');
+  function sync(){
+    var open = cards.every(function(c){ return c.getAttribute('aria-pressed') === 'true'; });
+    all.textContent = open ? '全部もどす' : '全部めくる';
+  }
+  cards.forEach(function(c){
+    c.addEventListener('click', function(){
+      c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      sync();
+    });
+  });
+  all.addEventListener('click', function(){
+    var open = cards.every(function(c){ return c.getAttribute('aria-pressed') === 'true'; });
+    cards.forEach(function(c){ c.setAttribute('aria-pressed', open ? 'false' : 'true'); });
+    sync();
+  });
+})();
+</script>
