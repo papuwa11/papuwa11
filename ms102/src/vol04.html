@@ -1,0 +1,511 @@
+<!--COVER-->
+<svg viewBox="0 0 520 520" role="img" aria-label="Purview の4ステップ。分類する、ラベルを付ける、守る・残す、監視する">
+  <circle class="ring" cx="260" cy="260" r="175"/>
+  <circle class="core" cx="260" cy="260" r="84"/>
+  <text class="c1" x="260" y="246" text-anchor="middle">Microsoft</text>
+  <text class="c2" x="260" y="292" text-anchor="middle">Purview</text>
+  <circle class="sat" cx="260" cy="85" r="74"/>
+  <text class="p" x="260" y="70" text-anchor="middle">① SIT・EDM など</text>
+  <text class="w" x="260" y="104" text-anchor="middle">分類する</text>
+  <circle class="sat" cx="435" cy="260" r="74"/>
+  <text class="p" x="435" y="246" text-anchor="middle">② 秘密度・保持</text>
+  <text class="w" x="435" y="280" text-anchor="middle">ラベル</text>
+  <circle class="sat" cx="260" cy="435" r="74"/>
+  <text class="p" x="260" y="420" text-anchor="middle">③ DLP・保持</text>
+  <text class="w2" x="260" y="452" text-anchor="middle">守る／残す</text>
+  <circle class="sat" cx="85" cy="260" r="74"/>
+  <text class="p" x="85" y="246" text-anchor="middle">④ エクスプローラー</text>
+  <text class="w" x="85" y="280" text-anchor="middle">監視する</text>
+</svg>
+<!--/COVER-->
+
+<!--CARDS-->
+<article class="card" id="c01" data-topic="Purview の全体像">
+<h2 class="q">Purview の仕事は、どこから始まる？</h2>
+<p class="catch">分類できないものは、<em>守れない</em>。</p>
+<p class="lead">MS-102 で問われる Purview の範囲は、情報保護・データ ライフサイクル管理・DLP の3つです。出発点はどれも「そのデータが何かを機械が判別できること」、つまり分類です。権限は Entra のロールではなく、Purview のロールグループで管理します。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-1</span><span>Purview の基本の流れ</span></div>
+    <ol class="flow tight">
+      <li><b>分類する</b><small>機密情報の種類（SIT）・トレーニング可能な分類子・EDM。「これはマイナンバーだ」</small></li>
+      <li><b>ラベルを付ける</b><small>秘密度ラベルと保持ラベル。手動・自動・既定で</small></li>
+      <li><b>守る／残す／消す</b><small>暗号化や DLP で持ち出しを止める。保持と廃棄でライフサイクルを管理する</small></li>
+      <li class="goal"><b>監視して調整する</b><small>コンテンツ／アクティビティ エクスプローラー、DLP アラート。結果を分類とポリシーに戻す</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-2</span><span>E3 で足りるもの、E5 が要るもの</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>E3 で使える</b><small>コア機能</small></div><ul><li>手動の秘密度ラベル・既定ラベル・必須ラベル</li><li>Exchange・SharePoint・OneDrive の DLP</li><li>ラベルを条件にした DLP ルール</li><li>基本的な保持ポリシーと手動の保持ラベル</li><li>Audit（Standard）</li></ul></div>
+      <div class="hot"><div class="hd"><b>E5（または E5 Compliance）</b><small>自動化と高度な機能</small></div><ul><li>自動ラベル付け、トレーニング可能な分類子、EDM</li><li>Teams チャットの DLP、エンドポイント DLP</li><li>保持ラベルの自動適用、アダプティブ スコープ、廃棄レビュー</li><li>Audit（Premium）、インサイダー リスク管理、コミュニケーション コンプライアンス</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>管理するポータルは<span class="mk">purview.microsoft.com</span>。</li>
+  <li>権限は<span class="mk">ロールグループ</span>（コンプライアンス管理者、コンプライアンス データ管理者、情報保護、eDiscovery マネージャーなど）。</li>
+  <li>「自動で付けたい」と書かれていたら <span class="mk">E5</span> を疑う。手動なら E3 の範囲。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>ユーザーが手動で付けた「高度機密」ラベルを条件に、Exchange の DLP で送信を止めたい。E5 が必要？</summary><p class="a">不要。E3 の範囲で実現できる</p></details>
+  <details class="qi"><summary>条件に一致した文書に、秘密度ラベルを自動で付けたい。必要なライセンスは</summary><p class="a">E5 相当（または E5 Compliance などのアドオン）</p></details>
+</div>
+</article>
+
+<article class="card" id="c02" data-topic="機密情報の種類と分類子">
+<h2 class="q">その情報、どの方法で見つける？</h2>
+<p class="catch">書式は <em>SIT</em>、性質は<em>分類子</em>、<br>実データは <em>EDM</em>。</p>
+<p class="lead">見つけたい情報の性質で、使う分類の方法が決まります。番号のように書式が決まっているなら SIT、契約書のように書式では表せない文書の性質なら分類子、自社が持っている実データとの完全一致なら EDM です。この3択は繰り返し出ます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-1</span><span>3つの分類の方法</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">書式が決まった情報</span><span class="h">機密情報の種類（SIT）</span><span class="d">番号・ID・口座番号。正規表現・キーワード・確認関数で判定</span></div>
+      <div class="tile"><span class="p">書式で表せない文書の性質</span><span class="h">トレーニング可能な分類子</span><span class="d">契約書・履歴書・ソース コード・ハラスメント。機械学習で判定</span></div>
+      <div class="tile hot"><span class="p">自社が持つ実データ</span><span class="h">完全一致データ（EDM）</span><span class="d">顧客番号の一覧などをハッシュ化して登録。誤検知が極めて少ない</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-2</span><span>カスタム SIT の部品</span></div>
+    <div class="chain">
+      <span class="hot">プライマリ パターン<small>正規表現・キーワード・辞書・関数</small></span><i>＋</i>
+      <span>サポート要素<small>近くに「社員番号」の語がある、など</small></span><i>＋</i>
+      <span>文字の近接性<small>何文字以内にあるか</small></span><i>＋</i>
+      <span>信頼度<small>低・中・高</small></span>
+    </div>
+    <div class="numstrip">
+      <div><b>65</b><span>信頼度 低。見逃しは少なく、誤検知は多い</span></div>
+      <div><b>75</b><span>信頼度 中</span></div>
+      <div><b>85</b><span>信頼度 高。誤検知は減り、見逃しは増える</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>形式が同じなら他社の番号も拾ってしまうのが<span class="mk">正規表現の SIT の限界</span>。自社のデータだけなら EDM。</li>
+  <li>決まった様式のフォームを見分けるなら<span class="mk">ドキュメント指紋</span>。</li>
+  <li>トレーニング可能な分類子と EDM は E5 側の機能。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>自社の顧客 ID の一覧と完全に一致する値だけを検出したい（他社の似た番号は除く）</summary><p class="a">完全一致データ（EDM）</p></details>
+  <details class="qi"><summary>契約書らしい文書を自動で見つけたい</summary><p class="a">トレーニング可能な分類子</p></details>
+  <details class="qi"><summary>特定の書式の番号を検出したい</summary><p class="a">カスタムの機密情報の種類（正規表現）</p></details>
+  <details class="qi"><summary>決まった様式の申請書を見分けたい</summary><p class="a">ドキュメント指紋</p></details>
+</div>
+</article>
+
+<article class="card" id="c03" data-topic="秘密度ラベル">
+<h2 class="q">ラベルを作ったのに、Word に表示されない。なぜ？</h2>
+<p class="catch">作っただけでは、<em>誰にも見えない</em>。</p>
+<p class="lead">秘密度ラベルは、ファイルやメールに「どのくらい機密か」を刻み、同時に保護をかける仕組みです。ラベルはメタデータとして持ち歩かれるので、組織の外に出ても暗号化が効き続けます。作ったラベルは、ラベル ポリシーで発行して初めて使えます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-1</span><span>ラベルが使えるようになるまで</span></div>
+    <ol class="flow tight">
+      <li><b>ラベルを作る</b><small>暗号化・マーキング・グループとサイトの保護・自動ラベル付けを設定</small></li>
+      <li class="goal"><b>ラベル ポリシーで発行する</b><small>対象・既定のラベル・ラベル付けの必須化・格下げ時の理由の入力</small></li>
+      <li><b>ユーザーの Office に表示される</b><small>反映まで最大で数時間〜数日</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-2</span><span>ラベルでかけられる4つの保護</span></div>
+    <div class="tiles" style="--n:2">
+      <div class="tile"><span class="h">暗号化</span><span class="d">誰が何をできるか。ユーザー定義、有効期限、オフライン アクセスの日数</span></div>
+      <div class="tile"><span class="h">コンテンツ マーキング</span><span class="d">ヘッダー・フッター・透かし。Outlook のメールでは表示されない</span></div>
+      <div class="tile hot"><span class="h">グループとサイトの保護</span><span class="d">Teams・SharePoint のプライバシー、外部共有、非管理デバイス。Microsoft 365 グループのみ</span></div>
+      <div class="tile"><span class="h">自動ラベル付け</span><span class="d">条件に一致したら推奨・自動適用。クライアント側とサービス側。E5</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-3</span><span>「発行できる」と「サイトを守れる」は別の話</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>対象</th><th>ラベル ポリシーの発行先</th><th>グループとサイトの保護</th></tr></thead>
+        <tbody>
+          <tr class="pick"><td>Microsoft 365 グループ</td><td class="o">○</td><td class="o">○</td></tr>
+          <tr><td>配布グループ</td><td class="o">○</td><td class="x">×</td></tr>
+          <tr><td>メール有効セキュリティ グループ</td><td class="o">○</td><td class="x">×</td></tr>
+          <tr><td>メールを持たないセキュリティ グループ</td><td class="x">×</td><td class="x">×</td></tr>
+          <tr><td>動的配布グループ</td><td class="x">×</td><td class="x">×</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>ラベルは一覧の<span class="mk">下にあるものほど優先度が高い</span>。1つのアイテムに付けられる秘密度ラベルは1つだけ。</li>
+  <li><span class="mk">秘密度ラベルだけでは送信を止められない</span>。止めるのは DLP ポリシーかメール フロー ルール。</li>
+  <li>アプリごとにマーキングの文言を変えたいときは <code>${If.App...}</code> 変数を使う。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>秘密度ラベルを作ったが、ユーザーの Word や Outlook に表示されない。最初に確認するのは</summary><p class="a">ラベル ポリシーでそのユーザーに発行されているか</p></details>
+  <details class="qi"><summary>秘密度ラベルのカスタム ヘッダーが表示されないアプリは</summary><p class="a">Outlook（メールにヘッダー・フッター・透かしのマーキングは付かない）</p></details>
+  <details class="qi"><summary>「グループとサイトの保護」を設定できるグループは</summary><p class="a">Microsoft 365 グループだけ</p></details>
+  <details class="qi"><summary>マイナンバーを含むメールを、外部に送れないようにしたい</summary><p class="a">DLP ポリシー（またはメール フロー ルール）。ラベルだけでは止められない</p></details>
+</div>
+</article>
+
+<article class="card" id="c04" data-topic="保持ポリシーと保持ラベル">
+<h2 class="q">保持ポリシーと保持ラベルが重なったら、どうなる？</h2>
+<p class="catch">ポリシーは<em>箱</em>、ラベルは<em>中身</em>。</p>
+<p class="lead">データ ライフサイクル管理の中核です。「一定期間は消させない」「期限が来たら消す」という2つの要求を同じ仕組みで扱います。保持ポリシーは入れ物全体に、保持ラベルはアイテム1件ずつに効きます。複数の設定が当たったときは保持の4原則で決まります。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-1</span><span>効く単位の違い</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>保持ポリシー</b><small>入れ物に対して</small></div><ul><li>メールボックス・サイト・OneDrive・Teams チャネル全体</li><li>中身に一律で効き、外に出ると効かない</li><li>静的スコープかアダプティブ スコープ</li><li>保持ロックが使える</li></ul></div>
+      <div class="hot"><div class="hd"><b>保持ラベル</b><small>アイテム1件ずつ</small></div><ul><li>手動・自動・既定で付ける</li><li>アイテムが移動しても付いていく</li><li>イベント ベースの保持、レコード宣言、廃棄レビュー</li><li>1アイテムに付けられるのは1つ</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-2</span><span>保持の4原則。上から順に判定する</span></div>
+    <ol class="flow tight">
+      <li><b>保持が、削除に勝つ</b><small>保持の対象なら、削除の設定があっても期間中は消えない</small></li>
+      <li><b>長い保持が勝つ</b><small>5年と10年が当たっていれば10年</small></li>
+      <li><b>削除は、明示的な設定が勝つ</b><small>保持ラベル ＞ 保持ポリシー。対象を絞ったポリシー ＞ 組織全体</small></li>
+      <li class="goal"><b>最後は、短い削除期間が勝つ</b><small>ここまでで決まらなければ、いちばん早い削除期限</small></li>
+    </ol>
+    <figcaption><span class="hand">残す → 長く → 名指し → 早く消す</span> と唱えて覚える。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-3</span><span>保持中のアイテムが置かれる場所</span></div>
+    <div class="map">
+      <div class="row"><span class="want">SharePoint・OneDrive</span><span class="arr"></span><span class="tool">保持ホールド ライブラリ<small>サイトの容量を消費する</small></span></div>
+      <div class="row"><span class="want">Exchange のメール</span><span class="arr"></span><span class="tool">回復可能なアイテム フォルダー</span></div>
+      <div class="row"><span class="want">Teams のチャット・チャネル メッセージ</span><span class="arr"></span><span class="tool">SubstrateHolds<small>回復可能なアイテムの中。ユーザーには見えない</small></span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">アダプティブ スコープ</span>は属性のクエリ（部署＝経理など）で対象を決め、日次で評価して異動に追随する。静的スコープは手動で更新。</li>
+  <li>保持の設定が反映されるまで<span class="mk">最大7日程度</span>かかることがある。</li>
+  <li>保持ポリシーの目的は、ライフサイクルの自動管理とデータ侵害リスクの低減。「すべてを無期限に残す」ことではない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>組織全体で10年保持、経理部向けに5年後削除、保持ラベルで3年後削除。このメールは</summary><p class="a">10年間保持され、その後に削除される</p></details>
+  <details class="qi"><summary>退職日を起点に7年間保持したい</summary><p class="a">保持ラベルのイベント ベースの保持</p></details>
+  <details class="qi"><summary>保持の対象を、部署の異動に自動で追随させたい</summary><p class="a">アダプティブ スコープ</p></details>
+  <details class="qi"><summary>保持中の Teams チャットのデータはどこにある？</summary><p class="a">Exchange の回復可能なアイテム内の SubstrateHolds フォルダー</p></details>
+</div>
+</article>
+
+<article class="card" id="c05" data-topic="保持ロック・レコード・廃棄レビュー">
+<h2 class="q">誰にも変えさせない。期限が来たら確認してから消す。どうする？</h2>
+<p class="catch">ポリシーを固めるなら<em>ロック</em>、<br>アイテムを固めるなら<em>規制のレコード</em>。</p>
+<p class="lead">規制の厳しい業界では「管理者でも緩められない」設定が求められます。ポリシーそのものを固定するのが保持ロック、個々のアイテムを不変にするのがレコードです。期限が来たデータを担当者の承認後に消すのが廃棄レビューです。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-1</span><span>何を固めるかで選ぶ</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">ポリシーを固定</span><span class="h">保持ロック</span><span class="d">無効化・削除・範囲の縮小・期間の短縮ができなくなる（拡大と延長は可）。全体管理者も解除不可。アダプティブ スコープと併用不可</span></div>
+      <div class="tile"><span class="p">アイテムを不変に</span><span class="h">レコード</span><span class="d">編集・名前の変更ができない。十分な権限があれば指定を解除できる</span></div>
+      <div class="tile hot"><span class="p">アイテムを完全に不変に</span><span class="h">規制のレコード</span><span class="d">全体管理者を含めて、誰も解除も変更もできない</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-2</span><span>廃棄レビューの流れ</span></div>
+    <ol class="flow tight">
+      <li><b>保持ラベルで「期間終了時に廃棄レビュー」を選ぶ</b><small>保持ポリシーにはこの設定がない</small></li>
+      <li><b>期間が終わると、レビュー担当者に通知</b><small>最大5段階、1段階あたり最大10人</small></li>
+      <li class="goal"><b>レコード管理 → 廃棄 のページで選ぶ</b><small>廃棄を承認／ラベルを付け替え／保持を延長／レビュー担当者を追加</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-3</span><span>混ぜやすい数字</span></div>
+    <div class="numstrip" style="--n:4">
+      <div><b>30<small>日</small></b><span>保持ポリシーを無効化・削除した後の猶予</span></div>
+      <div><b>93<small>日</small></b><span>SharePoint のごみ箱。猶予とは別の仕組み</span></div>
+      <div><b>15<small>日</small></b><span>最終段階で廃棄を承認してから完全削除まで</span></div>
+      <div><b>7<small>日</small></b><span>保持の設定が反映されるまでの目安（最大）</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>廃棄のページを使うには<span class="mk">廃棄管理ロール</span>が必要。既定で含むのはレコード管理ロールグループで、<span class="mk">全体管理者には既定で付かない</span>。</li>
+  <li>レビュー担当者が中身まで見るには、別途 Content Explorer Content Viewer が必要。</li>
+  <li>猶予期間がないのは、ポリシーを更新して<span class="mk">サイトを除外した</span>場合。保持ホールド ライブラリからの復元はサイト管理者の作業。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>保持ポリシーを、管理者でも緩められないようにしたい</summary><p class="a">保持ロック</p></details>
+  <details class="qi"><summary>規制上の要件で、アイテムを誰も変更・削除できないようにしたい</summary><p class="a">保持ラベルで「規制のレコード」として宣言する</p></details>
+  <details class="qi"><summary>SharePoint の保持ポリシーを誤って無効にした。データはどうなる？</summary><p class="a">30日の猶予期間がある。その間に再び有効にすれば、データを失わずに保持が再開される</p></details>
+  <details class="qi"><summary>全体管理者で Purview の「廃棄」ページを開けない</summary><p class="a">廃棄管理ロールがない。レコード管理ロールグループなどに追加する</p></details>
+  <details class="qi"><summary>保持ロックをかけたうえで、対象を部署の属性で動的に決めたい</summary><p class="a">保持ロックはアダプティブ スコープと併用できない。静的スコープにする</p></details>
+</div>
+</article>
+
+<article class="card" id="c06" data-topic="ラベル使用状況の監視">
+<h2 class="q">ラベル付きのファイルは何件？ 先週ラベルを外したのは誰？</h2>
+<p class="catch">状態は<em>コンテンツ</em>、<br>出来事は<em>アクティビティ</em>。</p>
+<p class="lead">ラベルの使われ方は3つの画面で見ます。今どこに何があるかを見るのがコンテンツ エクスプローラー、何が起きたかを追うのがアクティビティ エクスプローラー、浸透度合いの推移をまとめるのがラベル レポートです。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-1</span><span>2つのエクスプローラー</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>コンテンツ エクスプローラー</b><small>今どこに何があるか</small></div><ul><li>ラベル・SIT ごとに、SharePoint や Exchange のどこにあるかを掘り下げる</li><li>閲覧には専用のロール（一覧表示者／コンテンツ表示者）が必要</li></ul></div>
+      <div class="hot"><div class="hd"><b>アクティビティ エクスプローラー</b><small>何が起きたか（既定30日分）</small></div><ul><li>ラベルの適用・変更・削除、DLP の一致、コピーや印刷</li><li>「誰がラベルを格下げしたか」はここ</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-2</span><span>知りたいことと、見る画面</span></div>
+    <div class="map">
+      <div class="row"><span class="want">機密ラベルが付いたファイルが、どのサイトに何件あるか</span><span class="arr"></span><span class="tool">コンテンツ エクスプローラー</span></div>
+      <div class="row"><span class="want">先週ラベルを格下げしたのは誰で、いつか</span><span class="arr"></span><span class="tool hot">アクティビティ エクスプローラー</span></div>
+      <div class="row"><span class="want">ラベルの浸透度合いを経営層に報告したい</span><span class="arr"></span><span class="tool">ラベル レポート</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>コンテンツ エクスプローラーは<span class="mk">状態のスナップショット</span>で、履歴は分からない。</li>
+  <li>DLP の一致イベントも<span class="mk">アクティビティ エクスプローラー</span>で横断的に確認できる。</li>
+  <li>DLP アラートはポリシー一致の通知。ラベルの格下げそのものは対象外。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>先週、機密ラベルの付いた文書のラベルを誰かが格下げした。誰がいつ行ったか調べたい</summary><p class="a">アクティビティ エクスプローラー</p></details>
+  <details class="qi"><summary>「高度機密」ラベルの付いたファイルが、どこに何件あるかを知りたい</summary><p class="a">コンテンツ エクスプローラー</p></details>
+</div>
+</article>
+
+<article class="card" id="c07" data-topic="データ損失防止（DLP）">
+<h2 class="q">ラベルが付いたメールを、誰にも送らせないには？</h2>
+<p class="catch">場所を決めて、<em>条件とアクション</em>を組む。</p>
+<p class="lead">DLP は、機密情報が不適切な相手や場所へ移るのを止める仕組みです。構造は「ポリシー → ルール（条件・例外・アクション）」の入れ子。いきなりブロックすると業務が止まるので、シミュレーション モードから始めます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-1</span><span>DLP ポリシーの組み立て</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">どこで</span><span class="h">場所</span><ul><li>Exchange・SharePoint・OneDrive</li><li>Teams チャット／チャネル</li><li>デバイス・オンプレミス</li><li>Fabric・Power BI・Copilot</li></ul></div>
+      <div class="tile"><span class="p">何が</span><span class="h">ルールの条件</span><ul><li>SIT・秘密度ラベル・保持ラベル・分類子</li><li>共有相手（社内／社外）・件数</li><li>例外（特定の受信者・ドメイン）</li></ul></div>
+      <div class="tile hot"><span class="p">どうする</span><span class="h">アクション</span><ul><li>アクセスの制限・ブロック</li><li>ポリシー ヒント・通知・上書きの許可</li><li>インシデント レポート、端末の制御</li></ul></div>
+    </div>
+    <figcaption>複数のルールに一致したら、最も厳しいアクションが適用される。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-2</span><span>展開は3段階で</span></div>
+    <ol class="flow tight">
+      <li><b>シミュレーション モード（ポリシー ヒントなし）</b><small>監査だけ。ユーザーには何も出ない</small></li>
+      <li><b>シミュレーション モード（ポリシー ヒントあり）</b><small>通知は出るが、ブロックは上書き可能に緩和される</small></li>
+      <li class="goal"><b>オンにする</b><small>設定どおりに強制する</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-3</span><span>「すべての受信者への送信をブロック」になるアクションは？</span></div>
+    <div class="route">
+      <div class="ln2 good"><span>Microsoft 365 の場所でアクセスを制限するか、コンテンツを暗号化する<br><small>「全員をブロック」を選び、上書きの許可はオフにする</small></span><span class="res">○</span></div>
+      <div class="ln2 bad"><span>ホスト型検疫に配信<br><small>保留にすぎず、管理者が解放すれば届く</small></span><span class="res">×</span></div>
+      <div class="ln2 bad"><span>ヘッダーを設定／特定のユーザーにリダイレクト<br><small>目印を付けるだけ、宛先を差し替えるだけ</small></span><span class="res">×</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>手動ラベル＋Exchange の DLP でブロックする構成は<span class="mk">E3 で実現できる</span>。</li>
+  <li><span class="mk">Teams チャットの DLP は E5</span>。Teams で共有したファイルの実体は SharePoint・OneDrive なので、そちらは E3 の DLP で守れる。</li>
+  <li>同じアクションでも、SharePoint では「ファイルへのアクセスをブロック」、Exchange では「メールの送信をブロック」の意味になる。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>新しい DLP ポリシーの影響を、業務を止めずに把握したい</summary><p class="a">シミュレーション モード（ポリシー ヒントなし）で始める</p></details>
+  <details class="qi"><summary>「高度機密」ラベルが付いたメールを、すべての受信者に送らせない</summary><p class="a">アクション「アクセスを制限するか、コンテンツを暗号化する」で全員をブロック（上書きはオフ）</p></details>
+  <details class="qi"><summary>ユーザーが正当な理由で送信できるようにしたい</summary><p class="a">アクションで上書きの許可を有効にする</p></details>
+  <details class="qi"><summary>秘密度ラベルが付いた文書の外部共有だけを止めたい</summary><p class="a">DLP ルールの条件に秘密度ラベルを指定する</p></details>
+</div>
+</article>
+
+<article class="card" id="c08" data-topic="エンドポイント DLP">
+<h2 class="q">USB メモリへのコピーを止めるには？</h2>
+<p class="catch">端末を止めるなら、<em>先にオンボード</em>。</p>
+<p class="lead">エンドポイント DLP は、Windows と macOS の上での操作を監視・制御します。前提はデバイスを Purview にオンボードすることと、E5 相当のライセンスです。Defender for Endpoint にオンボード済みの端末なら、スイッチ1つで使えます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-1</span><span>PC のオンボードが要るのは2つだけ</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>機能</th><th>PC のオンボード</th></tr></thead>
+        <tbody>
+          <tr><td>秘密度ラベル（Office での手動ラベル付けなど）</td><td>不要</td></tr>
+          <tr><td>DLP（Exchange・SharePoint・OneDrive）</td><td>不要</td></tr>
+          <tr><td>保持ポリシー、eDiscovery、監査</td><td>不要</td></tr>
+          <tr class="pick"><td>エンドポイント DLP</td><td><b>必要</b></td></tr>
+          <tr class="pick"><td>インサイダー リスク管理（端末の活動を使う場合）</td><td><b>必要</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-2</span><span>オンボードの2つの道</span></div>
+    <div class="lanes">
+      <div class="lane pick"><b>MDE にオンボード済み</b><div class="chain"><span>Purview → 設定 → デバイスのオンボード</span><i>→</i><span class="hot">「オンボードを有効にする」をオンにするだけ<small>MDE の端末が全台、自動で並ぶ</small></span></div></div>
+      <div class="lane"><b>MDE がない</b><div class="chain"><span>オンボード パッケージをダウンロード</span><i>→</i><span>配布<small>ローカル スクリプト（10台程度の検証）・GPO・ConfigMgr・Intune・VDI</small></span></div></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-3</span><span>端末で見張れる操作</span></div>
+    <div class="chips"><span class="odd">USB へのコピー</span><span>印刷</span><span>クラウドへのアップロード</span><span>クリップボード</span><span>Bluetooth 転送</span><span>未承認アプリでの操作</span></div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>Purview に直接オンボードしても、端末で動くのは<span class="mk">MDE と同じセンサー</span>。</li>
+  <li>他社のウイルス対策製品を使っていても動くが、<span class="mk">Defender ウイルス対策のリアルタイム保護</span>は有効にしておく。</li>
+  <li>MDE の端末を一部だけ Purview に出す方法はない。オンにすると全台が並ぶ。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>USB メモリへのコピーを禁止したい</summary><p class="a">エンドポイント DLP（デバイスのオンボードと E5 が前提）</p></details>
+  <details class="qi"><summary>MDE にオンボード済みの端末を、Purview のエンドポイント DLP で使いたい</summary><p class="a">Purview の設定でデバイスのオンボードを有効にするだけ</p></details>
+  <details class="qi"><summary>Office で秘密度ラベルを手動で付けるのに、PC のオンボードは必要？</summary><p class="a">不要</p></details>
+</div>
+</article>
+
+<article class="card" id="c09" data-topic="インサイダー リスク管理">
+<h2 class="q">退職予定者の持ち出しを見つけるには？</h2>
+<p class="catch"><em>退職日</em>を起点に採点する。</p>
+<p class="lead">インサイダー リスク管理は、内部の関係者によるデータ漏えいや不正のリスクを検出する機能です。外からの攻撃を見る Defender for Identity や Entra ID Protection とは、守る対象がまったく違います。E5 か、E3 にアドオンを足して使います。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-1</span><span>「退職するユーザーによるデータの窃盗」の流れ</span></div>
+    <ol class="flow tight">
+      <li><b>テンプレートを選ぶ</b><small>データの窃盗・データ漏えい・利益相反・セキュリティ違反など</small></li>
+      <li class="goal"><b>起点（トリガー）を決める</b><small>HR コネクタで退職届や最終雇用日を取り込む／Entra ID でのアカウント削除</small></li>
+      <li><b>退職日からリスクを採点</b><small>一括ダウンロード、不審な外部共有など</small></li>
+      <li><b>アラートを確認してトリアージ</b><small>重大度は低・中・高をシステムが自動計算</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-2</span><span>重大度は放っておくと上がる</span></div>
+    <ol class="bars">
+      <li style="--w:33%"><span class="bar"></span><span class="lab"><b>低</b><span>リスク活動の種類・頻度・履歴から自動で計算</span></span></li>
+      <li style="--w:66%"><span class="bar"></span><span class="lab"><b>中</b><span>手動で変えることはできない</span></span></li>
+      <li class="rec" style="--w:100%"><span class="bar"></span><span class="lab"><b>高<span class="tag">放置すると</span></b><span>トリアージせず活動が積み重なると、自動で引き上がることがある</span></span></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-3</span><span>使えるライセンス</span></div>
+    <ul class="ox">
+      <li class="o"><span><b>Microsoft 365 E5／A5／G5</b></span></li>
+      <li class="o"><span><b>Microsoft 365 E3 ＋ E5 Compliance アドオン</b></span></li>
+      <li class="o"><span><b>Microsoft 365 E3 ＋ E5 Insider Risk Management アドオン</b><small>IRM だけの安価な選択肢</small></span></li>
+      <li class="x"><span><b>Microsoft 365 E3 単体</b></span></li>
+    </ul>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>ライセンスは管理者だけでなく、<span class="mk">監視対象のユーザー全員</span>に必要。実務では退職予定者などに対象を絞る。</li>
+  <li>HR コネクタは公式には「任意」だが、<span class="mk">退職が決まった時点から</span>の持ち出しを見たいならこれが答え。</li>
+  <li>一部の指標は従量課金の有効化が必要で、フォレンジック証拠は別途容量課金。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>退職予定者の、退職前の持ち出しを検知したい。人事システムの退職日を使いたい</summary><p class="a">HR コネクタをトリガーに「退職するユーザーによるデータの窃盗」テンプレートを使う</p></details>
+  <details class="qi"><summary>インサイダー リスクのアラートをトリアージせず放置すると、重大度は</summary><p class="a">変わらないのではなく、上がることがある</p></details>
+  <details class="qi"><summary>E3 の組織で、IRM だけを安く使いたい</summary><p class="a">E5 Insider Risk Management アドオン</p></details>
+</div>
+</article>
+
+<article class="card" id="c10" data-topic="監査とコミュニケーション コンプライアンス">
+<h2 class="q">操作を調べたい？ やり取りを見張りたい？</h2>
+<p class="catch">操作の記録は<em>監査</em>、<br>言葉の監視は<em>コミュニケーション コンプライアンス</em>。</p>
+<p class="lead">「誰が・いつ・何をしたか」は Purview 監査の統合監査ログで横断的に調べます。社内のやり取りにハラスメントや不適切な共有がないかを見張るのはコミュニケーション コンプライアンスです。DLP・秘密度ラベル・メール フロー ルールと並んで出題されます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-1</span><span>4つの選択肢の切り分け</span></div>
+    <div class="map">
+      <div class="row"><span class="want">機密情報が外部に流出するのを防ぐ</span><span class="arr"></span><span class="tool">DLP</span></div>
+      <div class="row"><span class="want">社内のやり取りの不適切な表現を検出してレビュー</span><span class="arr"></span><span class="tool hot">コミュニケーション コンプライアンス<small>E5</small></span></div>
+      <div class="row"><span class="want">特定の件名のメールを、部署間で機械的に止める</span><span class="arr"></span><span class="tool">メール フロー ルール</span></div>
+      <div class="row"><span class="want">ファイルを分類して暗号化する</span><span class="arr"></span><span class="tool">秘密度ラベル<small>単体では送信を止めない</small></span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-2</span><span>ログの保持期間</span></div>
+    <div class="numstrip">
+      <div><b>180<small>日</small></b><span>Purview 監査（Standard）。E3</span></div>
+      <div><b>1<small>年</small></b><span>Purview 監査（Premium）。E5。アドオンで最長10年</span></div>
+      <div><b>30<small>日</small></b><span>Entra ID のサインイン ログ</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-3</span><span>統合監査ログに入るもの、入らないもの</span></div>
+    <div class="vs2">
+      <div class="hot"><div class="hd"><b>入る</b><small>統合監査ログ</small></div><ul><li>Entra ID のサインイン（UserLoggedIn）と変更</li><li>Exchange のメールボックス監査</li><li>SharePoint・OneDrive のファイル操作、Teams</li><li>DLP の一致、ラベルの適用、eDiscovery</li></ul></div>
+      <div><div class="hd"><b>入らない</b><small>別の場所で見る</small></div><ul><li>Intune の監査ログ → Intune 管理センター</li><li>MDE の端末イベント → 高度なハンティング</li><li>条件付きアクセスの評価結果 → Entra のサインイン ログ</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>特定ユーザーのサインインやアプリ利用の調査は<span class="mk">Purview 監査</span>。Defender for Cloud Apps は SaaS の利用の可視化と制御の製品。</li>
+  <li>Standard と Premium の差は<span class="mk">保持期間と API の帯域</span>。MailItemsAccessed などの重要イベントは Standard でも記録される。</li>
+  <li>メッセージ追跡は配送状況の確認で、ブロックの手段ではない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>9か月前に監査を有効にした E3 テナント。14日前・30日前・60日前のサインインを Purview 監査で確認できる？</summary><p class="a">すべて確認できる（Standard は180日）</p></details>
+  <details class="qi"><summary>社内のやり取りに不適切な表現がないか監視したい</summary><p class="a">コミュニケーション コンプライアンス</p></details>
+  <details class="qi"><summary>特定の件名キーワードを含むメールを、特定の部署間でやり取りできないようにしたい</summary><p class="a">Exchange のメール フロー ルール（トランスポート ルール）</p></details>
+  <details class="qi"><summary>特定のユーザーのサインインやアプリの利用状況を調べたい</summary><p class="a">Purview 監査（統合監査ログ）</p></details>
+</div>
+</article>
+<!--/CARDS-->
+
+<!--QUIZ-->
+<div class="qz" data-answer="C">
+  <p class="qq"><b>Q1</b>あるメールに、組織全体の保持ポリシー（10年保持）、経理部向けの保持ポリシー（5年後に削除）、保持ラベル（3年後に削除）が適用されている。このメールはどうなる？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>3年後に削除される</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>5年後に削除される</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>10年間保持され、その後に削除される</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>永久に保持される</span></button>
+  </div>
+  <p class="why" hidden><b>正解は C。</b>原則1「保持が削除に勝つ」と原則2「長い保持が勝つ」で、まず10年は消えない。削除の設定は保持期間が終わってから効く。A・B は第1原則を無視している。→ CARD 04</p>
+</div>
+<div class="qz" data-answer="D">
+  <p class="qq"><b>Q2</b>自社が持つ20万件の顧客 ID の一覧と完全に一致する値だけを検出したい。他社の似た形式の番号は検出したくない。使う機能は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>カスタムの機密情報の種類（正規表現）</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>トレーニング可能な分類子</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>ドキュメント指紋</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>完全一致データ（EDM）</span></button>
+  </div>
+  <p class="why" hidden><b>正解は D。</b>EDM は自社の実データをハッシュ化して登録し、完全に一致する場合だけ検出する。A は形式が同じなら他社の番号も拾う。→ CARD 02</p>
+</div>
+<div class="qz" data-answer="A">
+  <p class="qq"><b>Q3</b>秘密度ラベルを作ったが、ユーザーの Word や Outlook に表示されない。最初に確認することは？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>ラベル ポリシーでそのユーザーに発行されているか</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>ラベルに暗号化が設定されているか</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>ユーザーに Microsoft 365 E5 が割り当てられているか</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>自動ラベル付けポリシーが有効か</span></button>
+  </div>
+  <p class="why" hidden><b>正解は A。</b>ラベルはラベル ポリシーで発行して初めて表示される。手動のラベル付けは E3 の範囲なので C は最初に疑う点ではない。→ CARD 03</p>
+</div>
+<div class="qz" data-answer="B">
+  <p class="qq"><b>Q4</b>SharePoint サイトに適用していた保持ポリシーを、誤って無効にしてしまった。正しい記述は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>保持ホールド ライブラリのファイルは直ちに削除される</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>30日間の猶予期間があり、その間に再び有効にすればデータを失わずに保持が再開される</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>93日間の猶予期間があり、その間はユーザーが自分で復元できる</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>サイトを除外した場合と同じく、猶予期間はない</span></button>
+  </div>
+  <p class="why" hidden><b>正解は B。</b>無効化・削除のときは30日の猶予がある。93日は SharePoint のごみ箱の話。猶予がないのは、ポリシーを更新してサイトを除外した場合。→ CARD 05</p>
+</div>
+<div class="qz" data-answer="C">
+  <p class="qq"><b>Q5</b>保持期間が終わった契約書を、法務担当者の承認を経てから削除したい。全体管理者で Purview の「廃棄」ページを開こうとしたが、開けなかった。正しい説明は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>廃棄レビューは保持ポリシーで構成するため、ポリシーを作り直す必要がある</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>廃棄のページは eDiscovery 管理者だけが開ける</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>全体管理者には既定で廃棄管理ロールがないため、レコード管理ロールグループなどへの追加が必要</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>Content Explorer Content Viewer ロールグループさえあればよい</span></button>
+  </div>
+  <p class="why" hidden><b>正解は C。</b>廃棄のページには廃棄管理ロールが必要で、既定で含むのはレコード管理ロールグループ。廃棄レビューは保持ラベルでしか構成できないので A は誤り。→ CARD 05</p>
+</div>
+<!--/QUIZ-->
+
+<!--MEMO-->
+<div><small>CARD 01</small>分類 → ラベル → 守る／残す → 監視。分類できないものは守れない</div>
+<div><small>CARD 02</small>書式は SIT、性質は分類子、自社の実データは EDM</div>
+<div><small>CARD 03</small>ラベルはポリシーで発行するまで見えない</div>
+<div><small>CARD 03</small>グループとサイトの保護は Microsoft 365 グループだけ</div>
+<div><small>CARD 04</small>保持の4原則：残す → 長く → 名指し → 早く消す</div>
+<div><small>CARD 04</small>ポリシーは箱、ラベルは中身</div>
+<div><small>CARD 05</small>保持ロックとアダプティブ スコープは併用できない</div>
+<div><small>CARD 05</small>猶予は30日、93日はごみ箱</div>
+<div><small>CARD 05</small>廃棄レビューは保持ラベル専用。全体管理者に廃棄管理ロールはない</div>
+<div><small>CARD 07</small>DLP はシミュレーション（ヒントなし）から</div>
+<div><small>CARD 08</small>エンドポイント DLP はオンボードと E5</div>
+<div><small>CARD 10</small>監査は E3 で180日、サインイン ログは30日</div>
+<!--/MEMO-->

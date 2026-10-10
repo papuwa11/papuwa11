@@ -1,0 +1,1337 @@
+<title>MS-102 図解ムック Entra ID編</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@400;500;700;900&family=Shippori+Mincho+B1:wght@600;800&family=Yusei+Magic&family=Barlow+Condensed:wght@600;800&display=swap">
+<style>
+/* Layout: 2色刷りのムック誌面を「1テーマ1カード」に組み直す。表紙→目次→カード（問い→一言の答え→図→押さえどころ→ここが出る）を縦に積み、上部に細いカード番号バー。 */
+:root{
+  --desk:#DADEE5;
+  --paper:#FFFFFF;
+  --paper-2:#F2F3F6;
+  --ink:#16181D;
+  --ink-2:#4B505C;
+  --line:#D4D7DE;
+  --spot:#D94A14;
+  --alt:#1C5BD0;
+  --on-spot:#FFFFFF;
+  --ok:#1D7A45;
+  --ng:#C2321E;
+  --marker:#FFE14D;
+  --note:#FFF2B3;
+
+  --gothic:"M PLUS 1","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  --mincho:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --hand:"Yusei Magic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --num:"Barlow Condensed","Arial Narrow","M PLUS 1",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#0B0D11;
+    --paper:#181B22;
+    --paper-2:#21252E;
+    --ink:#ECEEF3;
+    --ink-2:#A8AEBC;
+    --line:#323745;
+    --spot:#FF8248;
+    --alt:#82A8FF;
+    --on-spot:#15171C;
+    --ok:#6FD39A;
+    --ng:#FF8A7A;
+    --marker:#5C4C0C;
+    --note:#38321A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#0B0D11;
+  --paper:#181B22;
+  --paper-2:#21252E;
+  --ink:#ECEEF3;
+  --ink-2:#A8AEBC;
+  --line:#323745;
+  --spot:#FF8248;
+  --alt:#82A8FF;
+  --on-spot:#15171C;
+  --ok:#6FD39A;
+  --ng:#FF8A7A;
+  --marker:#5C4C0C;
+  --note:#38321A;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 56px)}
+body{
+  margin:0;
+  background:var(--desk);
+  color:var(--ink);
+  font-family:var(--gothic);
+  font-size:15.5px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;
+  word-break:auto-phrase;
+  line-break:strict;
+}
+h1,h2,h3,h4,p{margin:0}
+h1,h2,h3{text-wrap:balance}
+a{color:inherit}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--alt);outline-offset:3px}
+code{font-family:var(--mono);font-size:.86em}
+
+/* ================= 上部バー ================= */
+.topbar{
+  position:sticky;
+  top:env(safe-area-inset-top,0px);
+  z-index:20;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px clamp(12px,3vw,24px);
+  background:var(--ink);
+  color:var(--paper);
+  font-size:.8rem;
+  font-weight:700;
+}
+.tb-home{flex:none;text-decoration:none;white-space:nowrap;letter-spacing:.04em}
+.tb-home b{font-family:var(--num);font-weight:800;font-size:1rem;margin-right:6px;color:var(--spot)}
+.tb-chips{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0;margin-left:auto}
+.tb-chips::-webkit-scrollbar{display:none}
+.tb-chips a{
+  flex:none;
+  min-width:2.1rem;
+  padding:2px 7px;
+  text-align:center;
+  text-decoration:none;
+  font-family:var(--num);
+  font-weight:800;
+  font-size:.95rem;
+  border:1.5px solid color-mix(in srgb,var(--paper) 35%,transparent);
+}
+.tb-chips a.txt{font-family:var(--gothic);font-size:.74rem;font-weight:900;padding-top:4px}
+.tb-chips a:hover{border-color:var(--paper)}
+.tb-chips a.here{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+
+.book{
+  max-width:940px;
+  margin:0 auto;
+  padding-inline:clamp(16px,3vw,28px);
+  padding-block:24px 80px;
+  display:grid;
+  gap:clamp(20px,3.4vw,32px);
+}
+
+/* ================= 表紙 ================= */
+.cover{
+  position:relative;
+  overflow:hidden;
+  background:var(--spot);
+  color:var(--on-spot);
+  padding:clamp(22px,4vw,44px);
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
+  gap:24px 32px;
+  box-shadow:0 18px 40px -24px color-mix(in srgb,var(--ink) 55%,transparent);
+}
+.mast{display:grid;gap:14px;align-content:start;min-width:0}
+.issue{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;font-weight:700;font-size:.8rem;letter-spacing:.14em}
+.issue b{font-family:var(--num);font-weight:800;font-size:1.5rem;letter-spacing:.04em}
+.logo{display:grid;gap:2px}
+.logo .en{font-family:var(--num);font-weight:800;font-size:clamp(4rem,11vw,7.6rem);line-height:.8;letter-spacing:-.02em}
+.logo .ja{font-weight:900;font-size:clamp(1.8rem,4.6vw,3rem);line-height:1.05;letter-spacing:.04em}
+.feature{display:grid;gap:10px;margin-top:4px}
+.feature .kick{justify-self:start;padding:2px 12px;background:var(--on-spot);color:var(--spot);font-weight:900;font-size:.9rem;letter-spacing:.1em}
+.feature h1{font-weight:900;font-size:clamp(2rem,5.4vw,3.4rem);line-height:1.1;letter-spacing:-.01em}
+.clines{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:9px}
+.clines li span{
+  background:var(--paper);
+  color:var(--ink);
+  padding:3px 10px;
+  font-weight:900;
+  font-size:clamp(.9rem,1.7vw,1.02rem);
+  line-height:2.05;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
+.clines li.main span{font-size:clamp(1.2rem,2.6vw,1.6rem);line-height:1.75}
+.clines li em{font-style:normal;color:var(--spot)}
+.cover-art{position:relative;display:grid;place-items:center;min-width:0}
+.cover-art svg{width:100%;max-width:440px;height:auto;display:block}
+.cover-art .ring{fill:none;stroke:var(--on-spot);stroke-width:2;stroke-dasharray:6 7}
+.cover-art .sat{fill:var(--paper);stroke:var(--ink);stroke-width:2.5}
+.cover-art .core{fill:var(--ink)}
+.cover-art .ln{fill:none;stroke:var(--on-spot);stroke-width:2.5}
+.cover-art .ah{fill:var(--on-spot)}
+.cover-art .p{font-family:var(--gothic);font-size:14px;font-weight:700;fill:var(--ink-2)}
+.cover-art .w{font-family:var(--gothic);font-size:22px;font-weight:900;fill:var(--ink)}
+.cover-art .w2{font-family:var(--gothic);font-size:19px;font-weight:900;fill:var(--ink)}
+.cover-art .c1{font-family:var(--gothic);font-size:19px;font-weight:700;fill:var(--paper)}
+.cover-art .c2{font-family:var(--num);font-size:46px;font-weight:800;fill:var(--paper)}
+.cover-art .os{font-family:var(--gothic);font-size:14px;font-weight:900;fill:var(--on-spot)}
+.badge{
+  position:absolute;
+  top:0;right:0;
+  width:100px;
+  aspect-ratio:1;
+  max-width:100%;
+  border-radius:50%;
+  background:var(--marker);
+  color:var(--ink);
+  display:grid;
+  place-content:center;
+  text-align:center;
+  font-weight:900;
+  line-height:1.15;
+  transform:rotate(10deg);
+  box-shadow:0 0 0 3px var(--spot),0 0 0 5px var(--marker);
+}
+.badge b{display:block;font-size:1.45rem}
+.badge small{display:block;font-size:.7rem;font-weight:700}
+.cover-foot{
+  grid-column:1/-1;
+  border-top:2px solid var(--on-spot);
+  padding-top:12px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:10px 24px;
+  font-size:.8rem;
+  font-weight:700;
+}
+.vols{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.vols li > *{display:block;padding:1px 10px;border:1.5px solid var(--on-spot);text-decoration:none}
+.vols li a:hover{background:color-mix(in srgb,var(--on-spot) 18%,transparent)}
+.vols li.on > *{background:var(--on-spot);color:var(--spot)}
+
+/* ================= 紙面（目次・巻末） ================= */
+.sheet{
+  background:var(--paper);
+  padding:clamp(22px,4vw,40px);
+  display:grid;
+  gap:20px;
+  box-shadow:0 18px 40px -26px color-mix(in srgb,var(--ink) 45%,transparent);
+}
+.kicker{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-weight:900;font-size:.82rem;letter-spacing:.12em}
+.kicker .part{background:var(--spot);color:var(--on-spot);padding:0 10px;font-family:var(--num);font-weight:800;font-size:1.05rem;letter-spacing:.06em}
+.sheet-h{font-weight:900;font-size:clamp(1.5rem,3vw,2rem);line-height:1.3}
+.toc-h{font-family:var(--num);font-weight:800;font-size:clamp(2.8rem,7vw,4rem);line-height:.9;letter-spacing:.02em}
+.toc-h small{display:block;font-family:var(--gothic);font-size:.85rem;font-weight:900;letter-spacing:.12em;color:var(--spot);margin-top:8px}
+.toc{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}
+.toc li{border-bottom:1px solid var(--line);min-width:0}
+.toc a{display:grid;grid-template-columns:2.6rem minmax(0,1fr);gap:10px;align-items:baseline;padding:9px 0;text-decoration:none}
+.toc a:hover .tt b{color:var(--spot)}
+.toc .pg{font-family:var(--num);font-weight:800;font-size:1.5rem;line-height:1;color:var(--spot)}
+.toc .tt b{display:block;font-weight:900;font-size:.95rem;line-height:1.45}
+.toc .tt small{display:block;font-size:.78rem;line-height:1.5;color:var(--ink-2)}
+.toc .end .pg{color:var(--ink)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.howto{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:ht}
+.howto li{counter-increment:ht;display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:12px;align-items:start}
+.howto li::before{content:counter(ht);display:grid;place-items:center;height:2.2rem;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.3rem}
+.howto b{display:block;font-weight:900;font-size:.95rem;line-height:1.45}
+.howto span{font-size:.82rem;line-height:1.6;color:var(--ink-2)}
+.sister{display:grid;gap:8px}
+.sister a{display:grid;gap:0;padding:9px 14px;border:2px solid var(--ink);text-decoration:none}
+.sister a:hover{background:var(--paper-2)}
+.sister a.hot{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.sister a b{font-weight:900;font-size:.95rem}
+.sister a span{font-size:.78rem;opacity:.85}
+.sub-h{font-weight:900;font-size:.82rem;letter-spacing:.12em}
+
+/* ================= カード ================= */
+.card{
+  position:relative;
+  background:var(--paper);
+  padding:clamp(22px,4vw,40px) clamp(20px,4vw,40px) 28px;
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+  min-width:0;
+  border-top:6px solid var(--spot);
+  box-shadow:0 18px 40px -26px color-mix(in srgb,var(--ink) 45%,transparent);
+}
+.card-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 14px}
+.card-h .no{font-weight:900;font-size:.78rem;letter-spacing:.14em;color:var(--ink-2)}
+.card-h .no b{font-family:var(--num);font-weight:800;font-size:1.7rem;letter-spacing:.02em;color:var(--spot);margin-right:2px}
+.card-h .topic{padding:1px 10px;background:var(--paper-2);font-weight:900;font-size:.78rem;letter-spacing:.06em}
+.card .q{font-weight:900;font-size:clamp(1.15rem,2.4vw,1.4rem);line-height:1.5;color:var(--ink-2)}
+.card .q::before{content:"Q";display:inline-block;margin-right:10px;padding:0 8px;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.1em;line-height:1.3}
+.card .catch{font-weight:900;font-size:clamp(1.85rem,4.2vw,2.6rem);line-height:1.25;letter-spacing:-.01em;margin-top:-10px}
+.card .catch em{font-style:normal;color:var(--spot)}
+.lead{font-family:var(--mincho);font-weight:600;font-size:1.02rem;line-height:2;max-width:46rem}
+.mk{background:linear-gradient(transparent 58%,var(--marker) 58%);font-weight:700}
+.figs{display:grid;gap:26px}
+.figs.cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 22px;align-items:start}
+.card-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--line);font-size:.82rem;font-weight:900}
+.card-nav a{text-decoration:none;padding:4px 10px;border:1.5px solid var(--line)}
+.card-nav a:hover{border-color:var(--ink)}
+.card-nav .next{margin-left:auto;background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+/* 押さえどころ */
+.osae{position:relative;border:2px solid var(--ink);padding:24px 18px 16px;margin-top:6px}
+.osae > .t{position:absolute;top:-.9em;left:14px;background:var(--paper);padding:0 8px;font-weight:900;font-size:.92rem;letter-spacing:.1em}
+.osae ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.93rem;line-height:1.75}
+.osae li{position:relative;padding-left:1.25em}
+.osae li::before{content:"";position:absolute;left:0;top:.62em;width:.55em;height:.55em;background:var(--spot)}
+
+/* ここが出る（タップで答え） */
+.qa{
+  background:var(--note);
+  padding:14px 18px 16px;
+  display:grid;
+  gap:8px;
+  box-shadow:0 10px 18px -14px color-mix(in srgb,var(--ink) 60%,transparent);
+}
+.qa > .t{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px}
+.qa > .t b{font-family:var(--hand);font-weight:400;font-size:1.3rem;line-height:1.3;color:var(--spot)}
+.qa > .t span{font-size:.74rem;font-weight:700;color:var(--ink-2)}
+.qi{border-top:1px dashed color-mix(in srgb,var(--ink) 30%,transparent)}
+.qi summary{
+  list-style:none;
+  cursor:pointer;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:start;
+  padding:8px 0;
+  font-size:.9rem;
+  line-height:1.6;
+}
+.qi summary::-webkit-details-marker{display:none}
+.qi summary::after{
+  content:"答え";
+  padding:0 8px;
+  border:1.5px solid var(--ink);
+  font-size:.72rem;
+  font-weight:900;
+  line-height:1.7;
+  white-space:nowrap;
+}
+.qi[open] summary::after{content:"閉じる";background:var(--ink);color:var(--paper)}
+.qi .a{margin:0 0 10px;font-weight:700;font-size:.95rem;line-height:1.6}
+.qi .a::before{content:"→ ";color:var(--spot);font-weight:900}
+
+/* 図版 */
+.fig{margin:0;display:grid;gap:12px;min-width:0}
+.fig-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font-weight:900;font-size:1.02rem;line-height:1.45}
+.fig-h .no{font-family:var(--num);font-weight:800;font-size:1.1rem;color:var(--spot);letter-spacing:.04em}
+.fig figcaption{font-size:.8rem;line-height:1.65;color:var(--ink-2)}
+.hand{font-family:var(--hand);color:var(--spot);font-weight:400}
+.svgbox{overflow-x:auto}
+.svgbox svg{display:block;width:100%;height:auto;min-width:340px;max-width:620px;margin:0 auto}
+.svgbox .nd{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+.svgbox .nd.hot{fill:var(--spot);stroke:var(--spot)}
+.svgbox .nd.soft{fill:var(--paper-2);stroke:var(--line)}
+.svgbox .ln{fill:none;stroke:var(--ink-2);stroke-width:2}
+.svgbox .ln.hot{stroke:var(--spot)}
+.svgbox .ln.dash{stroke-dasharray:6 5}
+.svgbox .ah{fill:var(--ink-2)}
+.svgbox .ahs{fill:var(--spot)}
+.svgbox .tx{font-family:var(--gothic);font-size:13px;font-weight:900;fill:var(--ink)}
+.svgbox .ts{font-family:var(--gothic);font-size:11.5px;font-weight:500;fill:var(--ink-2)}
+.svgbox .tw{font-family:var(--gothic);font-size:13px;font-weight:900;fill:var(--on-spot)}
+.svgbox .tws{font-family:var(--gothic);font-size:11.5px;font-weight:500;fill:var(--on-spot)}
+.svgbox .tsp{font-family:var(--gothic);font-size:12px;font-weight:900;fill:var(--spot)}
+.svgbox .mid{font-family:var(--hand);font-size:15px;fill:var(--spot)}
+
+/* コラム */
+.column{background:var(--paper-2);border-top:5px solid var(--ink);padding:14px 18px 18px;display:grid;gap:8px}
+.column .t{display:flex;align-items:baseline;gap:10px;font-weight:900;font-size:1.02rem}
+.column .t b{font-family:var(--num);font-weight:800;font-size:.95rem;letter-spacing:.14em;color:var(--spot)}
+.column p{font-size:.9rem;line-height:1.8}
+
+/* ================= 図版の部品 ================= */
+/* やりたいこと → 道具 */
+.map{display:grid;gap:8px}
+.map .row{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,.9fr);align-items:stretch;gap:6px}
+.map .want{padding:8px 12px;background:var(--paper-2);font-size:.88rem;line-height:1.55;display:flex;align-items:center}
+.map .arr{position:relative}
+.map .arr::before{content:"";position:absolute;left:2px;right:8px;top:50%;height:2px;background:var(--spot)}
+.map .arr::after{content:"";position:absolute;right:0;top:50%;margin-top:-6px;border-left:9px solid var(--spot);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.map .tool{padding:8px 12px;border:2px solid var(--ink);font-weight:900;font-size:.92rem;line-height:1.45;display:flex;flex-direction:column;justify-content:center}
+.map .tool small{font-weight:500;font-size:.76rem;color:var(--ink-2)}
+.map .tool.hot{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.map .tool.hot small{color:var(--on-spot)}
+
+/* 手順（縦・番号つき） */
+.flow{list-style:none;margin:0;padding:0;display:grid;gap:22px;counter-reset:st}
+.flow li{position:relative;border:2px solid var(--ink);padding:10px 14px 10px 54px;display:grid;gap:2px;counter-increment:st}
+.flow li::before{
+  content:counter(st);
+  position:absolute;left:0;top:0;bottom:0;
+  width:40px;
+  display:grid;place-items:center;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--num);font-weight:800;font-size:1.4rem;
+}
+.flow li + li::after{
+  content:"";
+  position:absolute;
+  left:50%;top:-20px;
+  margin-left:-8px;
+  border-top:12px solid var(--spot);
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+}
+.flow b{font-weight:900;font-size:.98rem;line-height:1.45}
+.flow small{font-size:.8rem;color:var(--ink-2);line-height:1.55}
+.flow li.goal{border-color:var(--spot)}
+.flow li.goal::before{background:var(--spot);color:var(--on-spot)}
+.flow.tight{gap:16px}
+.flow.tight li + li::after{top:-15px;border-top-width:9px}
+
+/* 横に流れるチェーン */
+.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px}
+.chain > span{padding:6px 10px;border:2px solid var(--ink);font-size:.84rem;font-weight:700;line-height:1.45;display:flex;flex-direction:column;justify-content:center}
+.chain > span small{font-weight:500;font-size:.74rem;color:var(--ink-2)}
+.chain > span.hot{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.chain > span.hot small{color:var(--on-spot)}
+.chain > span.soft{border-style:dashed;border-color:var(--ink-2)}
+.chain > i{align-self:center;font-style:normal;font-weight:900;color:var(--spot)}
+
+/* レーン（横3本の比較） */
+.lanes{display:grid;gap:10px}
+.lane{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:12px;align-items:center;padding:10px 12px;background:var(--paper-2)}
+.lane > b{font-weight:900;font-size:.92rem;line-height:1.4}
+.lane > b small{display:block;font-weight:700;font-size:.72rem;color:var(--spot)}
+.lane .chain > span{background:var(--paper)}
+.lane .chain > span.hot{background:var(--spot)}
+.lane.pick{outline:3px solid var(--spot);outline-offset:-3px}
+
+/* 2〜4枚のタイル */
+.tiles{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:10px}
+.tile{border:2px solid var(--ink);padding:10px 14px 12px;display:grid;gap:3px;align-content:start;min-width:0}
+.tile .p{font-size:.76rem;font-weight:700;color:var(--ink-2)}
+.tile .h{font-weight:900;font-size:1.12rem;line-height:1.4}
+.tile .h small{font-size:.66em;font-weight:700;margin-left:3px;white-space:nowrap}
+.tile .d{font-size:.8rem;line-height:1.6;color:var(--ink-2)}
+.tile ul{margin:2px 0 0;padding-left:1.1em;font-size:.8rem;line-height:1.6}
+.tile.hot{border-color:var(--spot);background:color-mix(in srgb,var(--spot) 9%,var(--paper))}
+.tile.hot .h{color:var(--spot)}
+.tile.solid{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.tile.solid .p,.tile.solid .d{color:color-mix(in srgb,var(--paper) 75%,var(--ink))}
+.tile.dash{border-style:dashed;border-color:var(--ink-2)}
+
+/* 2者比較（見出し帯つき） */
+.vs2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.vs2 > div{border:2px solid var(--ink);display:grid;grid-template-rows:auto 1fr;min-width:0}
+.vs2 .hd{padding:8px 12px;background:var(--ink);color:var(--paper);display:grid}
+.vs2 .hd b{font-weight:900;font-size:1.02rem;line-height:1.4}
+.vs2 .hd small{font-size:.74rem;opacity:.85}
+.vs2 > div.hot{border-color:var(--spot)}
+.vs2 > div.hot .hd{background:var(--spot);color:var(--on-spot)}
+.vs2 ul{list-style:none;margin:0;padding:10px 12px 12px;display:grid;gap:6px;align-content:start;font-size:.84rem;line-height:1.55}
+.vs2 li{position:relative;padding-left:.95em}
+.vs2 li::before{content:"";position:absolute;left:0;top:.62em;width:.42em;height:.42em;background:var(--spot)}
+.vs2 .fix{margin:0 12px 12px;padding:6px 10px;background:var(--paper-2);font-weight:900;font-size:.88rem;line-height:1.5}
+.vs2 .fix::before{content:"対処 → ";color:var(--spot)}
+
+/* ○× リスト */
+.ox{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ox li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:10px;align-items:start;padding:7px 10px;background:var(--paper-2);font-size:.86rem;line-height:1.55}
+.ox li::before{display:grid;place-items:center;height:1.6rem;font-weight:900;font-size:1rem}
+.ox li.o::before{content:"○";color:var(--ok);border:2px solid var(--ok)}
+.ox li.x::before{content:"×";color:var(--ng);border:2px solid var(--ng)}
+.ox li.t::before{content:"△";color:var(--ink-2);border:2px solid var(--ink-2)}
+.ox li b{font-weight:900}
+.ox li small{display:block;font-size:.76rem;color:var(--ink-2)}
+
+/* 帯の長さで比べる（段階） */
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.bars li{display:grid;gap:3px}
+.bars .bar{height:12px;width:var(--w);background:color-mix(in srgb,var(--ink) 22%,var(--paper))}
+.bars li.rec .bar{background:var(--spot)}
+.bars .lab{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;font-size:.86rem;line-height:1.45}
+.bars .lab b{font-weight:900}
+.bars .lab span{font-size:.78rem;color:var(--ink-2)}
+.bars .tag{margin-left:6px;padding:0 6px;background:var(--spot);color:var(--on-spot);font-size:.72rem;font-weight:900}
+
+/* 順位（幅が縮む） */
+.podium{list-style:none;margin:0;padding:0;display:grid;gap:5px;counter-reset:pd}
+.podium li{
+  counter-increment:pd;
+  width:calc(100% - var(--i) * 8%);
+  display:flex;align-items:center;gap:10px;
+  padding:6px 12px;
+  background:color-mix(in srgb,var(--spot) calc(36% - var(--i) * 6%),var(--paper));
+  font-size:.86rem;font-weight:700;line-height:1.45;
+}
+.podium li::before{content:counter(pd);font-family:var(--num);font-weight:800;font-size:1.25rem;min-width:1em}
+.podium li:first-child{background:var(--spot);color:var(--on-spot)}
+.podium li small{font-weight:500;font-size:.74rem;opacity:.85}
+
+/* 数字の帯 */
+.numstrip{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+.numstrip div{padding:10px 12px;display:grid;gap:2px;min-width:0}
+.numstrip div + div{border-left:1px solid var(--line)}
+.numstrip b{font-family:var(--num);font-weight:800;font-size:2.4rem;line-height:1;color:var(--spot);font-variant-numeric:tabular-nums}
+.numstrip b small{font-family:var(--gothic);font-size:.38em;font-weight:900;color:var(--ink);margin-left:2px}
+.numstrip span{font-size:.78rem;line-height:1.5;color:var(--ink-2)}
+
+/* ×の選択肢 */
+.ng{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.ng li{padding:3px 10px;border:1.5px dashed var(--ink-2);color:var(--ink-2);font-size:.84rem;text-decoration:line-through;text-decoration-color:var(--ng);text-decoration-thickness:2px}
+
+/* 小さな表 */
+.tblbox{overflow-x:auto}
+.mini{width:100%;border-collapse:collapse;font-size:.82rem;line-height:1.5;min-width:400px}
+.mini th,.mini td{padding:7px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.mini thead th{border-bottom:2px solid var(--ink);font-size:.74rem;letter-spacing:.06em;color:var(--ink-2);white-space:nowrap}
+.mini td b{color:var(--spot)}
+.mini td.o,.mini td.x{text-align:center;font-weight:900;font-size:1rem}
+.mini td.o{color:var(--ok)}
+.mini td.x{color:var(--ng)}
+.mini tr.pick td{background:color-mix(in srgb,var(--spot) 10%,var(--paper))}
+
+/* 単語チップ */
+.chips{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+.chips span,.chips code{padding:1px 8px;background:var(--paper-2);border:1px solid var(--line);font-size:.78rem;line-height:1.7;overflow-wrap:anywhere}
+.chips .odd{border-color:var(--spot);color:var(--spot)}
+
+/* --- 個別の図（主に VOL.03） --- */
+.funnel{display:grid;gap:8px}
+.al{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 12px;border:1.5px dashed var(--ink-2);font-size:.86rem;line-height:1.5}
+.al i{font-style:normal;font-family:var(--num);font-weight:800;font-size:.95rem;color:var(--spot);white-space:nowrap}
+.down{justify-self:center;width:0;height:0;border-top:16px solid var(--spot);border-left:14px solid transparent;border-right:14px solid transparent}
+.inc{background:var(--ink);color:var(--paper);padding:10px 14px;display:grid;gap:2px}
+.inc b{font-weight:900;font-size:1.15rem}
+.inc small{font-size:.8rem;opacity:.85}
+.ac{border:2px solid var(--ink)}
+.ac-h{background:var(--ink);color:var(--paper);padding:6px 12px;font-weight:900;font-size:.92rem}
+.ac-b{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.ac-b div{padding:10px 12px;display:grid;gap:2px;font-size:.84rem;line-height:1.55}
+.ac-b div + div{border-left:2px solid var(--ink);background:color-mix(in srgb,var(--spot) 10%,var(--paper))}
+.ac-b b{font-weight:900;font-size:.95rem}
+.ranked{list-style:none;margin:0;padding:0;display:grid;gap:6px;counter-reset:rk}
+.ranked li{counter-increment:rk;display:grid;grid-template-columns:3.2rem minmax(0,1fr) auto;align-items:center;gap:10px;padding:6px 10px;background:var(--paper-2);font-size:.86rem}
+.ranked li::before{content:"ランク" counter(rk);font-size:.72rem;font-weight:900;color:var(--ink-2)}
+.ranked li.hit{background:var(--spot);color:var(--on-spot)}
+.ranked li.hit::before{color:var(--on-spot)}
+.ranked em{font-style:normal;font-size:.76rem;font-weight:700}
+.surname{display:grid;gap:8px}
+.sn{display:grid;grid-template-columns:8.6rem minmax(0,1fr);gap:4px 12px;align-items:start;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.sn:last-child{border-bottom:0;padding-bottom:0}
+.sn .pre{font-family:var(--mono);font-weight:700;font-size:.95rem;line-height:1.5}
+.sn .pre small{display:block;font-family:var(--gothic);font-size:.72rem;font-weight:700;color:var(--spot)}
+.gauges{display:grid;gap:10px}
+.gauge{display:grid;grid-template-columns:3.4rem minmax(0,1fr);gap:12px;align-items:center}
+.gauge .dir{height:3.4rem;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:2.2rem;line-height:1}
+.gauge.low .dir{background:var(--spot);color:var(--on-spot)}
+.gauge b{display:block;font-weight:900;font-size:.98rem;line-height:1.45}
+.gauge span{font-size:.8rem;line-height:1.5;color:var(--ink-2)}
+.gauge.low b em{font-style:normal;color:var(--spot)}
+.bldg{display:grid;gap:0;border:3px solid var(--ink);border-top:0}
+.roof{height:0;border-bottom:22px solid var(--ink);border-left:30px solid transparent;border-right:30px solid transparent;margin:0 -3px}
+.floor{display:grid;grid-template-columns:3rem minmax(0,1fr);border-top:3px solid var(--ink)}
+.floor .fl{display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.5rem}
+.floor .fb{padding:10px 12px 12px;display:grid;gap:6px;min-width:0}
+.floor .fn{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px}
+.floor .fn b{font-weight:900;font-size:.98rem;line-height:1.4}
+.floor .fn span{padding:0 8px;font-size:.72rem;font-weight:900;border:1.5px solid var(--ink)}
+.floor.f3{background:color-mix(in srgb,var(--spot) 22%,var(--paper))}
+.floor.f3 .fn span{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.floor.f2{background:color-mix(in srgb,var(--spot) 9%,var(--paper))}
+.floor.f1{background:var(--paper)}
+.rooms{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.rooms li{padding:2px 8px;background:var(--paper);border:1.5px solid var(--ink);font-size:.78rem;font-weight:700;line-height:1.5}
+.rooms.seq{counter-reset:rm}
+.rooms.seq li{counter-increment:rm}
+.rooms.seq li::before{content:counter(rm);display:inline-block;min-width:1.2em;margin-right:5px;padding:0 3px;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;text-align:center}
+.rooms.also li{border-style:dashed}
+.street{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;background:var(--ink);color:var(--paper);font-size:.78rem;font-weight:700}
+.heat{display:grid;grid-template-columns:minmax(6.5rem,1.3fr) repeat(3,minmax(0,1fr));gap:3px;font-size:.82rem;line-height:1.35}
+.heat > div{padding:7px 8px;min-width:0;display:flex;align-items:center}
+.heat .h{font-weight:900;justify-content:center;background:var(--ink);color:var(--paper)}
+.heat .h.blank{background:none}
+.heat .k{font-weight:700;background:var(--paper-2)}
+.heat .j{justify-content:center;background:color-mix(in srgb,var(--alt) 14%,var(--paper));font-weight:700}
+.heat .qq{justify-content:center;background:var(--spot);color:var(--on-spot);font-weight:900}
+.heat .n{justify-content:center;font-family:var(--num);font-weight:800;font-size:1.15rem;background:var(--paper-2)}
+.heat .trap{outline:3px solid var(--marker);outline-offset:-3px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.76rem;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:4px;vertical-align:-1px}
+.legend .lj{background:color-mix(in srgb,var(--alt) 14%,var(--paper));border:1px solid var(--line)}
+.legend .lq{background:var(--spot)}
+.fork{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fork > div{border:2px solid var(--ink);display:grid;grid-template-rows:auto 1fr;min-width:0}
+.fork .if{padding:8px 12px;background:var(--paper-2);font-size:.84rem;line-height:1.55}
+.fork .if b{display:block;font-size:.72rem;letter-spacing:.1em;color:var(--ink-2)}
+.fork .then{padding:10px 12px;display:grid;gap:4px;align-content:start}
+.fork .then b{font-weight:900;font-size:.98rem;line-height:1.45}
+.fork .then small{font-size:.78rem;line-height:1.55;color:var(--ink-2)}
+.fork .then .x{color:var(--ng);font-weight:700}
+.streak{display:grid;gap:10px}
+.st-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
+.marks{display:flex;gap:4px}
+.marks span{width:34px;height:34px;display:grid;place-items:center;font-weight:900;font-size:1rem;border:2px solid var(--ink)}
+.marks .x{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.marks .o{background:var(--paper)}
+.st-row p{font-size:.86rem;line-height:1.55}
+.st-row p b{font-weight:900}
+.onb{display:grid;gap:6px}
+.onb .row{display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:10px;align-items:start;padding:8px 10px;background:var(--paper-2)}
+.onb .os{font-weight:900;font-size:.88rem;line-height:1.45}
+.onb .how{display:flex;flex-wrap:wrap;gap:5px}
+.onb .how span{padding:1px 8px;background:var(--paper);border:1.5px solid var(--ink);font-size:.78rem;font-weight:700;line-height:1.6}
+.onb .how span.key{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.onb .how span.key small{font-weight:500}
+.route{display:grid;gap:8px}
+.route .ln2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 12px;border:2px solid var(--ink);font-size:.86rem;line-height:1.5}
+.route .ln2 .res{font-family:var(--num);font-weight:800;font-size:1.3rem;padding:0 10px}
+.route .ln2.bad{border-style:dashed;color:var(--ink-2)}
+.route .ln2.bad .res{color:var(--ng)}
+.route .ln2.good{background:color-mix(in srgb,var(--spot) 10%,var(--paper));border-color:var(--spot)}
+.route .ln2.good .res{background:var(--spot);color:var(--on-spot)}
+.lic{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;align-items:end}
+.lic li{display:grid;align-content:start;gap:4px;padding:8px 8px 10px;min-height:calc(4.6rem + var(--h) * 1.6rem);background:color-mix(in srgb,var(--spot) calc(var(--h) * 9%),var(--paper));border-top:4px solid var(--ink);font-size:.76rem;line-height:1.45;min-width:0}
+.lic li b{font-weight:900;font-size:.82rem}
+.lic li span{font-weight:700}
+.lic li.top{background:var(--spot);color:var(--on-spot);border-top-color:var(--spot)}
+
+/* ================= 腕試し ================= */
+.quiz-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.score{font-weight:900;font-size:.92rem}
+.score b{font-family:var(--num);font-weight:800;font-size:1.6rem;color:var(--spot);margin:0 2px}
+.qz{display:grid;gap:10px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.qz:last-child{border-bottom:0;padding-bottom:0}
+.qz .qq{font-weight:700;font-size:.95rem;line-height:1.7}
+.qz .qq b{font-family:var(--num);font-weight:800;font-size:1.15rem;color:var(--spot);margin-right:6px}
+.opts{display:grid;gap:6px}
+.opt{
+  display:grid;grid-template-columns:1.8rem minmax(0,1fr);gap:8px;align-items:start;
+  width:100%;
+  padding:7px 10px;
+  border:1.5px solid var(--line);
+  background:var(--paper);
+  color:var(--ink);
+  font:inherit;font-size:.86rem;line-height:1.55;
+  text-align:left;
+  cursor:pointer;
+}
+.opt:hover{border-color:var(--ink)}
+.opt i{font-style:normal;font-family:var(--num);font-weight:800;font-size:1.05rem;line-height:1.35}
+.qz.done .opt{cursor:default}
+.qz.done .opt:hover{border-color:var(--line)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--paper))}
+.opt.wrong{border-color:var(--ng);background:color-mix(in srgb,var(--ng) 12%,var(--paper))}
+.why{padding:10px 12px;background:var(--note);font-size:.84rem;line-height:1.7}
+.why b{font-weight:900}
+
+/* ================= 暗記カード・奥付 ================= */
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:2px dashed var(--ink-2)}
+.cards div{padding:10px 12px;font-size:.84rem;font-weight:700;line-height:1.55;border-bottom:2px dashed var(--ink-2);min-width:0}
+.cards div:nth-child(odd){border-right:2px dashed var(--ink-2)}
+.cards div:nth-last-child(-n+2){border-bottom:0}
+.cards div small{display:block;font-size:.7rem;font-weight:900;letter-spacing:.08em;color:var(--spot)}
+.cut{display:flex;align-items:center;gap:10px;font-size:.72rem;font-weight:700;letter-spacing:.2em;color:var(--ink-2)}
+.cut::before,.cut::after{content:"";flex:1;border-top:2px dashed var(--ink-2)}
+.series{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.series li > *{border:2px solid var(--ink);padding:10px 12px;display:grid;gap:2px;height:100%;text-decoration:none}
+.series li a:hover{background:var(--paper-2)}
+.series b{font-family:var(--num);font-weight:800;font-size:1.05rem;letter-spacing:.06em}
+.series span{font-weight:900;font-size:.95rem}
+.series small{font-size:.76rem;color:var(--ink-2)}
+.series li.on > *{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.series li.on small{color:var(--on-spot)}
+.okuduke{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:12px 0;display:grid;gap:4px;font-size:.8rem;line-height:1.7}
+.okuduke dl{margin:0;display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:2px 10px}
+.okuduke dt{font-weight:900}
+.okuduke dd{margin:0;color:var(--ink-2)}
+.okuduke .ttl{font-weight:900;font-size:.95rem}
+
+/* ================= responsive ================= */
+@media (max-width:760px){
+  .cover{grid-template-columns:1fr}
+  .cover-art{order:-1}
+  .badge{width:84px}
+  .two,.figs.cols{grid-template-columns:1fr}
+  .toc{grid-template-columns:1fr}
+  .series{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lic{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lic li{min-height:0}
+  .tiles{--n:2 !important}
+}
+@media (max-width:520px){
+  .tiles,.vs2,.fork,.cards,.ac-b{grid-template-columns:1fr}
+  .tiles{--n:1 !important}
+  .cards div:nth-child(odd){border-right:0}
+  .cards div:nth-last-child(2){border-bottom:2px dashed var(--ink-2)}
+  .ac-b div + div{border-left:0;border-top:2px solid var(--ink)}
+  .map .row{grid-template-columns:1fr}
+  .map .arr{height:14px}
+  .map .arr::before{left:50%;right:auto;top:0;bottom:4px;width:2px;height:auto}
+  .map .arr::after{left:50%;right:auto;top:auto;bottom:0;margin:0 0 0 -6px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--spot);border-bottom:0}
+  .sn,.onb .row,.lane{grid-template-columns:1fr;gap:4px}
+  .numstrip{grid-template-columns:1fr}
+  .numstrip div + div{border-left:0;border-top:1px solid var(--line)}
+  .podium li{width:100%}
+  .heat{font-size:.74rem}
+  .heat > div{padding:6px 5px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+}
+
+:root{--spot:#0B7A66;--alt:#1F57C8}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--spot:#4FD1B5;--alt:#86A8FF}}
+:root[data-theme="dark"]{--spot:#4FD1B5;--alt:#86A8FF}
+</style>
+<nav class="topbar" aria-label="カード一覧"><a class="tb-home" href="#top"><b>VOL.02</b>Entra ID</a><div class="tb-chips"><a href="#c01" aria-label="カード01">01</a><a href="#c02" aria-label="カード02">02</a><a href="#c03" aria-label="カード03">03</a><a href="#c04" aria-label="カード04">04</a><a href="#c05" aria-label="カード05">05</a><a href="#c06" aria-label="カード06">06</a><a href="#c07" aria-label="カード07">07</a><a href="#c08" aria-label="カード08">08</a><a href="#c09" aria-label="カード09">09</a><a href="#c10" aria-label="カード10">10</a><a class="txt" href="#quiz">腕試し</a><a class="txt" href="#memo">暗記</a></div></nav>
+<main class="book">
+<header class="cover" id="top">
+  <div class="mast">
+    <div class="issue"><b>VOL.02</b><span>2026 AUTUMN</span><span>試験対策シリーズ</span></div>
+    <div class="logo"><span class="en">MS-102</span><span class="ja">図解ムック</span></div>
+    <div class="feature"><span class="kick">特集</span><h1>Entra ID<br>まるごと図解</h1></div>
+    <ul class="clines"><li class="main"><span>配点 <em>25–30%</em>、<em>入口の設計</em>を図で押さえる</span></li><li><span>同期と認証は、別の話</span></li><li><span>預ける・聞きに行く・任せる</span></li><li><span>ブロックが勝ち、除外が勝つ</span></li><li><span>人が危ないか、今回が怪しいか</span></li><li><span>巻末 腕試し5問＋切り取り暗記カード</span></li></ul>
+  </div>
+  <div class="cover-art"><svg viewBox="0 0 520 520" role="img" aria-label="入口の3層。同期は誰がいるか、認証は本人か、条件付きアクセスは入れてよいか">
+  <defs><marker id="cv2" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+  <circle class="sat" cx="260" cy="58" r="44"/>
+  <text class="w2" x="260" y="65" text-anchor="middle">ユーザー</text>
+  <path class="ln" d="M260 104 V128" marker-end="url(#cv2)"/>
+  <rect class="sat" x="50" y="134" width="420" height="92"/>
+  <text class="p" x="72" y="166">① 同期 ── 誰がいるか</text>
+  <text class="w2" x="72" y="204">Connect Sync ／ Cloud Sync</text>
+  <path class="ln" d="M260 228 V250" marker-end="url(#cv2)"/>
+  <rect class="sat" x="50" y="256" width="420" height="92"/>
+  <text class="p" x="72" y="288">② 認証 ── 本人か</text>
+  <text class="w2" x="72" y="326">PHS ／ PTA ／ フェデレーション</text>
+  <path class="ln" d="M260 350 V372" marker-end="url(#cv2)"/>
+  <rect class="core" x="50" y="378" width="420" height="92"/>
+  <text class="c1" x="72" y="410" style="font-size:15px">③ 条件付きアクセス ── 入れてよいか</text>
+  <text class="c1" x="72" y="448">IF 条件 → THEN 許可・ブロック</text>
+  <text class="os" x="260" y="502" text-anchor="middle">→ Microsoft 365 へ</text>
+</svg>
+    <div class="badge" aria-label="保存版"><b>保存版</b><small>図版 27点</small></div>
+  </div>
+  <div class="cover-foot">
+    <ul class="vols" aria-label="シリーズ"><li><a href="https://claude.ai/artifact/5BnRho7DVbhMcB87kNR1Gs" target="_blank" rel="noopener">VOL.01 テナント</a></li><li class="on"><span>VOL.02 Entra ID</span></li><li><a href="https://claude.ai/artifact/NENPSAdHgUY5bcLptgAMZm" target="_blank" rel="noopener">VOL.03 Defender XDR</a></li><li><a href="https://claude.ai/artifact/T1MvTVzR7PjiyFHrTzmZC6" target="_blank" rel="noopener">VOL.04 Purview</a></li></ul>
+    <span>公式スキル測定 2026.04.28 版準拠 ／ 試験は 2026.11.30 廃止予定</span>
+  </div>
+</header>
+<section class="sheet" id="contents" aria-labelledby="h-toc">
+  <h2 class="toc-h" id="h-toc">CONTENTS<small>特集 Entra ID まるごと図解 ／ 第2章・配点 25–30%</small></h2>
+  <ol class="toc"><li><a href="#c01"><span class="pg">01</span><span class="tt"><b>同期を始める前に、何を整えておく？</b><small>汚れたまま、同期しない。</small></span></a></li><li><a href="#c02"><span class="pg">02</span><span class="tt"><b>Connect Sync と Cloud Sync、どちらを選ぶ？</b><small>頭脳がオンプレか、クラウドか。</small></span></a></li><li><a href="#c03"><span class="pg">03</span><span class="tt"><b>パスワードは、どこで確かめる？</b><small>預けるか、聞きに行くか、 任せるか。</small></span></a></li><li><a href="#c04"><span class="pg">04</span><span class="tt"><b>同期の範囲を変えたい。最初にやることは？</b><small>フィルターを変える前に、 スケジューラーを止める。</small></span></a></li><li><a href="#c05"><span class="pg">05</span><span class="tt"><b>フィッシングに強い MFA は、どれ？</b><small>コードを伝える方式は、 偽サイトに負ける。</small></span></a></li><li><a href="#c06"><span class="pg">06</span><span class="tt"><b>自分でパスワードを戻させるとき、ハイブリッドで忘れてはいけないのは？</b><small>ハイブリッドなら、ライトバック。</small></span></a></li><li><a href="#c07"><span class="pg">07</span><span class="tt"><b>人が危ないのか、今回のサインインが怪しいのか？</b><small>ユーザー リスクはパスワード変更、 サインイン リスクは MFA。</small></span></a></li><li><a href="#c08"><span class="pg">08</span><span class="tt"><b>ポリシーが複数当たったら、どう決まる？</b><small>ブロックが勝ち、除外が勝つ。</small></span></a></li><li><a href="#c09"><span class="pg">09</span><span class="tt"><b>MFA はどの方法で有効にする？ デバイスはどう登録する？</b><small>MFA は条件付きアクセスで。</small></span></a></li><li><a href="#c10"><span class="pg">10</span><span class="tt"><b>VPN なしで、社内の Web アプリを社外から使わせるには？</b><small>コネクタが外へ出ていくから、 穴は開けない。</small></span></a></li><li class="end"><a href="#quiz"><span class="pg">QZ</span><span class="tt"><b>巻末 腕試し5問</b><small>本試験と同じ形式で、解説つき</small></span></a></li><li class="end"><a href="#memo"><span class="pg">MC</span><span class="tt"><b>切り取り暗記カード／奥付</b><small>直前の見直し用に12枚</small></span></a></li></ol>
+  <div class="two">
+    <div style="display:grid;gap:12px;align-content:start">
+      <span class="sub-h">カードの読み方</span>
+      <ol class="howto">
+        <li><div><b>問いを読んで、答えを予想する</b><span>カードの最初の一行は試験の聞き方。大きな一文がその答えです。</span></div></li>
+        <li><div><b>図で形をつかむ</b><span>図版番号の横の一文が、その図の結論です。</span></div></li>
+        <li><div><b>押さえどころ3行と「ここが出る！」</b><span>付箋の設問は、答えを思い出してから「答え」を押します。</span></div></li>
+      </ol>
+    </div>
+    <div style="display:grid;gap:12px;align-content:start">
+      <span class="sub-h">シリーズの姉妹ページ</span>
+      <div class="sister"><a class="hot" href="https://claude.ai/artifact/DBGvdDGp9bbroqttuzmVqZ" target="_blank" rel="noopener"><b>MS-102 逆引きドリル</b><span>全巻の「ここが出る！」を、間違えたものから繰り返す。</span></a><a href="https://claude.ai/artifact/16xzViiC6KQoFzSYZeesw6" target="_blank" rel="noopener"><b>MS-102 控えめの法則</b><span>全章に効く3つの合言葉。最初の1枚に。</span></a><a href="https://claude.ai/artifact/KDPE54u1mEf7dMf21PuYJp" target="_blank" rel="noopener"><b>MS-102 総合テキスト</b><span>このシリーズの底本。細かい条件を確かめたいときに。</span></a><a href="https://claude.ai/artifact/Nzpf1jbjYVadj4nKQbn9CM" target="_blank" rel="noopener"><b>M365 ロール百貨店</b><span>誰が何をできるか、ロールの整理に。</span></a></div>
+    </div>
+  </div>
+</section>
+<article class="card" id="c01" aria-labelledby="c01-q">
+<div class="card-h"><span class="no">CARD <b>01</b> / 10</span><span class="topic">ID モデルと同期の準備</span></div>
+<h2 class="q" id="c01-q">同期を始める前に、何を整えておく？</h2>
+<p class="catch">汚れたまま、<em>同期しない</em>。</p>
+<p class="lead">ユーザーはクラウド専用か、オンプレミス AD を権威とするハイブリッドのどちらかです。同期を始める前に AD のデータを IdFix で掃除し、UPN サフィックスをテナントの検証済みドメインに揃えておきます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-1</span><span>2つの ID モデル</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>クラウド専用 ID</b><small>Entra ID にだけ存在</small></div><ul><li>AD を持たない組織、新設の組織向け</li><li>管理はシンプル。AD 資産とは連携しない</li></ul></div>
+      <div class="hot"><div class="hd"><b>ハイブリッド ID</b><small>オンプレミス AD が権威</small></div><ul><li>同じ資格情報でオンプレミスとクラウドを使える</li><li>同期ユーザーの属性はクラウドでは編集できない</li></ul></div>
+    </div>
+  </figure>
+  <div class="figs cols">
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図1-2</span><span>IdFix が見つける4種類</span></div>
+      <div class="tiles" style="--n:2">
+        <div class="tile hot"><span class="h">重複</span><span class="d">userPrincipalName・mail・proxyAddresses</span></div>
+        <div class="tile"><span class="h">無効な文字</span><span class="d">スペースや一部の記号</span></div>
+        <div class="tile"><span class="h">書式</span><span class="d">メール アドレスの形が不正</span></div>
+        <div class="tile"><span class="h">長さ</span><span class="d">長すぎる値、不正なトップレベル ドメイン</span></div>
+      </div>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図1-3</span><span>初回同期の突き合わせ</span></div>
+      <div class="vs2">
+        <div><div class="hd"><b>ハード マッチ</b><small>ソース アンカーで厳密に</small></div><ul><li>immutableId で照合</li><li>違う値が入っていればブロック</li></ul></div>
+        <div class="hot"><div class="hd"><b>ソフト マッチ</b><small>属性で緩やかに</small></div><ul><li>基本はプライマリ SMTP アドレス</li><li>先にクラウドで作ったユーザーを AD とひも付け</li></ul></div>
+      </div>
+    </figure>
+  </div>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-4</span><span>UPN サフィックスが合っていないと、こうなる</span></div>
+    <div class="route">
+      <div class="ln2 bad"><span>AD の UPN が taro@contoso.local のまま同期<br><small>→ クラウドでは taro@contoso.onmicrosoft.com に置き換わる</small></span><span class="res">×</span></div>
+      <div class="ln2 good"><span>AD に代替 UPN サフィックス contoso.com を追加し、UPN を付け替えてから同期<br><small>→ taro@contoso.com でサインインできる</small></span><span class="res">○</span></div>
+    </div>
+    <figcaption>Entra Connect の再インストールや同期のやり直しでは直らない。直すのはオンプレミス側。</figcaption>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>同期ユーザーの属性は<span class="mk">オンプレミス AD 側</span>で変える。ライセンスや使用場所などクラウド固有の属性だけはクラウドで操作する。</li>
+  <li>ソース アンカーの既定は <code>ms-DS-ConsistencyGuid</code>。フォレスト移行があっても対応関係を保てる。</li>
+  <li>ソフト マッチの基本は<span class="mk">SMTP マッチング</span>。UPN による突き合わせは SMTP がまだない場合の代替。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>同期されたユーザーの部署（department）を変えたい。どこで変える？</summary><p class="a">オンプレミスの Active Directory（ユーザーとコンピューター）</p></details>
+  <details class="qi"><summary>同期したらユーザーの UPN が .onmicrosoft.com になってしまった</summary><p class="a">オンプレミスの UPN サフィックスが検証済みドメインではない。AD 側で UPN を付け替える</p></details>
+  <details class="qi"><summary>同期前にクラウドで作ったユーザーを、AD の同じ人と結びつけたい</summary><p class="a">ソフト マッチ（プライマリ SMTP アドレスによる突き合わせ）</p></details>
+  <details class="qi"><summary>同期の前に、AD の重複や無効な文字を見つけて直したい</summary><p class="a">IdFix</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#contents">目次</a><a class="next" href="#c02">次のカード →</a></nav>
+</article>
+<article class="card" id="c02" aria-labelledby="c02-q">
+<div class="card-h"><span class="no">CARD <b>02</b> / 10</span><span class="topic">Entra Connect Sync と Cloud Sync</span></div>
+<h2 class="q" id="c02-q">Connect Sync と Cloud Sync、どちらを選ぶ？</h2>
+<p class="catch">頭脳が<em>オンプレ</em>か、<em>クラウド</em>か。</p>
+<p class="lead">ディレクトリ同期の実装は2つあります。Connect Sync はオンプレミスの同期サーバーに頭脳があり、Cloud Sync はクラウドに頭脳があって、オンプレミスには軽いエージェントだけを置きます。どちらを選ぶかの設問が繰り返し出ます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-1</span><span>同期の仕組みの違い</span></div>
+    <div class="lanes">
+      <div class="lane"><b>Connect Sync<small>従来型</small></b><div class="chain"><span>オンプレミス AD</span><i>→</i><span class="hot">同期サーバー<small>Windows Server＋SQL。アクティブは1台＋ステージング</small></span><i>→</i><span>Entra ID<small>既定30分ごと</small></span></div></div>
+      <div class="lane"><b>Cloud Sync<small>クラウド管理型</small></b><div class="chain"><span>オンプレミス AD</span><i>→</i><span>エージェント×複数<small>冗長化できる</small></span><i>→</i><span class="hot">クラウドのプロビジョニング サービス<small>約2分ごと。構成はクラウドに保持</small></span></div></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-2</span><span>できること早見表</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>機能</th><th>Connect Sync</th><th>Cloud Sync</th></tr></thead>
+        <tbody>
+          <tr class="pick"><td>切断されたフォレスト（信頼関係なし）</td><td class="x">×</td><td class="o">○</td></tr>
+          <tr class="pick"><td>デバイスの同期／ハイブリッド参加</td><td class="o">○</td><td class="x">×</td></tr>
+          <tr><td>パススルー認証（PTA）の構成</td><td class="o">○</td><td class="x">×</td></tr>
+          <tr><td>AD FS フェデレーションの構成</td><td class="o">○</td><td class="x">×</td></tr>
+          <tr><td>複数のアクティブな同期</td><td class="x">×</td><td class="o">○</td></tr>
+          <tr><td>複雑な同期ルール</td><td class="o">○</td><td>△ 限定的</td></tr>
+          <tr><td>オンデマンド プロビジョニング</td><td class="x">×</td><td class="o">○</td></tr>
+          <tr><td>PHS・パスワード ライトバック</td><td class="o">○</td><td class="o">○</td></tr>
+          <tr><td>規模</td><td>実質上限なし</td><td>ドメインあたり約15万</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>Entra Connect がオンプレミス AD を読むときのプロトコルは<span class="mk">LDAP</span>。クラウドへの書き込みは HTTPS。</li>
+  <li>Connect Sync のまま可用性を上げるなら、2台目を<span class="mk">ステージング モード</span>で待機させる。</li>
+  <li>同じフォレストで両方を併用することもできる（同じ OU をスコープしないなどの条件つき）。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>買収した会社の AD と自社 AD に信頼関係がない。両方を1テナントに同期したい</summary><p class="a">Entra Cloud Sync</p></details>
+  <details class="qi"><summary>ハイブリッド Entra 参加のデバイスを使いたい</summary><p class="a">Entra Connect Sync（デバイス同期が必要）</p></details>
+  <details class="qi"><summary>同期サーバーの単一障害点をなくしたい</summary><p class="a">Cloud Sync（複数エージェントで冗長化）</p></details>
+  <details class="qi"><summary>Connect Sync のまま、同期サーバーの可用性を高めたい</summary><p class="a">2台目をステージング モードで用意しておく</p></details>
+  <details class="qi"><summary>Entra Connect がオンプレミス AD を読むときのプロトコルは</summary><p class="a">LDAP</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c01">← CARD 01</a><a href="#contents">目次</a><a class="next" href="#c03">次のカード →</a></nav>
+</article>
+<article class="card" id="c03" aria-labelledby="c03-q">
+<div class="card-h"><span class="no">CARD <b>03</b> / 10</span><span class="topic">PHS・PTA・フェデレーション</span></div>
+<h2 class="q" id="c03-q">パスワードは、どこで確かめる？</h2>
+<p class="catch"><em>預ける</em>か、<em>聞きに行く</em>か、<br><em>任せる</em>か。</p>
+<p class="lead">同期と認証は別の話です。ユーザー情報をどう運ぶかが同期、パスワードをどこで検証するかが認証方式。ハッシュをクラウドに預ける PHS、そのつどオンプレミスに聞きに行く PTA、AD FS に任せるフェデレーションの3つです。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-1</span><span>3つの認証の経路</span></div>
+    <div class="lanes">
+      <div class="lane pick"><b>PHS<small>既定・推奨</small></b><div class="chain"><span>ユーザー</span><i>→</i><span class="hot">Entra ID が検証<small>ハッシュをさらにハッシュ化して約2分ごとに同期</small></span></div></div>
+      <div class="lane"><b>PTA</b><div class="chain"><span>ユーザー</span><i>→</i><span>Entra ID が中継</span><i>→</i><span>認証エージェント → AD が検証<small>パスワードはクラウドに保存されない</small></span></div></div>
+      <div class="lane"><b>フェデレーション</b><div class="chain"><span>ユーザー</span><i>→</i><span>Entra ID がリダイレクト</span><i>→</i><span>AD FS が検証<small>スマートカードなど高度な要件向け</small></span></div></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-2</span><span>性質の違い</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>観点</th><th>PHS</th><th>PTA</th><th>フェデレーション</th></tr></thead>
+        <tbody>
+          <tr><td>オンプレミスが止まったら</td><td class="o">○</td><td class="x">×</td><td class="x">×</td></tr>
+          <tr class="pick"><td>漏洩した資格情報の検出</td><td class="o">○</td><td>PHS の併用が必要</td><td>PHS の併用が必要</td></tr>
+          <tr><td>追加のサーバー</td><td>不要</td><td>認証エージェント（3台以上推奨）</td><td>AD FS ＋ WAP</td></tr>
+          <tr><td>運用の手間</td><td>最小</td><td>中</td><td>最大</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-3</span><span>Entra Connect と WAP の間で開けるポート</span></div>
+    <div class="numstrip">
+      <div><b>443</b><span>HTTPS。構成と同期の本体</span></div>
+      <div><b>88</b><span>Kerberos 認証</span></div>
+      <div><b>5985</b><span>WinRM。リモート管理</span></div>
+    </div>
+    <figcaption>53・49443・5671 はこの区間では不要。似た数字に惑わされない。</figcaption>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">シームレス SSO</span> は PHS・PTA と組み合わせる。AD に AZUREADSSOACC が作られ、Kerberos で認証する。フェデレーションでは不要。</li>
+  <li>「オンプレミスとクラウドで別々のパスワード。PTA で1つにする」は<span class="mk">正しい</span>。AD FS が明示された問題だけ、先にドメインをマネージドへ変換する必要がある。</li>
+  <li>リセットしたパスワードをオンプレミスにも反映させたいなら、別途<span class="mk">パスワード ライトバック</span>。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>AD FS を使っている。Identity Protection の「漏洩した資格情報」を検出したい</summary><p class="a">パスワード ハッシュ同期（PHS）を有効にする</p></details>
+  <details class="qi"><summary>オンプレミスが止まってもサインインできる認証方式は</summary><p class="a">PHS</p></details>
+  <details class="qi"><summary>オンプレミスとクラウドで別のパスワードを使わされている。PTA を展開して1つにするのは正しい解か</summary><p class="a">正しい（Yes）</p></details>
+  <details class="qi"><summary>Entra Connect と WAP の間のファイアウォールで開けるポートは</summary><p class="a">443・88・5985</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c02">← CARD 02</a><a href="#contents">目次</a><a class="next" href="#c04">次のカード →</a></nav>
+</article>
+<article class="card" id="c04" aria-labelledby="c04-q">
+<div class="card-h"><span class="no">CARD <b>04</b> / 10</span><span class="topic">同期の監視とトラブルシューティング</span></div>
+<h2 class="q" id="c04-q">同期の範囲を変えたい。最初にやることは？</h2>
+<p class="catch">フィルターを変える前に、<br><em>スケジューラーを止める</em>。</p>
+<p class="lead">同期の状態は Entra Connect Health で見張り、エラーは属性の重複や無効な文字が定番です。範囲（フィルター）を変えると、外れたオブジェクトは Entra ID 側で削除されます。30分ごとの同期が途中で走らないよう、手順の順番が問われます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-1</span><span>同期フィルターを変える手順</span></div>
+    <ol class="flow tight">
+      <li class="goal"><b>スケジューラーを止める（最初の一手）</b><small><code>Set-ADSyncScheduler -SyncCycleEnabled $false</code>。ステージング モードに切り替えてもよい</small></li>
+      <li><b>構成ウィザードでフィルターを変える</b><small>グループ ベースのフィルターはウィザードでのみ変更。一度無効にすると戻せない</small></li>
+      <li><b>完全同期を実行し、エクスポート予定を確認</b><small>意図しない削除が含まれていないか</small></li>
+      <li><b>スケジューラーを戻す</b><small><code>Set-ADSyncScheduler -SyncCycleEnabled $true</code></small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-2</span><span>Connect Health のエージェントは、見たいもの別</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">Connect Sync サーバーに</span><span class="h">for Sync</span><span class="d">同期の正常性・エラー・遅延</span></div>
+      <div class="tile hot"><span class="p">AD FS サーバーと WAP に</span><span class="h">for AD FS</span><span class="d">認証の件数・種類・エラー</span></div>
+      <div class="tile"><span class="p">ドメイン コントローラーに</span><span class="h">for AD DS</span><span class="d">レプリケーションと DC の正常性。認証活動は対象外</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-3</span><span>やりたいことと、使う道具</span></div>
+    <div class="map">
+      <div class="row"><span class="want">同期ルールの変更を、全オブジェクトに反映させたい</span><span class="arr"></span><span class="tool">完全同期<small>Start-ADSyncSyncCycle -PolicyType Initial</small></span></div>
+      <div class="row"><span class="want">変更した1人だけ、すぐ同期を試したい（Cloud Sync）</span><span class="arr"></span><span class="tool">オンデマンド プロビジョニング</span></div>
+      <div class="row"><span class="want">同期の状況を継続的に監視し、通知を受けたい</span><span class="arr"></span><span class="tool">Entra Connect Health<small>Entra ID P1 以上</small></span></div>
+      <div class="row"><span class="want">同期の間隔（既定30分）を変えたい</span><span class="arr"></span><span class="tool">Set-ADSyncScheduler<small>-CustomizedSyncCycleInterval</small></span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>UPN や proxyAddresses の重複は、<span class="mk">重複属性の回復性</span>で問題の属性だけが検疫され、同期そのものは続く。直すのはオンプレミス側。</li>
+  <li><span class="mk">誤削除防止機能</span>（既定500件）はあるが、手順の代わりにはならない。</li>
+  <li>「ウィザードを実行する」は必要な作業だが<span class="mk">2番目</span>。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>パイロットのグループ フィルターをやめ、OU の全員を同期したい。最初にやることは</summary><p class="a">同期スケジューラーを止める（Set-ADSyncScheduler -SyncCycleEnabled $false）</p></details>
+  <details class="qi"><summary>AD FS の認証件数と認証エラーを監視したい</summary><p class="a">Connect Health for AD FS のエージェントを AD FS サーバーと WAP サーバーに入れる</p></details>
+  <details class="qi"><summary>同期ルールを変えた。既存の全オブジェクトに反映させたい</summary><p class="a">完全同期（Initial）</p></details>
+  <details class="qi"><summary>同期の間隔を15分にしたい</summary><p class="a">Set-ADSyncScheduler -CustomizedSyncCycleInterval 00:15:00</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c03">← CARD 03</a><a href="#contents">目次</a><a class="next" href="#c05">次のカード →</a></nav>
+</article>
+<article class="card" id="c05" aria-labelledby="c05-q">
+<div class="card-h"><span class="no">CARD <b>05</b> / 10</span><span class="topic">認証方法の管理</span></div>
+<h2 class="q" id="c05-q">フィッシングに強い MFA は、どれ？</h2>
+<p class="catch">コードを伝える方式は、<br><em>偽サイトに負ける</em>。</p>
+<p class="lead">認証方法は Entra 管理センターの認証方法ポリシーで一元管理します。SMS やプッシュ通知も多要素認証ですが、フィッシングへの耐性はありません。耐性があるのは、サイトのアドレスに結びついた鍵で署名する方式だけです。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-1</span><span>フィッシング耐性の分かれ目</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>コードを伝えて確認する</b><small>SMS・音声／OATH／Authenticator 通知</small></div><ul><li>コードには「どのサイト宛てか」の情報がない</li><li>偽サイトに中継されると、同じコードで通ってしまう</li></ul></div>
+      <div class="hot"><div class="hd"><b>鍵の署名で確認する</b><small>パスキー・FIDO2／Windows Hello for Business／証明書ベース認証</small></div><ul><li>秘密鍵は端末から出ず、登録したサイトと1対1</li><li>偽サイトではアドレスが一致せず、署名が作れない</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-2</span><span>認証方法の強さ</span></div>
+    <ol class="bars">
+      <li style="--w:18%"><span class="bar"></span><span class="lab"><b>SMS・音声通話</b><span>SIM スワップに弱い。できれば廃止</span></span></li>
+      <li style="--w:42%"><span class="bar"></span><span class="lab"><b>OATH トークン</b><span>時刻同期のワンタイム パスワード</span></span></li>
+      <li style="--w:68%"><span class="bar"></span><span class="lab"><b>Authenticator のプッシュ通知</b><span>番号照合と追加コンテキストが既定で有効（MFA 疲労攻撃の対策）</span></span></li>
+      <li class="rec" style="--w:100%"><span class="bar"></span><span class="lab"><b>パスキー／FIDO2・Windows Hello・証明書ベース<span class="tag">フィッシング耐性</span></b><span>条件付きアクセスの認証強度で要求できる</span></span></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-3</span><span>一時アクセス パス（TAP）の出番は2つ</span></div>
+    <div class="map">
+      <div class="row"><span class="want">入社初日、まだ何も登録していない人に MFA を登録させたい</span><span class="arr"></span><span class="tool hot">TAP<small>期限付き。1回限りか複数回かを選べる</small></span></div>
+      <div class="row"><span class="want">セキュリティ キーをなくした人を復旧させたい</span><span class="arr"></span><span class="tool hot">TAP</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>認証強度の組み込みは3つ。<span class="mk">多要素認証／パスワードレス MFA／フィッシング耐性 MFA</span>。特権ロールにはフィッシング耐性を求めるのが定番。</li>
+  <li>Authenticator のパスワードレスは、<span class="mk">保護 → 認証方法 → ポリシー → Microsoft Authenticator</span> で有効にする。必要なのは認証ポリシー管理者。</li>
+  <li>TAP は恒久的な認証手段ではない。アプリ パスワードは古いクライアント向けの仕組みで、初期登録の手段ではない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>新入社員が、MFA を何も登録していない状態で初日にサインインする必要がある</summary><p class="a">一時アクセス パス（TAP）を発行する</p></details>
+  <details class="qi"><summary>セキュリティ キーを紛失したユーザーを復旧させたい</summary><p class="a">一時アクセス パス（TAP）</p></details>
+  <details class="qi"><summary>Authenticator のパスワードレス サインインを有効にする場所は</summary><p class="a">認証方法ポリシーの Microsoft Authenticator（認証ポリシー管理者以上）</p></details>
+  <details class="qi"><summary>「フィッシング耐性 MFA」に入る方式は</summary><p class="a">FIDO2・パスキー、Windows Hello for Business、証明書ベース認証</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c04">← CARD 04</a><a href="#contents">目次</a><a class="next" href="#c06">次のカード →</a></nav>
+</article>
+<article class="card" id="c06" aria-labelledby="c06-q">
+<div class="card-h"><span class="no">CARD <b>06</b> / 10</span><span class="topic">SSPR とパスワード保護</span></div>
+<h2 class="q" id="c06-q">自分でパスワードを戻させるとき、ハイブリッドで忘れてはいけないのは？</h2>
+<p class="catch">ハイブリッドなら、<em>ライトバック</em>。</p>
+<p class="lead">SSPR はユーザー自身にパスワードをリセットさせ、ヘルプデスクの負荷を下げる機能です。設定項目がそのまま出題されます。推測されやすいパスワードを禁止するのが Entra パスワード保護で、オンプレミス AD にも広げられます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-1</span><span>SSPR の設定画面は6項目</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="h">プロパティ</span><span class="d">対象を なし／選択済み／すべて。まずパイロット グループ</span></div>
+      <div class="tile"><span class="h">認証方法</span><span class="d">必要な数（1 か 2）と使える方法</span></div>
+      <div class="tile"><span class="h">登録</span><span class="d">サインイン時に登録を必須に、再確認の間隔</span></div>
+      <div class="tile"><span class="h">通知</span><span class="d">本人と、他の管理者に通知するか</span></div>
+      <div class="tile"><span class="h">カスタマイズ</span><span class="d">「管理者に連絡」リンクの行き先</span></div>
+      <div class="tile hot"><span class="h">オンプレミス統合</span><span class="d">パスワード ライトバック。ハイブリッドでは必須</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-2</span><span>パスワード保護をオンプレミスにも広げる</span></div>
+    <div class="chain">
+      <span>グローバル禁止リスト<small>Microsoft が管理。既定で有効、無効化できない</small></span><i>＋</i>
+      <span class="hot">カスタム禁止リスト<small>自社名など最大1000語（各4〜16文字）</small></span>
+    </div>
+    <ol class="flow tight">
+      <li><b>DC エージェントをドメイン コントローラーに</b><small>オンプレミスのパスワード変更を検査する</small></li>
+      <li><b>プロキシ サービスをドメイン参加サーバーに</b><small>クラウドからポリシーを取ってくる</small></li>
+      <li><b>監査モードで影響を評価</b><small>いきなり強制しない</small></li>
+      <li class="goal"><b>強制モードに切り替える</b></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-3</span><span>覚える数字</span></div>
+    <div class="numstrip">
+      <div><b>10<small>回</small></b><span>スマート ロックアウトの既定。失敗で60秒ロックし、以後延びる</span></div>
+      <div><b>1000<small>語</small></b><span>カスタム禁止リストの上限</span></div>
+      <div><b>2<small>つ</small></b><span>管理者の SSPR で必須の認証方法の数</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>Entra ID Free でできるのはパスワードの<span class="mk">変更</span>だけで、リセット（SSPR）はできない。ライトバックを伴うハイブリッド構成には Entra ID P1。</li>
+  <li>管理者ロールを持つ人には、SSPR の設定にかかわらず<span class="mk">強い既定のポリシー</span>が適用される。認証方法は2つ必須で、セキュリティの質問は使えない。</li>
+  <li>ハイブリッドでライトバックなしに SSPR を有効にすると、クラウドとオンプレミスでパスワードが食い違う。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>Contoso2026! のような、自社名入りのパスワードを禁止したい</summary><p class="a">カスタム禁止パスワード リスト</p></details>
+  <details class="qi"><summary>同じ禁止ルールをオンプレミス AD にも効かせたい</summary><p class="a">DC エージェントとプロキシ サービスを入れ、監査モードで検証してから強制モードにする</p></details>
+  <details class="qi"><summary>管理者にだけセキュリティの質問によるリセットを許可したい</summary><p class="a">できない。管理者には2つの方法が必須の強い既定ポリシーが適用される</p></details>
+  <details class="qi"><summary>ハイブリッド環境で、SSPR でのリセットをオンプレミスにも反映させたい</summary><p class="a">パスワード ライトバックを有効にする（Entra ID P1）</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c05">← CARD 05</a><a href="#contents">目次</a><a class="next" href="#c07">次のカード →</a></nav>
+</article>
+<article class="card" id="c07" aria-labelledby="c07-q">
+<div class="card-h"><span class="no">CARD <b>07</b> / 10</span><span class="topic">Identity Protection</span></div>
+<h2 class="q" id="c07-q">人が危ないのか、今回のサインインが怪しいのか？</h2>
+<p class="catch">ユーザー リスクは<em>パスワード変更</em>、<br>サインイン リスクは <em>MFA</em>。</p>
+<p class="lead">Identity Protection は、サインインとアカウントに関するリスクを検出して自動で対処する仕組みです。リスクは2種類あり、対処が違います。実装は条件付きアクセスで行うのが現在の推奨で、全機能には Entra ID P2 が必要です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-1</span><span>2種類のリスクと、それぞれの対処</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>ユーザー リスク</b><small>この ID そのものが乗っ取られている確率</small></div><ul><li>漏洩した資格情報</li><li>Entra の脅威インテリジェンス</li><li>異常なユーザー アクティビティ</li></ul><p class="fix">セキュアなパスワード変更を要求</p></div>
+      <div class="hot"><div class="hd"><b>サインイン リスク</b><small>今回のサインインが本人でない確率</small></div><ul><li>匿名 IP アドレス・異常なトークン</li><li>通常とは異なる場所への移動</li><li>見慣れないサインイン、パスワード スプレー</li></ul><p class="fix">多要素認証（MFA）を要求</p></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-2</span><span>P1 と P2 で見える範囲</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>機能</th><th>Free／P1</th><th>P2</th></tr></thead>
+        <tbody>
+          <tr class="pick"><td>リスクを条件にした条件付きアクセス</td><td class="x">×</td><td class="o">○</td></tr>
+          <tr><td>危険なユーザーのレポート</td><td>限定的（詳細なし）</td><td class="o">全情報</td></tr>
+          <tr><td>危険なサインインのレポート</td><td>限定的（レベルなし）</td><td class="o">全情報</td></tr>
+          <tr><td>リスク検出のレポート</td><td>Free 不可・P1 限定的</td><td class="o">全情報</td></tr>
+          <tr><td>リスクのあるユーザーのアラート</td><td class="x">×</td><td class="o">○</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>危険なユーザーのレポートで管理者が<span class="mk">「侵害を確認」</span>すると、Microsoft の機械学習へのフィードバックになる。単なる状態変更ではない。</li>
+  <li>リスク ベースのポリシーで守られるのは、<span class="mk">P2 が割り当てられたユーザーだけ</span>。P2 は E5・EMS E5・Defender Suite・Entra Suite に含まれ、E3 は P1。</li>
+  <li>中核機能は「高度な機械学習」と「リスク ベースの条件付きアクセス」。PHS や同期の機能とは別物。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>サインイン リスクが「中」以上のとき、追加の本人確認を求めたい</summary><p class="a">条件付きアクセスで、サインイン リスクが中以上のときに MFA を要求する</p></details>
+  <details class="qi"><summary>漏洩した資格情報が見つかったユーザーへの推奨の対処は</summary><p class="a">ユーザー リスクとして扱い、セキュアなパスワード変更を要求する</p></details>
+  <details class="qi"><summary>E3 のまま、Identity Protection のリスク ベース ポリシーを使いたい</summary><p class="a">Entra ID P2 のアドオン（または E5 Security 相当）を追加する</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c06">← CARD 06</a><a href="#contents">目次</a><a class="next" href="#c08">次のカード →</a></nav>
+</article>
+<article class="card" id="c08" aria-labelledby="c08-q">
+<div class="card-h"><span class="no">CARD <b>08</b> / 10</span><span class="topic">条件付きアクセス</span></div>
+<h2 class="q" id="c08-q">ポリシーが複数当たったら、どう決まる？</h2>
+<p class="catch"><em>ブロックが勝ち</em>、<em>除外が勝つ</em>。</p>
+<p class="lead">条件付きアクセスは「もし〜ならば、〜を要求する」というルールでアクセスを制御します。対象のポリシーはすべて評価され、順番や番号はありません。新しいポリシーはレポート専用モードから始めます。Entra ID P1 が必要で、リスクを条件にするなら P2 です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-1</span><span>ポリシーの組み立て</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">割り当て（IF）</span><span class="h">誰が、何に</span><ul><li>ユーザー・グループ・ロール・ゲスト</li><li>ターゲット リソース（クラウド アプリ・ユーザー操作）</li><li>ネットワーク（場所）</li></ul></div>
+      <div class="tile"><span class="p">条件</span><span class="h">どんな状況で</span><ul><li>ユーザー リスク・サインイン リスク</li><li>デバイス プラットフォーム</li><li>クライアント アプリ・デバイスのフィルター</li></ul></div>
+      <div class="tile hot"><span class="p">アクセス制御（THEN）</span><span class="h">どうする</span><ul><li>ブロック</li><li>MFA・認証強度・準拠デバイス・ハイブリッド参加</li><li>セッション：サインイン頻度・アプリ制御</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-2</span><span>評価の4つのルール</span></div>
+    <div class="tiles" style="--n:2">
+      <div class="tile"><span class="h">すべて評価される</span><span class="d">優先順位や番号はない</span></div>
+      <div class="tile hot"><span class="h">ブロックが勝つ</span><span class="d">1つでもブロックが当たればブロック</span></div>
+      <div class="tile"><span class="h">許可の条件はすべて満たす</span><span class="d">「すべてが必要」の場合</span></div>
+      <div class="tile hot"><span class="h">除外が勝つ</span><span class="d">緊急アクセス用アカウントは必ず除外</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-3</span><span>確かめたいことと、使う道具</span></div>
+    <div class="map">
+      <div class="row"><span class="want">制御が効かなかったサインインで、どの条件が一致しなかったか</span><span class="arr"></span><span class="tool">サインイン ログの「条件付きアクセス」タブ</span></div>
+      <div class="row"><span class="want">新しいポリシーを、適用前に特定のユーザーとアプリで試したい</span><span class="arr"></span><span class="tool hot">What If ツール<small>とレポート専用モード</small></span></div>
+      <div class="row"><span class="want">パートナーのブロックが、リスクによる要求の引き上げかを確かめたい</span><span class="arr"></span><span class="tool">Identity Protection のレポート</span></div>
+      <div class="row"><span class="want">Azure portal・CLI・PowerShell の管理操作だけを守りたい</span><span class="arr"></span><span class="tool">クラウド アプリに Microsoft Azure Management</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">セキュリティ既定値群と条件付きアクセスは併用できない</span>。条件付きアクセスを使うには先に既定値群を無効にする。</li>
+  <li><span class="mk">レガシー認証のブロック</span>は、条件のクライアント アプリで「その他のクライアント」を選んでブロックする。POP・IMAP・SMTP AUTH は MFA の抜け道になる。</li>
+  <li>管理ポータルへの MFA の必須化は、条件付きアクセスがなくても強制され、緊急アクセス用アカウントも例外にならない。パスキーや証明書ベース認証を用意しておく。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>条件付きアクセスのポリシーを有効にできない。セキュリティ既定値群が有効になっている</summary><p class="a">セキュリティ既定値群を無効にする</p></details>
+  <details class="qi"><summary>緊急アクセス（ブレークグラス）用アカウントの扱いは</summary><p class="a">すべての条件付きアクセス ポリシーから除外する</p></details>
+  <details class="qi"><summary>POP や IMAP など、MFA を回避する抜け道を塞ぎたい</summary><p class="a">条件付きアクセスでレガシー認証をブロックする</p></details>
+  <details class="qi"><summary>Azure の管理操作だけに MFA を求めたい</summary><p class="a">クラウド アプリに Microsoft Azure Management を指定する（すべてのクラウド アプリは広すぎる）</p></details>
+  <details class="qi"><summary>新しいポリシーを、特定のユーザーと SaaS アプリで適用前に試したい</summary><p class="a">What If ツール（とレポート専用モード）</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c07">← CARD 07</a><a href="#contents">目次</a><a class="next" href="#c09">次のカード →</a></nav>
+</article>
+<article class="card" id="c09" aria-labelledby="c09-q">
+<div class="card-h"><span class="no">CARD <b>09</b> / 10</span><span class="topic">MFA の実装とデバイス ID</span></div>
+<h2 class="q" id="c09-q">MFA はどの方法で有効にする？ デバイスはどう登録する？</h2>
+<p class="catch">MFA は<em>条件付きアクセス</em>で。</p>
+<p class="lead">MFA を有効にする方法は歴史的に3つありますが、現在の推奨は条件付きアクセスです。デバイスも Entra ID のオブジェクトで、「準拠デバイスを要求」や Intune のポリシー配布は、デバイスが3つの状態のどれかで登録されていることが前提です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-1</span><span>MFA を有効にする3つの方法</span></div>
+    <ul class="ox">
+      <li class="o"><span><b>条件付きアクセス</b><small>推奨。ユーザー・アプリ・場所・リスクの条件で細かく制御。Entra ID P1</small></span></li>
+      <li class="t"><span><b>セキュリティ既定値群</b><small>ライセンスのない小規模組織向け。全員一律。条件付きアクセスと併用不可</small></span></li>
+      <li class="x"><span><b>ユーザーごとの MFA</b><small>レガシーで非推奨。条件付きアクセスと混ぜると挙動が分かりにくい</small></span></li>
+    </ul>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-2</span><span>デバイスの3つの状態</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">個人所有（BYOD）</span><span class="h">Entra 登録</span><span class="d">職場アカウントを追加するだけ。Windows・iOS・Android・macOS</span></div>
+      <div class="tile hot"><span class="p">組織所有・クラウド ネイティブ</span><span class="h">Entra 参加</span><span class="d">Windows 10／11 の Home 以外。サインイン画面から職場アカウントで</span></div>
+      <div class="tile"><span class="p">組織所有・オンプレミス AD あり</span><span class="h">ハイブリッド参加</span><span class="d">AD とクラウドの両方に登録。Connect Sync が必要（Cloud Sync は不可）</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>特定のユーザーだけ MFA を免除するなら、条件付きアクセスの<span class="mk">除外</span>。ユーザーごとの MFA を「無効」にする選択肢は誤り。</li>
+  <li><span class="mk">信頼できる場所</span>（本社の固定 IP など）からは MFA を求めない設計もできるが、場所だけを信頼する設計はゼロトラストでは弱いとされる。</li>
+  <li>条件付きアクセスのユーザー操作「セキュリティ情報の登録」で、MFA の登録を信頼できる場所からだけに絞れる。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>特定のユーザーだけ MFA を免除したい</summary><p class="a">条件付きアクセス ポリシーの除外を使う</p></details>
+  <details class="qi"><summary>Windows デバイスを Entra ID に参加させて Intune のポリシーを当てたい。最小要件は</summary><p class="a">Windows 10 以上で、Home 以外のエディション</p></details>
+  <details class="qi"><summary>ハイブリッド Entra 参加に必要な同期の方式は</summary><p class="a">Entra Connect Sync（Cloud Sync はデバイス同期に非対応）</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c08">← CARD 08</a><a href="#contents">目次</a><a class="next" href="#c10">次のカード →</a></nav>
+</article>
+<article class="card" id="c10" aria-labelledby="c10-q">
+<div class="card-h"><span class="no">CARD <b>10</b> / 10</span><span class="topic">Application Proxy</span></div>
+<h2 class="q" id="c10-q">VPN なしで、社内の Web アプリを社外から使わせるには？</h2>
+<p class="catch">コネクタが外へ出ていくから、<br><em>穴は開けない</em>。</p>
+<p class="lead">Application Proxy は、オンプレミスの Web アプリの手前に Entra ID の認証（条件付きアクセスや MFA を含む）をかぶせて社外へ公開する機能です。社内に置くコネクタはクラウドへ外向きにだけ接続するので、受信ポートを開ける必要がありません。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-1</span><span>通信の流れ。コネクタは外向きに待ち受ける</span></div>
+    <div class="svgbox">
+      <svg viewBox="0 0 460 220" role="img" aria-label="社外のユーザーが Entra ID で事前認証を受け、Application Proxy サービスに届く。社内のコネクタはクラウドへ外向きに常時接続し、社内 Web アプリへ中継する">
+        <defs>
+          <marker id="v2a" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path class="ah" d="M0,0 L9,4.5 L0,9 z"/></marker>
+          <marker id="v2s" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path class="ahs" d="M0,0 L9,4.5 L0,9 z"/></marker>
+        </defs>
+        <rect class="nd" x="8" y="22" width="92" height="56"/><text class="tx" x="54" y="46" text-anchor="middle">社外の</text><text class="tx" x="54" y="64" text-anchor="middle">ユーザー</text>
+        <path class="ln" d="M100 50 H118" marker-end="url(#v2a)"/>
+        <rect class="nd hot" x="122" y="16" width="104" height="68"/><text class="tw" x="174" y="42" text-anchor="middle">Entra ID</text><text class="tws" x="174" y="60" text-anchor="middle">事前認証</text><text class="tws" x="174" y="75" text-anchor="middle">条件付きアクセス</text>
+        <path class="ln" d="M226 50 H244" marker-end="url(#v2a)"/>
+        <rect class="nd" x="248" y="22" width="98" height="56"/><text class="tx" x="297" y="46" text-anchor="middle">App Proxy</text><text class="ts" x="297" y="64" text-anchor="middle">（クラウド）</text>
+        <rect class="nd" x="362" y="22" width="90" height="56"/><text class="tx" x="407" y="46" text-anchor="middle">コネクタ</text><text class="ts" x="407" y="64" text-anchor="middle">社内サーバー</text>
+        <path class="ln hot dash" d="M392 80 C 380 118, 320 118, 306 84" marker-end="url(#v2s)"/>
+        <text class="tsp" x="334" y="134" text-anchor="middle">外向きに常時接続</text>
+        <path class="ln" d="M407 80 V150" marker-end="url(#v2a)"/>
+        <rect class="nd soft" x="352" y="154" width="100" height="50"/><text class="tx" x="402" y="176" text-anchor="middle">社内 Web</text><text class="ts" x="402" y="194" text-anchor="middle">アプリ</text>
+        <text class="tsp" x="170" y="168" text-anchor="middle">受信ポートの開放も</text>
+        <text class="tsp" x="170" y="188" text-anchor="middle">VPN も要らない</text>
+      </svg>
+    </div>
+    <figcaption>公開 URL は既定で *.msappproxy.net。カスタム ドメインなら CNAME レコードと TLS 証明書を用意する。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-2</span><span>アプリを扱う画面は2つ</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>アプリの登録</b><small>App registrations</small></div><ul><li>自社で開発したアプリを Entra ID に登録する</li></ul></div>
+      <div class="hot"><div class="hd"><b>エンタープライズ アプリケーション</b><small>Enterprise applications</small></div><ul><li>SSO でユーザーに割り当てるすべてのアプリ</li><li>割り当て・SSO 方式・条件付きアクセスの対象指定</li><li>App Proxy で公開したアプリもここに並ぶ</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>コネクタを複数台入れて<span class="mk">コネクタ グループ</span>を組むと、負荷分散と冗長化ができる。</li>
+  <li>SSO は統合 Windows 認証・ヘッダー ベース・フォーム ベースなど、アプリ側の認証方式に合わせて選ぶ。</li>
+  <li>Application Proxy には<span class="mk">Entra ID P1 以上</span>が必要。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>オンプレミスの Web アプリに、VPN なしで社外から安全にアクセスさせ、条件付きアクセスも適用したい</summary><p class="a">Application Proxy（社内にコネクタを入れ、アプリを Entra ID に公開する）</p></details>
+  <details class="qi"><summary>業務アプリを追加して SSO を有効にしたい。Entra ID のどこで設定する？</summary><p class="a">エンタープライズ アプリケーション</p></details>
+  <details class="qi"><summary>Application Proxy のために、ファイアウォールで受信ポートを開ける必要は？</summary><p class="a">ない。コネクタは外向きに接続する</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c09">← CARD 09</a><a href="#contents">目次</a><a class="next" href="#quiz">腕試しへ →</a></nav>
+</article>
+<section class="sheet" id="quiz" aria-labelledby="h-quiz">
+  <div class="quiz-h"><div class="kicker"><span class="part">巻末</span><span>腕試し5問</span></div><span class="score" aria-live="polite">正解 <b id="score">0</b> / 5</span></div>
+  <h2 class="sheet-h" id="h-quiz">選んだ瞬間に、答え合わせ。</h2>
+  <div class="qz" data-answer="D">
+  <p class="qq"><b>Q1</b>買収した企業の AD フォレストは、自社フォレストとの信頼関係がない。両方のユーザーを1つの Entra テナントへ同期したい。最も適した方法は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>Entra Connect Sync を各フォレストに1台ずつ、どちらもアクティブで導入する</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>Entra Connect Sync を1台導入し、もう1台をステージング モードで導入する</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>フォレストの信頼関係を構成してから Entra Connect Sync を導入する</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>Entra Cloud Sync を使う</span></button>
+  </div>
+  <p class="why" hidden><b>正解は D。</b>Cloud Sync は切断されたフォレストを、それぞれのエージェント経由で同じテナントに同期できる。A は Connect Sync がアクティブ1台しか取れないため不可、B は待機構成、C は重い前提を課す。→ CARD 02</p>
+</div>
+<div class="qz" data-answer="A">
+  <p class="qq"><b>Q2</b>AD FS によるフェデレーション認証を使っている。Identity Protection の「漏洩した資格情報」を検出できるようにしたい。何をする？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>パスワード ハッシュ同期を有効にする</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>パススルー認証を有効にする</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>シームレス SSO を有効にする</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>Entra Connect Health を有効にする</span></button>
+  </div>
+  <p class="why" hidden><b>正解は A。</b>漏洩した資格情報の検出は、同期したハッシュと流出情報の突き合わせで成り立つ。フェデレーションのまま PHS をバックアップとして有効にできる。PTA もハッシュを同期しない。→ CARD 03</p>
+</div>
+<div class="qz" data-answer="C">
+  <p class="qq"><b>Q3</b>条件付きアクセス ポリシーを新しく作ったが、有効にできない。テナントではセキュリティ既定値群が有効。どうする？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>Microsoft Entra ID P2 にアップグレードする</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>ユーザーごとの MFA をすべて無効にする</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>セキュリティ既定値群を無効にする</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>ポリシーをレポート専用モードで保存する</span></button>
+  </div>
+  <p class="why" hidden><b>正解は C。</b>セキュリティ既定値群と条件付きアクセスは排他。条件付きアクセス自体は P1 で使えるので A は不要、D は検証手段で適用にはならない。→ CARD 08</p>
+</div>
+<div class="qz" data-answer="B">
+  <p class="qq"><b>Q4</b>新入社員が入社初日に、MFA の方法を何も登録していない状態でサインインする必要がある。管理者が発行するものは？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>OATH ハードウェア トークン</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>一時アクセス パス（TAP）</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>アプリ パスワード</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>SSPR の登録リンク</span></button>
+  </div>
+  <p class="why" hidden><b>正解は B。</b>TAP は強い認証手段をまだ持たない人に、期限付きのパスコードを渡して初期登録させるための機能。アプリ パスワードは古いクライアント向けで、初期登録の手段ではない。→ CARD 05</p>
+</div>
+<div class="qz" data-answer="A">
+  <p class="qq"><b>Q5</b>Connect Sync で「Operations OU にいて、かつ ADDPilot グループのメンバー」だけを同期している。グループの絞り込みをやめて OU の全員を同期したい。意図しない変更を避けるため、最初にやることは？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>Set-ADSyncScheduler -SyncCycleEnabled $false で同期スケジューラーを止める</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>構成ウィザードを実行し、グループ ベースのフィルターを無効にする</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>Start-ADSyncSyncCycle -PolicyType Initial で完全同期する</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>ADDPilot グループに OU の全ユーザーを追加する</span></button>
+  </div>
+  <p class="why" hidden><b>正解は A。</b>フィルターを変えると、範囲から外れたオブジェクトは削除される。途中で30分ごとの同期が走らないよう、まず止める。B は2番目、C は変更後の確認。→ CARD 04</p>
+</div>
+</section>
+<section class="sheet" id="memo" aria-labelledby="h-memo">
+  <div class="kicker"><span class="part">付録</span><span>切り取り暗記カード</span></div>
+  <h2 class="sheet-h" id="h-memo">直前の10分は、この12枚だけ。</h2>
+  <p class="cut">キリトリ</p>
+  <div class="cards"><div><small>CARD 01</small>同期ユーザーの属性は、オンプレミス AD で直す</div>
+<div><small>CARD 01</small>UPN が onmicrosoft.com になる原因は UPN サフィックス</div>
+<div><small>CARD 02</small>切断フォレストは Cloud Sync、デバイス・AD FS・PTA は Connect Sync</div>
+<div><small>CARD 03</small>漏洩した資格情報の検出には PHS</div>
+<div><small>CARD 03</small>Connect と WAP の間は 443・88・5985</div>
+<div><small>CARD 04</small>フィルター変更は、まずスケジューラーを止める</div>
+<div><small>CARD 05</small>初期登録と紛失時の復旧は TAP</div>
+<div><small>CARD 05</small>フィッシング耐性は FIDO2・Windows Hello・証明書ベース</div>
+<div><small>CARD 06</small>ハイブリッドの SSPR にはパスワード ライトバック</div>
+<div><small>CARD 07</small>ユーザー リスクはパスワード変更、サインイン リスクは MFA</div>
+<div><small>CARD 08</small>ブロックが勝ち、除外が勝つ。既定値群とは併用不可</div>
+<div><small>CARD 10</small>App Proxy のコネクタは外向き。受信ポートは開けない</div></div>
+  <p class="cut">キリトリ</p>
+  <div class="sister"><a class="hot" href="https://claude.ai/artifact/DBGvdDGp9bbroqttuzmVqZ" target="_blank" rel="noopener"><b>この先は逆引きドリルで</b><span>全巻の「ここが出る！」を、間違えたものから繰り返し出題します。</span></a></div>
+  <span class="sub-h">シリーズ構成</span>
+  <ul class="series"><li><a href="https://claude.ai/artifact/5BnRho7DVbhMcB87kNR1Gs" target="_blank" rel="noopener"><b>VOL.01</b><span>テナント</span><small>配点 25–30%</small></a></li><li class="on"><span><b>VOL.02</b><span>Entra ID</span><small>配点 25–30% ／ 本号</small></span></li><li><a href="https://claude.ai/artifact/NENPSAdHgUY5bcLptgAMZm" target="_blank" rel="noopener"><b>VOL.03</b><span>Defender XDR</span><small>配点 30–35%</small></a></li><li><a href="https://claude.ai/artifact/T1MvTVzR7PjiyFHrTzmZC6" target="_blank" rel="noopener"><b>VOL.04</b><span>Purview</span><small>配点 10–15%</small></a></li></ul>
+  <div class="okuduke">
+    <span class="ttl">MS-102 図解ムック VOL.02 特集 Entra ID まるごと図解</span>
+    <dl>
+      <dt>発行</dt><dd>2026年10月</dd>
+      <dt>準拠</dt><dd>Microsoft 公式スキル測定（2026年4月28日版）</dd>
+      <dt>底本</dt><dd>MS-102 総合テキスト 第2章</dd>
+      <dt>ご注意</dt><dd>製品名・画面・ライセンス要件は変わることがあります。受験前に Microsoft Learn の学習ガイドで最新の情報を確認してください。MS-102 は 2026年11月30日に廃止予定です。</dd>
+    </dl>
+  </div>
+  <div class="sister">
+    <a href="#top"><b>表紙へ戻る</b><span>目次から別のカードへ</span></a>
+    <a href="https://learn.microsoft.com/ja-jp/credentials/certifications/exams/ms-102/" target="_blank" rel="noopener"><b>試験ページ（Microsoft Learn）</b><span>試験概要と廃止予定日の確認</span></a>
+  </div>
+</section>
+</main>
+<script>
+(function(){
+  // 腕試し：選んだ瞬間に採点して解説を出す
+  var right = 0;
+  var scoreEl = document.getElementById('score');
+  Array.prototype.forEach.call(document.querySelectorAll('.qz'), function(q){
+    var ans = q.getAttribute('data-answer');
+    var why = q.querySelector('.why');
+    Array.prototype.forEach.call(q.querySelectorAll('.opt'), function(b){
+      b.addEventListener('click', function(){
+        if (q.classList.contains('done')) return;
+        q.classList.add('done');
+        Array.prototype.forEach.call(q.querySelectorAll('.opt'), function(o){
+          if (o.getAttribute('data-k') === ans) o.classList.add('right');
+          o.setAttribute('aria-disabled', 'true');
+        });
+        if (b.getAttribute('data-k') === ans) { right++; if (scoreEl) scoreEl.textContent = String(right); }
+        else { b.classList.add('wrong'); }
+        if (why) why.hidden = false;
+      });
+    });
+  });
+
+  // 上部バー：いま読んでいるカードの番号を光らせる
+  var chips = {};
+  Array.prototype.forEach.call(document.querySelectorAll('.tb-chips a'), function(a){
+    chips[a.getAttribute('href').slice(1)] = a;
+  });
+  var current = null;
+  function mark(id){
+    if (id === current) return;
+    if (current && chips[current]) chips[current].classList.remove('here');
+    current = id;
+    if (id && chips[id]) {
+      chips[id].classList.add('here');
+      var bar = chips[id].parentNode, r = chips[id].getBoundingClientRect(), b = bar.getBoundingClientRect();
+      if (r.left < b.left || r.right > b.right) bar.scrollLeft += (r.left - b.left) - b.width / 2 + r.width / 2;
+    }
+  }
+  var targets = Array.prototype.slice.call(document.querySelectorAll('.card, #quiz, #memo'));
+  function onScroll(){
+    var best = null;
+    for (var i = 0; i < targets.length; i++) {
+      if (targets[i].getBoundingClientRect().top <= 120) best = targets[i].id; else break;
+    }
+    mark(best);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>

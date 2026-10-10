@@ -1,0 +1,513 @@
+<!--COVER-->
+<svg viewBox="0 0 520 520" role="img" aria-label="テナントの入れ子構造。テナントと1対1の Entra ID ディレクトリ、複数のドメイン、サブスクリプションとライセンス">
+  <rect class="ring" x="12" y="12" width="496" height="496"/>
+  <text class="os" x="32" y="46">Microsoft 365 テナント</text>
+  <rect class="sat" x="36" y="64" width="448" height="214"/>
+  <text class="p" x="56" y="94">Entra ID ディレクトリ（テナントと1対1）</text>
+  <rect class="core" x="56" y="110" width="196" height="66"/><text class="c1" x="154" y="150" text-anchor="middle">ユーザー</text>
+  <rect class="core" x="268" y="110" width="196" height="66"/><text class="c1" x="366" y="150" text-anchor="middle">グループ</text>
+  <rect class="core" x="56" y="190" width="196" height="66"/><text class="c1" x="154" y="230" text-anchor="middle">ロール</text>
+  <rect class="core" x="268" y="190" width="196" height="66"/><text class="c1" x="366" y="230" text-anchor="middle">管理単位</text>
+  <rect class="sat" x="36" y="294" width="448" height="86"/>
+  <text class="p" x="56" y="322">ドメイン（いくつでも追加できる）</text>
+  <text class="w2" x="56" y="358">contoso.onmicrosoft.com</text>
+  <text class="p" x="330" y="358">＋ contoso.com</text>
+  <rect class="core" x="36" y="396" width="448" height="96"/>
+  <text class="c1" x="260" y="436" text-anchor="middle">サブスクリプション</text>
+  <text class="c1" x="260" y="470" text-anchor="middle" style="font-size:15px">E3 ×200 ／ E5 ×50 → ライセンスを配る</text>
+</svg>
+<!--/COVER-->
+
+<!--CARDS-->
+<article class="card" id="c01" data-topic="テナントとドメイン">
+<h2 class="q">テナントを作ったあと、変えられないものは？</h2>
+<p class="catch">器の形は、<em>最初に決まる</em>。</p>
+<p class="lead">テナントを作ると、裏側に Microsoft Entra ID のディレクトリが1つ作られます。両者は1対1で切り離せません。いくつかの項目は作成時に決まって後から変えられず、「変えたい」と言われたら答えは新しいテナントへの移行です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-1</span><span>テナントの入れ子。ライセンスはいちばん外側から配る</span></div>
+    <div class="chain">
+      <span class="hot">テナント ＝ Entra ID ディレクトリ<small>1対1。分離も統合もできない</small></span><i>→</i>
+      <span>サブスクリプション<small>複数持てる（E3 ×200、E5 ×50 など）</small></span><i>→</i>
+      <span>ライセンス<small>ユーザーに割り当てる</small></span>
+    </div>
+  </figure>
+  <div class="figs cols">
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図1-2</span><span>あとから変えられる？</span></div>
+      <ul class="ox">
+        <li class="x"><span><b>初期ドメイン</b><small>xxx.onmicrosoft.com。変更も削除もできない</small></span></li>
+        <li class="x"><span><b>国／地域</b><small>データの保存場所。変えるなら新テナントへ移行</small></span></li>
+        <li class="x"><span><b>テナント ID</b><small>GUID。条件付きアクセスやアプリ登録で参照される</small></span></li>
+        <li class="o"><span><b>組織名（表示名）</b><small>設定 → 組織設定 → 組織プロファイル</small></span></li>
+        <li class="o"><span><b>既定のドメイン</b><small>変えても既存ユーザーの UPN は変わらない</small></span></li>
+      </ul>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図1-3</span><span>テナントとドメインの数</span></div>
+      <ul class="ox">
+        <li class="o"><span><b>1テナントに複数ドメイン</b><small>最大 5,000（すべてフェデレーションなら 2,500）。会社名と無関係でもよい</small></span></li>
+        <li class="x"><span><b>1ドメインを複数テナントで</b><small>同時に検証できるのは1テナントだけ。先に元のテナントから削除する</small></span></li>
+        <li class="o"><span><b>ルートとサブドメインを別テナントで</b><small>contoso.com は A、sales.contoso.com は B で検証できる</small></span></li>
+      </ul>
+    </figure>
+  </div>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-4</span><span>カスタム ドメインの追加は、証明と設定の2段構え</span></div>
+    <ol class="flow tight">
+      <li><b>ドメインを追加する</b><small>管理センター → 設定 → ドメイン → ドメインの追加</small></li>
+      <li><b>所有権を証明する</b><small>DNS に TXT（MS=ms…）または MX を追加して「確認」。これだけではメールは届かない</small></li>
+      <li class="goal"><b>用途に応じた DNS レコードを設定する</b><small>MX（メール配送）／TXT の SPF／CNAME の autodiscover・enterpriseregistration・enterpriseenrollment／Teams 用の SRV・CNAME</small></li>
+    </ol>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>ドメインを削除できないときは、そのドメインを使う<span class="mk">ユーザーの UPN・グループのメール アドレス・アプリの応答 URL・プロキシ アドレス</span>を別ドメインに付け替える。</li>
+  <li>SPF は TXT レコード<span class="mk">1つに1行</span>でまとめ、<code>v=spf1</code> を必ず先頭に置く。複数あると正しく機能しない。</li>
+  <li>認証を Entra ID が行うのが<span class="mk">マネージド</span>（クラウド専用・PHS・PTA）、AD FS などに任せるのが<span class="mk">フェデレーション</span>。種類は <code>Get-MgDomain</code> の AuthenticationType で確認する。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>テナントの国／地域や初期ドメインの名前を変えたい</summary><p class="a">変更できない。新しいテナントを作って移行する</p></details>
+  <details class="qi"><summary>カスタム ドメインを削除しようとしたら失敗した。まず何をする？</summary><p class="a">そのドメインを UPN やプロキシ アドレスに使っているユーザー・グループの参照を別ドメインに付け替える</p></details>
+  <details class="qi"><summary>SPF が正しく機能しない。よくある原因は</summary><p class="a">SPF の TXT レコードが複数ある・分割されている。1行にまとめ、v=spf1 を先頭に置く</p></details>
+  <details class="qi"><summary>TXT で所有権を確認したのに、そのドメイン宛てのメールが届かない</summary><p class="a">検証とサービス用の DNS 構成は別。MX レコードを設定する</p></details>
+</div>
+</article>
+
+<article class="card" id="c02" data-topic="組織設定と更新チャネル">
+<h2 class="q">新機能を、情報システム部門だけ先に試すには？</h2>
+<p class="catch">先に試すのは、<em>選んだ人だけ</em>。</p>
+<p class="lead">管理センターの「設定 → 組織設定」には、テナント全体に効く設定が3つのタブに分かれて入っています。新機能を先行して受け取るリリース設定や、Microsoft 365 Apps の更新チャネルもここから決めます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-1</span><span>組織設定の3つのタブ</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">タブ</span><span class="h">サービス</span><ul><li>インストール オプション（更新チャネル）</li><li>レポート（ユーザー名の匿名化）</li><li>カレンダー共有・Bookings・Forms</li></ul></div>
+      <div class="tile"><span class="p">タブ</span><span class="h">セキュリティとプライバシー</span><ul><li>パスワードの有効期限</li><li>共有（ゲストの追加を許可するか）</li><li>カスタマー ロックボックス</li></ul></div>
+      <div class="tile hot"><span class="p">タブ</span><span class="h">組織プロファイル</span><ul><li>組織情報・カスタム テーマ</li><li><b>リリース設定</b></li><li>データの保存場所</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-2</span><span>リリース設定は3択。パイロットは3つ目</span></div>
+    <div class="lanes">
+      <div class="lane"><b>標準リリース<small>既定</small></b><div class="chain"><span>一般提供のタイミングで、全員に届く</span></div></div>
+      <div class="lane"><b>すべてのユーザーに対象指定</b><div class="chain"><span>テナント全員が先行して受け取る</span></div></div>
+      <div class="lane pick"><b>選択したユーザーに対象指定<small>パイロット向け</small></b><div class="chain"><span class="hot">指定したユーザーだけが先行<small>グループではなくユーザーを選ぶ</small></span></div></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-3</span><span>Microsoft 365 Apps の更新チャネル（帯は更新の頻度）</span></div>
+    <ol class="bars">
+      <li style="--w:100%"><span class="bar"></span><span class="lab"><b>現在のチャネル</b><span>既定。準備でき次第、月に複数回</span></span></li>
+      <li class="rec" style="--w:45%"><span class="bar"></span><span class="lab"><b>月次エンタープライズ チャネル</b><span>月1回・第2火曜。更新日を予測したい組織に</span></span></li>
+      <li style="--w:14%"><span class="bar"></span><span class="lab"><b>半期エンタープライズ チャネル</b><span>年2回（1月・7月）。検証負荷を抑えたい組織に</span></span></li>
+    </ol>
+    <figcaption>本番より先に試すプレビュー チャネルもある。チャネルはユーザーごとではなく、グループ ポリシー・Intune・config.office.com で配る。</figcaption>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>クラウド ユーザーのパスワードは<span class="mk">既定で無期限</span>。有効期限の設定はクラウドのユーザーにだけ効き、同期ユーザーはオンプレミスのポリシーが支配する。</li>
+  <li>使用状況レポートのユーザー名を実名で見たいときは、<span class="mk">設定 → 組織設定 → サービス → レポート</span>で匿名化をオフにする（全体管理者）。</li>
+  <li>更新の適用状況やクラッシュ率は<span class="mk">Microsoft 365 Apps の正常性</span>で見る。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>情報システム部門のメンバーだけ、新機能を一般提供より先に使えるようにしたい</summary><p class="a">リリース設定で「選択したユーザーに対象指定リリース」を選び、ユーザーを指定する</p></details>
+  <details class="qi"><summary>Office アプリの更新を、月1回の決まった日にまとめたい</summary><p class="a">月次エンタープライズ チャネル</p></details>
+  <details class="qi"><summary>Office アプリの更新の適用状況とクラッシュ状況を確認したい</summary><p class="a">Microsoft 365 Apps の正常性</p></details>
+</div>
+</article>
+
+<article class="card" id="c03" data-topic="サービス正常性と利用状況の監視">
+<h2 class="q">障害の「今」と、変更の「予告」はどこで見る？</h2>
+<p class="catch">今は<em>サービス正常性</em>、<br>これからは<em>メッセージ センター</em>。</p>
+<p class="lead">「Teams につながらない」と言われたら、まずサービス正常性を見ます。来月から何が変わるかはメッセージ センターに投稿されます。支社ごとの通信品質はネットワーク接続の分析情報で、使われ方は使用状況レポートと導入スコアで確かめます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-1</span><span>知りたいことと、見る場所</span></div>
+    <div class="map">
+      <div class="row"><span class="want">今まさに起きている障害・劣化</span><span class="arr"></span><span class="tool hot">サービス正常性<small>インシデントとアドバイザリ。メール通知も設定できる</small></span></div>
+      <div class="row"><span class="want">これから起きる変更、廃止の予定</span><span class="arr"></span><span class="tool">メッセージ センター<small>Planner と連携して担当を割り当てられる</small></span></div>
+      <div class="row"><span class="want">テナントにサインインできないときの状況</span><span class="arr"></span><span class="tool">公開のステータス ページ<small>テナント固有の情報は出ない</small></span></div>
+      <div class="row"><span class="want">Azure の VM やストレージの障害</span><span class="arr"></span><span class="tool">Azure portal の Service Health<small>[Monitor] → [Service Health]。M365 とは別画面</small></span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-2</span><span>支社の通信は、近くで外に出す</span></div>
+    <div class="route">
+      <div class="ln2 bad"><span>支社 → VPN → 本社のプロキシ → Microsoft 365<br><small>バックホール。遠回りで遅くなる。TLS の中断も起きやすい</small></span><span class="res">×</span></div>
+      <div class="ln2 good"><span>支社 → 近くのインターネット出口 → Microsoft 365<br><small>ローカル ブレイクアウト。Microsoft の接続の原則</small></span><span class="res">○</span></div>
+    </div>
+    <figcaption>拠点ごとの品質は「正常性 → ネットワーク接続」で比べる。拠点は egress IP やサブネットを登録して識別させる。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-3</span><span>「使われているか」を測る2系統</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>使用状況レポート</b><small>レポート → 使用状況</small></div><ul><li>Exchange・SharePoint・OneDrive・Teams のアクティブ数</li><li>7／30／90／180 日単位、CSV で出力</li></ul></div>
+      <div class="hot"><div class="hd"><b>導入スコア</b><small>レポート → 導入スコア</small></div><ul><li>人と組織／テクノロジの2つの観点、他社と比較</li><li>見られるのは全体管理者・レポート閲覧者・グローバル閲覧者</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>サービス正常性だけを見せたい担当者には、全体管理者ではなく<span class="mk">サービス サポート管理者</span>かグローバル閲覧者。</li>
+  <li>個別の端末から測りたいときは<span class="mk">ネットワーク接続テスト ツール</span>（connectivity.office.com）。</li>
+  <li>外出先で正常性を確認するなら Microsoft 365 Admin モバイル アプリ。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>ユーザーからの報告を待たずに、障害を知りたい</summary><p class="a">サービス正常性のメール通知を構成する</p></details>
+  <details class="qi"><summary>ヘルプデスク担当者に、サービス正常性だけを見せたい</summary><p class="a">サービス サポート管理者（またはグローバル閲覧者）</p></details>
+  <details class="qi"><summary>Entra Connect サーバーを動かす Azure VM の障害情報を確認したい</summary><p class="a">Azure portal の [Monitor] → [Service Health]</p></details>
+  <details class="qi"><summary>特定の支社だけ Teams の品質が悪い。どう対処する方向か</summary><p class="a">VPN や本社プロキシを経由させず、支社の近くでインターネットに出す（ローカル ブレイクアウト）</p></details>
+</div>
+</article>
+
+<article class="card" id="c04" data-topic="Microsoft 365 Backup">
+<h2 class="q">ランサムウェアで暗号化された数千のサイトを、短時間で戻すには？</h2>
+<p class="catch">戻すなら<em>バックアップ</em>、<br>消させないなら<em>保持</em>。</p>
+<p class="lead">Microsoft 365 Backup は、SharePoint・OneDrive・Exchange のデータを Microsoft のサービス境界の中でバックアップし、指定した時点へまとめて戻すサービスです。ユーザー ライセンスではなく、保護するデータ量に応じた従量課金で動きます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-1</span><span>目的が違う2つの仕組み</span></div>
+    <div class="vs2">
+      <div class="hot"><div class="hd"><b>Microsoft 365 Backup</b><small>元に戻すため</small></div><ul><li>SharePoint サイト・OneDrive・Exchange メールボックス</li><li>時点を指定して、大規模に高速で復元</li><li>従量課金（Azure サブスクリプションに紐付け）</li></ul></div>
+      <div><div class="hd"><b>Purview の保持ポリシー</b><small>消させない／期限で消すため</small></div><ul><li>コンプライアンス上の保存義務に対応</li><li>削除されたアイテムを保持ホールド ライブラリへ退避</li><li>暗号化された内容を元に戻す機能ではない</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-2</span><span>使い始めるまでの手順</span></div>
+    <ol class="flow tight">
+      <li><b>従量課金を構成する</b><small>設定 → 組織設定 → 従量課金サービスの構成。Azure サブスクリプションとリソース グループを紐付ける</small></li>
+      <li><b>バックアップ ポリシーを作る</b><small>対象と保持期間を決める（既定は1年）</small></li>
+      <li class="goal"><b>必要なときに、時点を指定して復元</b><small>元の場所か、別の場所へ戻す</small></li>
+    </ol>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">E5 を買えば使えるわけではない</span>。前提は従量課金の構成。</li>
+  <li>バックアップは<span class="mk">サービス境界の外に出ない</span>。外部ストレージへのエクスポートではない。</li>
+  <li>版の履歴から1件ずつ戻す方法は、数千サイト規模では「短時間で」の要件を満たさない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>ランサムウェアで暗号化された数千サイトを、短時間で被害前に戻したい</summary><p class="a">Microsoft 365 Backup</p></details>
+  <details class="qi"><summary>Microsoft 365 Backup を有効にする前提は</summary><p class="a">従量課金の構成（Azure サブスクリプションとの紐付け）</p></details>
+  <details class="qi"><summary>法的な要件で、決められた期間は削除させたくない</summary><p class="a">Purview の保持ポリシー（Backup ではない）</p></details>
+</div>
+</article>
+
+<article class="card" id="c05" data-topic="ユーザーと退職者の処理">
+<h2 class="q">退職者のサインインは止めた。ライセンスを外す前にやることは？</h2>
+<p class="catch">ライセンス解放と削除は、<em>いちばん最後</em>。</p>
+<p class="lead">ユーザーは管理センター、Entra 管理センター、PowerShell、ディレクトリ同期、B2B 招待で作れます。ライセンスを配る前提は「使用場所」の設定です。退職者の処理には Microsoft が推奨する順番があり、データへの道筋を先に確保します。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-1</span><span>退職者の処理は、この順番で</span></div>
+    <ol class="flow tight">
+      <li><b>サインインをブロック</b><small>Entra 管理センターでサインインのブロックを有効に</small></li>
+      <li><b>サインイン セッションを取り消す</b><small>発行済みのトークンが生きているため、既存の接続を切る</small></li>
+      <li><b>メールボックスの内容を保全</b><small>必要なら訴訟ホールド</small></li>
+      <li><b>モバイル デバイスをワイプ</b><small>スマートフォン・タブレットから組織データを消す</small></li>
+      <li><b>転送するか、共有メールボックスに変換</b><small><code>Set-Mailbox -Type Shared</code>。50GB 以下ならライセンス不要で残せる</small></li>
+      <li><b>OneDrive とメールを後任者に引き継ぐ</b><small>ライセンスを外す前にアクセス権を付与</small></li>
+      <li class="goal"><b>ライセンスを解放</b><small>他のユーザーへ再割り当てするか外す</small></li>
+      <li class="goal"><b>アカウントを削除</b><small>削除後30日間は「削除済みのユーザー」から復元できる</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-2</span><span>社外の人の載せ方は2通り</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>メール連絡先</b><small>ユーザー → 連絡先</small></div><ul><li>アドレス帳（GAL）に載せるだけ</li><li>サインインできない。ライセンス不要</li></ul></div>
+      <div class="hot"><div class="hd"><b>ゲスト ユーザー（B2B）</b><small>招待して作る</small></div><ul><li>サインインして Teams や SharePoint に参加できる</li><li>UPN は <code>user_contoso.com#EXT#@…</code> の形</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">使用場所（Usage location）</span>が未設定だと、ライセンスの割り当ては失敗する。</li>
+  <li>削除したユーザーは<span class="mk">30日間</span>復元できる。過ぎると完全に削除される。</li>
+  <li>同期されたユーザーの属性は、クラウド側ではなく<span class="mk">オンプレミス AD 側</span>で変える（VOL.02 で詳しく）。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>退職者のサインインを止めた。ライセンスを解放する前の最善の対応は</summary><p class="a">メールボックスを共有メールボックスに変換し、OneDrive のデータを後任者が見られるようにしてから解放する</p></details>
+  <details class="qi"><summary>外部の取引先をアドレス帳に載せたいが、アクセスは不要</summary><p class="a">メール連絡先</p></details>
+  <details class="qi"><summary>外部の協力会社の人を Teams に招待したい</summary><p class="a">ゲスト ユーザー（B2B）</p></details>
+  <details class="qi"><summary>ユーザーは有効でライセンスの空きも十分なのに、割り当てが失敗する</summary><p class="a">使用場所（Usage location）を確認する</p></details>
+</div>
+</article>
+
+<article class="card" id="c06" data-topic="グループと共有メールボックス">
+<h2 class="q">その目的に合うグループはどれ？</h2>
+<p class="catch">グループは、<em>用途で選ぶ</em>。</p>
+<p class="lead">グループは種類が多く頻出です。共同作業の箱、権限とライセンスを配る相手、一斉メールの宛先、共有の受信箱。何のために使うかで選べば迷いません。配布グループを Microsoft 365 グループにアップグレードできるかどうかは、不可の条件で消していくのが速い解き方です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-1</span><span>用途で選ぶ4つの入れ物</span></div>
+    <div class="tiles" style="--n:2">
+      <div class="tile hot"><span class="p">共同作業の箱</span><span class="h">Microsoft 365 グループ</span><span class="d">メールボックス・SharePoint サイト・Planner が付いてくる。Teams のチームの実体</span></div>
+      <div class="tile"><span class="p">権限とライセンスを配る</span><span class="h">セキュリティ グループ</span><span class="d">条件付きアクセスの対象、グループ ベース ライセンス（P1）</span></div>
+      <div class="tile"><span class="p">一斉メールだけ</span><span class="h">配布グループ</span><span class="d">SharePoint も Teams も付かない。条件付きで M365 グループへアップグレード可</span></div>
+      <div class="tile"><span class="p">受信箱を共有</span><span class="h">共有メールボックス</span><span class="d">info@ などを複数人で。50GB までライセンス不要</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-2</span><span>アップグレードできる配布グループはどれ？</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>名前</th><th>説明</th><th>メンバー</th><th>所有者</th><th>判定</th></tr></thead>
+        <tbody>
+          <tr><td>All_Staff</td><td>動的グループ</td><td>1,500</td><td>1</td><td class="x">×</td></tr>
+          <tr><td>IT_Support</td><td>メール対応セキュリティ グループ</td><td>50</td><td>0</td><td class="x">×</td></tr>
+          <tr><td>Finance_Accounting</td><td>別の配布グループにネスト</td><td>50</td><td>0</td><td class="x">×</td></tr>
+          <tr class="pick"><td>All_Leaders</td><td>クラウド管理の配布グループ</td><td>50</td><td>50</td><td class="o">○</td></tr>
+          <tr class="pick"><td>All_IT</td><td>クラウド管理の配布グループ</td><td>150</td><td>1</td><td class="o">○</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>メンバーが多いことは不可の理由にならない。所有者50人も上限100人以内なので可。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-3</span><span>不可の条件（これに当たったら消す）</span></div>
+    <div class="chips"><span class="odd">オンプレミスで管理</span><span class="odd">ネストしている</span><span class="odd">所有者が100人を超える</span><span class="odd">所有者がいない</span><span>メンバーがいない</span><span>メール連絡先やグループがメンバーにいる</span><span class="odd">動的配布グループ</span><span class="odd">メール対応セキュリティ グループ</span><span>会議室リスト</span><span>共有メールボックスの転送先</span><span>エイリアスに特殊文字</span></div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>動的メンバーシップ・グループの有効期限ポリシー・名前付けポリシーは<span class="mk">Entra ID P1</span>。期限切れで消えたグループは30日間復元できる。</li>
+  <li>アップグレードは、メールボックスを持つ<span class="mk">Exchange 管理者が要求を送り、所有者が承認</span>する。所有者が自分ではできない。メール アドレスは変わらない。</li>
+  <li>条件を満たしているのに失敗するなら、<span class="mk">Microsoft 365 グループ向けのカスタム メール アドレス ポリシー</span>を疑う。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>ライセンスを自動で配りたい</summary><p class="a">セキュリティ グループとグループ ベース ライセンス（Entra ID P1）</p></details>
+  <details class="qi"><summary>部署の異動に合わせて、メンバーを自動で入れ替えたい</summary><p class="a">動的グループ（Entra ID P1）</p></details>
+  <details class="qi"><summary>放置されたチームを自動で片付けたい</summary><p class="a">Microsoft 365 グループの有効期限ポリシー</p></details>
+  <details class="qi"><summary>配布グループの所有者に、自分でアップグレードさせたい</summary><p class="a">できない。管理者が EAC から要求を送り、所有者が承認する</p></details>
+  <details class="qi"><summary>社外に送ったメールが届かないと言われた。最初の一手は</summary><p class="a">メッセージ追跡（message trace）で、どこで止まっているかを確認する</p></details>
+</div>
+</article>
+
+<article class="card" id="c07" data-topic="ライセンス管理">
+<h2 class="q">ライセンスの割り当てが失敗する。何を疑う？</h2>
+<p class="catch">まず<em>使用場所</em>を疑う。</p>
+<p class="lead">ライセンスは直接割り当てか、グループ ベース ライセンスで配ります。グループにライセンスを付けると、メンバーに自動で継承され、外れると自動で剥がれます。規模が大きいほど有利ですが、固有のつまずきが4つあります。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-1</span><span>グループ ベース ライセンスが失敗する4つのパターン</span></div>
+    <div class="tiles" style="--n:2">
+      <div class="tile hot"><span class="p">使用場所が未設定</span><span class="h">Usage location を設定</span><span class="d">テナントの既定の使用場所を決めておくと予防できる</span></div>
+      <div class="tile"><span class="p">ライセンスが足りない</span><span class="h">追加購入か、不要な割り当てを解除</span><span class="d">サブスクリプションの空き数を確認</span></div>
+      <div class="tile"><span class="p">サービス プランの競合</span><span class="h">片方のサービス プランを無効化</span><span class="d">Exchange Online を含む製品を2つ付けた場合など</span></div>
+      <div class="tile"><span class="p">前提のサービス プランがない</span><span class="h">基盤の製品を先に割り当てる</span><span class="d">アドオンだけを付けようとした場合など</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-2</span><span>グループから継承したライセンスは、ユーザー側で外せない</span></div>
+    <div class="chain">
+      <span>グループに E3 を割り当て</span><i>→</i>
+      <span class="soft">メンバーに継承<small>ユーザーの画面ではグレーアウト</small></span><i>→</i>
+      <span class="hot">外したいときは<small>グループから外す／グループ側でサービス プランを制御／別のグループに分ける</small></span>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>グループ ベース ライセンスには<span class="mk">Entra ID P1 以上</span>が必要。E3・E5・Business Premium に含まれる。</li>
+  <li>「特定のユーザーだけ Exchange を外したい」も、ユーザー側ではなく<span class="mk">グループ側</span>で制御する。</li>
+  <li>保有ライセンスと空き数は <code>Get-MgSubscribedSku</code> で確認できる。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>グループ ベース ライセンスで「サービス プランの競合」エラーが出た</summary><p class="a">同じサービス プランを含む製品が2つ付いている。片方で該当のサービス プランを無効化する</p></details>
+  <details class="qi"><summary>グループから継承したライセンスの一部を、特定のユーザーだけ外したい</summary><p class="a">ユーザー側では外せない。グループ側でサービス プランを制御するか、別グループに分ける</p></details>
+</div>
+</article>
+
+<article class="card" id="c08" data-topic="一括管理と PowerShell">
+<h2 class="q">スクリプトで大量のユーザーを更新したい。いま使えるモジュールは？</h2>
+<p class="catch">MSOnline と AzureAD は、<em>もう使えない</em>。</p>
+<p class="lead">大量のユーザーを扱うなら PowerShell です。古い2つのモジュールは 2025年に廃止され、選択肢に出てきたら誤りとして扱われます。Graph のアクセス許可は「リソース.操作.範囲」の形で読みます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-1</span><span>モジュールの現役と引退</span></div>
+    <ul class="ox">
+      <li class="x"><span><b>MSOnline</b>（<code>Connect-MsolService</code>）<small>2025年に廃止</small></span></li>
+      <li class="x"><span><b>AzureAD</b>（<code>Connect-AzureAD</code>）<small>Azure AD Graph の終了で廃止</small></span></li>
+      <li class="o"><span><b>Microsoft Graph PowerShell</b>（<code>Connect-MgGraph</code>）<small>ユーザー・グループ・ライセンス・ロール全般</small></span></li>
+      <li class="o"><span><b>Microsoft Entra PowerShell</b>（<code>Connect-Entra</code>）<small>Entra 管理に特化。旧 AzureAD から移りやすい</small></span></li>
+      <li class="o"><span><b>ExchangeOnlineManagement</b>（<code>Connect-ExchangeOnline</code>／<code>Connect-IPPSSession</code>）<small>Exchange と、セキュリティ・コンプライアンス</small></span></li>
+    </ul>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-2</span><span>Graph のスコープは狭い順に選ぶ（ライセンス一覧を読むだけなら）</span></div>
+    <ol class="bars">
+      <li class="rec" style="--w:22%"><span class="bar"></span><span class="lab"><b>LicenseAssignment.Read.All<span class="tag">最小</span></b><span><code>Get-MgSubscribedSku</code> の公式の最小権限</span></span></li>
+      <li style="--w:42%"><span class="bar"></span><span class="lab"><b>Organization.Read.All</b><span>組織情報。選択肢に最小がなければこれ</span></span></li>
+      <li style="--w:72%"><span class="bar"></span><span class="lab"><b>Directory.Read.All</b><span>Entra のオブジェクトをほぼすべて読める</span></span></li>
+      <li style="--w:100%"><span class="bar"></span><span class="lab"><b>Directory.ReadWrite.All</b><span>書き換え可。影響はディレクトリの外にも及ぶ</span></span></li>
+    </ol>
+    <figcaption>Directory は Entra ID のディレクトリのこと。SharePoint・OneDrive は Sites.*／Files.* の別系統。</figcaption>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>一括作成・変更の正解候補は、<span class="mk">Graph PowerShell（または Entra PowerShell）</span>と<span class="mk">管理センターの CSV 一括追加</span>。</li>
+  <li><code>Connect-MsolService</code> や <code>Connect-AzureAD</code> を含む選択肢は<span class="mk">廃止済みで誤り</span>。</li>
+  <li>CSV から作るときも、使用場所（<code>-UsageLocation</code>）を忘れない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>スクリプトで大量のユーザー属性を更新したい。サポートされている方法は（2つ）</summary><p class="a">Microsoft Graph PowerShell（Connect-MgGraph）と Microsoft Entra PowerShell（Connect-Entra）</p></details>
+  <details class="qi"><summary>サブスクリプションの一覧を読むだけ。最小のスコープは</summary><p class="a">LicenseAssignment.Read.All（なければ並んだ中で最も狭いもの）</p></details>
+</div>
+</article>
+
+<article class="card" id="c09" data-topic="ロールとロールグループ">
+<h2 class="q">パスワードを戻せるのは誰？ 最小特権ならどのロール？</h2>
+<p class="catch">答えは、<em>いちばん狭いロール</em>。</p>
+<p class="lead">設問の多くは「最小特権の原則に従うと、どのロールか」です。全体管理者が正解になることはまれです。Entra のロールと、Purview や Exchange のロールグループは別系統で、Entra から Purview へは権限が流れ込みますが、逆は流れません。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-1</span><span>パスワードを戻せるロール（狭い順）</span></div>
+    <ol class="bars">
+      <li style="--w:16%"><span class="bar"></span><span class="lab"><b>パスワード管理者</b><span>一般ユーザーと一部の限定ロール。PW リセット専用の最小権限</span></span></li>
+      <li style="--w:30%"><span class="bar"></span><span class="lab"><b>ヘルプデスク管理者</b><span>一般ユーザーと他のヘルプデスク管理者など</span></span></li>
+      <li style="--w:48%"><span class="bar"></span><span class="lab"><b>認証管理者</b><span>パスワードに加えて MFA などの認証方法も</span></span></li>
+      <li style="--w:64%"><span class="bar"></span><span class="lab"><b>ユーザー管理者</b><span>一般ユーザーと一部の限定管理者。ユーザー管理全般</span></span></li>
+      <li class="rec" style="--w:86%"><span class="bar"></span><span class="lab"><b>特権認証管理者<span class="tag">管理者も</span></b><span>全員。管理者のパスワードと認証方法も戻せる</span></span></li>
+      <li style="--w:100%"><span class="bar"></span><span class="lab"><b>全体管理者</b><span>全員</span></span></li>
+    </ol>
+    <figcaption>サービス サポート管理者は名前が紛らわしいが、正常性の閲覧とサポート依頼だけ。パスワードの権限はない。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-2</span><span>Entra → Purview は一方通行</span></div>
+    <div class="route">
+      <div class="ln2 good"><span>Entra のコンプライアンス管理者・セキュリティ管理者・全体管理者<br><small>→ Purview の同名のロールグループ（全体管理者は組織管理）にも効く</small></span><span class="res">○</span></div>
+      <div class="ln2 bad"><span>Purview のロールグループに追加<br><small>→ Entra のロールは付かない。Purview ポータルの中だけで効く</small></span><span class="res">×</span></div>
+    </div>
+    <figcaption>両方にあると Entra 側が優先され、管理単位による絞り込みが効かなくなる。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-3</span><span>eDiscovery のマネージャーと管理者</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>eDiscovery マネージャー</b><small>ロールグループのマネージャー欄</small></div><ul><li>自分が作成したケースだけ</li><li>メール有効セキュリティ グループで追加できる</li></ul></div>
+      <div class="hot"><div class="hd"><b>eDiscovery 管理者</b><small>同じロールグループの管理者欄</small></div><ul><li>組織内のすべてのケース</li><li><code>Add-eDiscoveryCaseAdmin</code> で指定できるのは個人だけ</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>全体管理者のパスワードや MFA を戻せるのは<span class="mk">特権認証管理者と全体管理者自身</span>だけ。</li>
+  <li>「部署のデータだけに限って」コンプライアンス権限を渡すなら、Entra ロールではなく<span class="mk">Purview のロールグループ</span>（必要なら管理単位でスコープ）。</li>
+  <li>検索結果のメールを一括削除する Search And Purge は、既定で<span class="mk">組織管理</span>ロールグループにしかない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>一般ユーザーのパスワードを、最小権限でリセットさせたい</summary><p class="a">パスワード管理者</p></details>
+  <details class="qi"><summary>パスワードに加えて MFA の再登録もさせたい</summary><p class="a">認証管理者</p></details>
+  <details class="qi"><summary>全体管理者の MFA をリセットできるのは誰</summary><p class="a">特権認証管理者（と全体管理者自身）</p></details>
+  <details class="qi"><summary>サービス サポート管理者は、パスワードをリセットできる？</summary><p class="a">できない。正常性の閲覧とサポート依頼の起票だけ</p></details>
+  <details class="qi"><summary>Purview で、検索に一致したメールを一括削除する権限を持つ既定のロールグループは</summary><p class="a">組織管理（Organization Management）</p></details>
+</div>
+</article>
+
+<article class="card" id="c10" data-topic="管理単位と PIM">
+<h2 class="q">権限の「範囲」を絞る？ 「時間」を絞る？</h2>
+<p class="catch">範囲は<em>管理単位</em>、時間は <em>PIM</em>。</p>
+<p class="lead">管理単位は、ディレクトリの一部を切り出してロールの効く範囲を絞る仕組みです。PIM は特権ロールを常時持たせず、必要なときだけ時限で有効にする仕組みです。必要なライセンスは、管理単位が P1、PIM が P2 です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-1</span><span>管理単位にグループを入れても、メンバーは入らない</span></div>
+    <div class="route">
+      <div class="ln2 good"><span>AU1 スコープの管理者 → AU1 に入れたグループ G1<br><small>名前やメンバーシップは管理できる</small></span><span class="res">○</span></div>
+      <div class="ln2 bad"><span>AU1 スコープのパスワード管理者 → G1 のメンバー User1 のパスワード<br><small>メンバーは AU1 の範囲に入っていない</small></span><span class="res">×</span></div>
+      <div class="ln2 good"><span>User1 を AU1 に直接追加（または動的メンバーシップ ルール）<br><small>これでパスワードを戻せる</small></span><span class="res">○</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-2</span><span>PIM：持たせておかず、必要なときだけ借りる</span></div>
+    <ol class="flow tight">
+      <li><b>適格（Eligible）で割り当て</b><small>権限は付いていない。「使える資格」だけ持つ</small></li>
+      <li><b>申請してアクティブ化</b><small>MFA・理由・チケット番号・承認・最大時間をロールごとに設定</small></li>
+      <li><b>時限でアクティブ</b><small>例：8時間だけ有効</small></li>
+      <li class="goal"><b>期限切れで自動的に外れる</b><small>アクセス レビューで割り当てを定期的に棚卸し</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-3</span><span>管理単位を任せる人に、P1 は入っている？</span></div>
+    <ul class="ox">
+      <li class="o"><span><b>Microsoft 365 E3／E5、EMS E3／E5、Business Premium</b><small>P1 を含む。追加は不要</small></span></li>
+      <li class="x"><span><b>Exchange Online P1、SharePoint Online P2、Intune 単体</b><small>P1 を含まない。「Intune があるから P1 もある」はひっかけ</small></span></li>
+    </ul>
+    <figcaption>P1 が要るのは管理単位スコープで管理を任される管理者1人ごと。メンバー側は Free でよい。</figcaption>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">制限付き管理単位</span>にすると、スコープされた管理者以外はテナント全体のユーザー管理者でも変更できない。役員アカウントの保護に使う。</li>
+  <li>管理単位は Entra 管理センターで作る。作成には<span class="mk">特権ロール管理者</span>以上が必要。</li>
+  <li>「支社ごとに管理者を分けたい」なら管理単位、「支社ごとにライセンスを配りたい」なら<span class="mk">動的グループ</span>。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>大阪支社のヘルプデスクに、大阪支社のユーザーのパスワードだけを戻させたい</summary><p class="a">大阪支社のユーザーを含む管理単位を作り、そこにスコープしてヘルプデスク管理者を割り当てる</p></details>
+  <details class="qi"><summary>AU1 にグループ G1 を追加し、User2 に AU1 スコープのパスワード管理者を付けた。G1 のメンバーの PW は戻せる？</summary><p class="a">戻せない。メンバーを AU1 に直接追加する必要がある</p></details>
+  <details class="qi"><summary>特権ロールを常時持たせず、承認と MFA を求め、8時間で外したい</summary><p class="a">PIM（Microsoft Entra ID P2）</p></details>
+  <details class="qi"><summary>役員のアカウントを、テナント全体のユーザー管理者からも守りたい</summary><p class="a">制限付き管理単位</p></details>
+</div>
+</article>
+<!--/CARDS-->
+
+<!--QUIZ-->
+<div class="qz" data-answer="C">
+  <p class="qq"><b>Q1</b>大阪支社のヘルプデスク担当者に、大阪支社のユーザーのパスワードだけをリセットさせたい。最小特権の原則に従う構成は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>担当者に全体管理者ロールを割り当てる</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>大阪支社のユーザーを含む動的セキュリティ グループを作り、そのグループにヘルプデスク管理者を割り当てる</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>大阪支社のユーザーを含む管理単位を作り、そこにスコープしてヘルプデスク管理者を割り当てる</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>大阪支社のユーザーを含む Microsoft 365 グループを作り、担当者を所有者にする</span></button>
+  </div>
+  <p class="why" hidden><b>正解は C。</b>ロールの効く範囲を絞る仕組みが管理単位。B のグループは「操作される対象」を限定する仕組みではなく、スコープはテナント全体のまま。D の所有権ではパスワードは戻せない。→ CARD 10</p>
+</div>
+<div class="qz" data-answer="B">
+  <p class="qq"><b>Q2</b>ユーザーにライセンスを割り当てようとしたら失敗した。ユーザーは有効で、サブスクリプションの空きも十分。最初に確認するのは？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>ユーザーの UPN サフィックス</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>ユーザーの使用場所（Usage location）</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>ユーザーが所属するセキュリティ グループ</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>テナントの国／地域</span></button>
+  </div>
+  <p class="why" hidden><b>正解は B。</b>使用場所はライセンス割り当ての必須属性。国によって提供できないサービスがあるため、未設定では付与できない。→ CARD 05・07</p>
+</div>
+<div class="qz" data-answer="D">
+  <p class="qq"><b>Q3</b>情報システム部門のメンバーだけが、一般提供より先に Microsoft 365 の新機能を使えるようにしたい。どう構成する？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>リリース設定で「すべてのユーザーに対象指定リリース」を選ぶ</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>Microsoft 365 Apps の更新チャネルを半期エンタープライズに変える</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>対象のユーザーを Microsoft 365 グループに追加する</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>リリース設定で「選択したユーザーに対象指定リリース」を選び、ユーザーを指定する</span></button>
+  </div>
+  <p class="why" hidden><b>正解は D。</b>A は全社が先行してしまう。B はアプリの更新の話で、半期チャネルはむしろ遅くなる。C のグループ所属はリリース設定に影響しない。→ CARD 02</p>
+</div>
+<div class="qz" data-answer="A">
+  <p class="qq"><b>Q4</b>特権ロールを常時持たせず、使うときに承認と MFA を求め、8時間で自動的に外れるようにしたい。必要なものは？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>Privileged Identity Management と Microsoft Entra ID P2</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>条件付きアクセス ポリシーと Microsoft Entra ID P1</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>管理単位と Microsoft Entra ID P1</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>セキュリティ既定値群</span></button>
+  </div>
+  <p class="why" hidden><b>正解は A。</b>適格割り当て・時限のアクティブ化・承認・MFA は PIM の中核で、P2 が必要。条件付きアクセスや管理単位では割り当てそのものを時限化できない。→ CARD 10</p>
+</div>
+<div class="qz" data-answer="B">
+  <p class="qq"><b>Q5</b>管理単位 AU1 にグループ G1（メンバー：User1）を追加し、User2 に AU1 スコープでパスワード管理者を割り当てた。正しい記述は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>User2 は User1 のパスワードをリセットできる</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>G1 自体は範囲内だが、User1 のパスワードはリセットできない</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>User2 はテナントのすべての一般ユーザーのパスワードをリセットできる</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>User2 は User1 を含むすべてのグループのメンバーのパスワードをリセットできる</span></button>
+  </div>
+  <p class="why" hidden><b>正解は B。</b>管理単位にグループを入れても、範囲に入るのはグループのオブジェクトだけ。User1 を対象にするなら AU1 に直接追加する。→ CARD 10 図10-1</p>
+</div>
+<!--/QUIZ-->
+
+<!--MEMO-->
+<div><small>CARD 01</small>国／地域と初期ドメインは変えられない。変えるなら新テナント</div>
+<div><small>CARD 01</small>SPF は1行にまとめ、v=spf1 を先頭に</div>
+<div><small>CARD 02</small>情シスだけ先行は「選択したユーザーに対象指定リリース」</div>
+<div><small>CARD 03</small>今はサービス正常性、これからはメッセージ センター</div>
+<div><small>CARD 04</small>大規模に戻すなら Backup。前提は従量課金の構成</div>
+<div><small>CARD 05</small>退職者は共有メールボックス化と引き継ぎの後でライセンス解放</div>
+<div><small>CARD 05</small>ライセンス割り当ての前提は使用場所</div>
+<div><small>CARD 06</small>配布グループのアップグレードは不可の条件で消す</div>
+<div><small>CARD 07</small>グループから継承したライセンスは個別に外せない</div>
+<div><small>CARD 08</small>MSOnline と AzureAD は廃止。Graph か Entra PowerShell</div>
+<div><small>CARD 09</small>全体管理者の MFA を戻せるのは特権認証管理者</div>
+<div><small>CARD 10</small>範囲は管理単位（P1）、時間は PIM（P2）</div>
+<!--/MEMO-->

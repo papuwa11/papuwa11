@@ -1,0 +1,523 @@
+<title>MS-102 逆引きドリル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@400;500;700;900&family=Shippori+Mincho+B1:wght@600;800&family=Yusei+Magic&family=Barlow+Condensed:wght@600;800&display=swap">
+<style>
+/* Layout: 単語帳のように1枚ずつめくるドリルと、設問の言い回しから引ける逆引き一覧を、タブで切り替える1カラム。巻ごとの色はシリーズの表紙色。 */
+:root{
+  --desk:#DADEE5;
+  --paper:#FFFFFF;
+  --paper-2:#F2F3F6;
+  --ink:#16181D;
+  --ink-2:#4B505C;
+  --line:#D4D7DE;
+  --spot:#3A3FB0;
+  --on-spot:#FFFFFF;
+  --ok:#1D7A45;
+  --ng:#C2321E;
+  --mid:#9A6A00;
+  --note:#FFF2B3;
+  --v01:#1F57C8; --v02:#0B7A66; --v03:#D94A14; --v04:#8A3AA8;
+  --on-vc:#FFFFFF;
+
+  --gothic:"M PLUS 1","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  --mincho:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --hand:"Yusei Magic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --num:"Barlow Condensed","Arial Narrow","M PLUS 1",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#0B0D11; --paper:#181B22; --paper-2:#21252E; --ink:#ECEEF3; --ink-2:#A8AEBC; --line:#323745;
+    --spot:#A6AAFF; --on-spot:#15171C; --ok:#6FD39A; --ng:#FF8A7A; --mid:#E8C060; --note:#38321A;
+    --v01:#86A8FF; --v02:#4FD1B5; --v03:#FF8248; --v04:#D9A0F2; --on-vc:#15171C;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#0B0D11; --paper:#181B22; --paper-2:#21252E; --ink:#ECEEF3; --ink-2:#A8AEBC; --line:#323745;
+  --spot:#A6AAFF; --on-spot:#15171C; --ok:#6FD39A; --ng:#FF8A7A; --mid:#E8C060; --note:#38321A;
+  --v01:#86A8FF; --v02:#4FD1B5; --v03:#FF8248; --v04:#D9A0F2; --on-vc:#15171C;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--gothic);font-size:15.5px;line-height:1.8;-webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1;word-break:auto-phrase;line-break:strict}
+h1,h2,h3,p{margin:0}
+a{color:inherit}
+button{font:inherit;color:inherit}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--spot);outline-offset:2px}
+.v01{--vc:var(--v01)} .v02{--vc:var(--v02)} .v03{--vc:var(--v03)} .v04{--vc:var(--v04)}
+
+.wrap{max-width:780px;margin:0 auto;padding-inline:clamp(16px,3vw,24px);padding-block:24px 72px;display:grid;gap:20px}
+
+/* 表紙 */
+.mast{background:var(--spot);color:var(--on-spot);padding:clamp(22px,4vw,36px);display:grid;gap:12px}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.16em}
+.mast h1{font-weight:900;font-size:clamp(2.4rem,7vw,3.6rem);line-height:1.05;letter-spacing:.02em}
+.mast h1 small{display:block;font-family:var(--num);font-weight:800;font-size:.5em;letter-spacing:.04em;margin-bottom:4px}
+.mast .lede{font-family:var(--mincho);font-weight:600;font-size:1rem;line-height:1.9;max-width:40rem}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid var(--on-spot);border-bottom:2px solid var(--on-spot);margin-top:6px}
+.stats div{padding:8px 10px;display:grid;gap:0;min-width:0}
+.stats div + div{border-left:1px solid color-mix(in srgb,var(--on-spot) 35%,transparent)}
+.stats b{font-family:var(--num);font-weight:800;font-size:2.1rem;line-height:1.05;font-variant-numeric:tabular-nums}
+.stats span{font-size:.74rem;font-weight:700;line-height:1.4}
+.save{font-size:.78rem;font-weight:700;display:flex;gap:8px;align-items:baseline}
+.save::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--on-spot);opacity:.6;transform:translateY(-1px)}
+.save.acct::before{opacity:1}
+
+/* タブ */
+.tabs{display:flex;gap:0;border-bottom:3px solid var(--ink)}
+.tabs button{flex:1;border:0;background:var(--paper-2);padding:10px 12px;font-weight:900;font-size:.95rem;cursor:pointer;border-top:3px solid transparent}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.panel{display:grid;gap:16px}
+
+/* 絞り込み */
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.filters .lab{font-size:.78rem;font-weight:900;letter-spacing:.08em;margin-right:4px}
+.chip{border:2px solid var(--vc,var(--ink));background:var(--paper);padding:2px 10px;font-weight:900;font-size:.82rem;cursor:pointer;line-height:1.6}
+.chip[aria-pressed="true"]{background:var(--vc,var(--ink));color:var(--on-vc)}
+.chip small{font-weight:700;font-size:.72rem;margin-left:4px;opacity:.85}
+
+/* 単語帳 */
+.flash{background:var(--paper);border-top:8px solid var(--vc,var(--spot));padding:clamp(20px,4vw,32px);display:grid;gap:18px;min-height:340px;align-content:start;box-shadow:0 18px 40px -26px color-mix(in srgb,var(--ink) 45%,transparent)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.78rem;font-weight:700;color:var(--ink-2)}
+.vtag{background:var(--vc);color:var(--on-vc);padding:0 8px;font-family:var(--num);font-weight:800;font-size:.9rem;letter-spacing:.04em}
+.box-tag{margin-left:auto;padding:0 8px;border:1.5px solid var(--line);font-size:.72rem}
+.fq{font-weight:900;font-size:clamp(1.25rem,3.4vw,1.6rem);line-height:1.55}
+.fq::before{content:"Q";display:inline-block;margin-right:10px;padding:0 8px;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;line-height:1.3}
+.reveal{width:100%;padding:14px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:900;font-size:1rem;cursor:pointer}
+.reveal:hover{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.fa{background:var(--note);padding:14px 16px;display:grid;gap:8px}
+.fa p{font-weight:900;font-size:clamp(1.05rem,2.8vw,1.25rem);line-height:1.6}
+.fa p::before{content:"→ ";color:var(--vc,var(--spot))}
+.fa a{justify-self:start;font-size:.8rem;font-weight:700}
+.grades{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.grade{display:grid;gap:0;padding:10px 8px;border:2px solid var(--g);background:var(--paper);cursor:pointer;text-align:center}
+.grade b{font-weight:900;font-size:1rem;color:var(--g)}
+.grade small{font-size:.74rem;font-weight:700;color:var(--ink-2)}
+.grade:hover{background:color-mix(in srgb,var(--g) 12%,var(--paper))}
+.grade.g1{--g:var(--ng)} .grade.g2{--g:var(--mid)} .grade.g3{--g:var(--ok)}
+.keys{font-size:.74rem;color:var(--ink-2);text-align:center}
+.keys kbd{font-family:var(--num);font-weight:800;border:1px solid var(--line);padding:0 5px;margin:0 2px}
+.qbar{display:grid;gap:4px}
+.qbar .t{display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;color:var(--ink-2)}
+.qbar .track{height:6px;background:var(--paper-2)}
+.qbar .fill{height:100%;width:0;background:var(--spot);transition:width .3s}
+.done{display:grid;gap:12px;text-align:center;justify-items:center;padding-block:20px}
+.done .big{font-family:var(--hand);font-size:clamp(1.6rem,4vw,2.2rem);color:var(--spot);line-height:1.4}
+.done p{font-size:.92rem;color:var(--ink-2);max-width:30rem}
+.btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.btn{padding:8px 16px;border:2px solid var(--ink);background:var(--paper);font-weight:900;font-size:.88rem;cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn:hover{border-color:var(--spot)}
+
+/* 巻ごとの定着度 */
+.mastery{background:var(--paper);padding:18px 20px;display:grid;gap:12px}
+.mastery h2{font-weight:900;font-size:1rem}
+.mrow{display:grid;grid-template-columns:9.5rem minmax(0,1fr) 4.5rem;gap:10px;align-items:center;font-size:.82rem}
+.mrow .nm{font-weight:900}
+.mrow .nm i{font-style:normal;font-family:var(--num);font-weight:800;color:var(--vc)}
+.stack{display:flex;height:14px;background:var(--paper-2);overflow:hidden}
+.stack span{display:block;height:100%}
+.s-new{background:transparent}
+.s-learn{background:color-mix(in srgb,var(--vc) 30%,var(--paper))}
+.s-rev{background:color-mix(in srgb,var(--vc) 65%,var(--paper))}
+.s-done{background:var(--vc)}
+.mrow .cnt{font-family:var(--num);font-weight:800;font-size:.95rem;text-align:right;font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.74rem;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:4px;vertical-align:-1px;border:1px solid var(--line)}
+.legend .l1{background:color-mix(in srgb,var(--ink-2) 25%,var(--paper))}
+.legend .l2{background:color-mix(in srgb,var(--ink-2) 55%,var(--paper))}
+.legend .l3{background:var(--ink-2)}
+
+/* 逆引き一覧 */
+.search{display:flex;gap:8px;flex-wrap:wrap}
+.search input{flex:1 1 16rem;min-width:0;padding:10px 12px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);font:inherit;font-size:.95rem}
+.found{font-size:.8rem;font-weight:700;color:var(--ink-2)}
+.vol-h{display:flex;align-items:baseline;gap:10px;padding:8px 12px;background:var(--vc);color:var(--on-vc);font-weight:900;font-size:.95rem}
+.vol-h b{font-family:var(--num);font-weight:800;font-size:1.1rem}
+.vol-h a{margin-left:auto;font-size:.76rem;font-weight:700}
+.rows{display:grid;background:var(--paper)}
+.rowi{border-bottom:1px solid var(--line)}
+.rowi summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 12px;font-size:.92rem;line-height:1.6}
+.rowi summary::-webkit-details-marker{display:none}
+.dot{width:10px;height:10px;margin-top:.5em;border-radius:50%;border:2px solid var(--vc)}
+.dot.b1,.dot.b2{background:color-mix(in srgb,var(--vc) 30%,var(--paper))}
+.dot.b3,.dot.b4{background:color-mix(in srgb,var(--vc) 65%,var(--paper))}
+.dot.b5{background:var(--vc)}
+.rowi .src{display:block;font-size:.72rem;font-weight:700;color:var(--ink-2)}
+.rowi summary::after{content:"答え";padding:0 8px;border:1.5px solid var(--ink);font-size:.72rem;font-weight:900;line-height:1.7;white-space:nowrap}
+.rowi[open] summary::after{content:"閉じる";background:var(--ink);color:var(--paper)}
+.rowi .ans{margin:0 12px 12px 32px;padding:8px 12px;background:var(--note);font-weight:900;font-size:.92rem;line-height:1.6;display:grid;gap:4px}
+.rowi .ans a{font-size:.76rem;font-weight:700;justify-self:start}
+.empty{padding:24px;text-align:center;color:var(--ink-2);background:var(--paper)}
+
+.foot{display:grid;gap:10px;font-size:.8rem;color:var(--ink-2)}
+.sister{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sister a{display:grid;padding:9px 14px;border:2px solid var(--ink);text-decoration:none;background:var(--paper);color:var(--ink)}
+.sister a b{font-weight:900;font-size:.92rem}
+.sister a span{font-size:.76rem;color:var(--ink-2)}
+.sister a.v01,.sister a.v02,.sister a.v03,.sister a.v04{border-color:var(--vc)}
+
+@media (max-width:560px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats div:nth-child(3){border-left:0}
+  .stats div:nth-child(n+3){border-top:1px solid color-mix(in srgb,var(--on-spot) 35%,transparent)}
+  .mrow{grid-template-columns:6rem minmax(0,1fr);}
+  .mrow .cnt{grid-column:2;text-align:left}
+  .sister{grid-template-columns:1fr}
+  .grade small{display:none}
+}
+@media (prefers-reduced-motion:reduce){.qbar .fill{transition:none}}
+</style>
+
+<main class="wrap">
+  <header class="mast">
+    <span class="eyebrow">MS-102 図解ムック 別冊</span>
+    <h1><small>REVERSE DRILL</small>逆引きドリル</h1>
+    <p class="lede">全4巻の「ここが出る！」を、設問の言い回しから答えを思い出す形で出題します。忘れたものほど早く、覚えたものほど間をあけて戻ってきます。</p>
+    <div class="stats" aria-live="polite">
+      <div><b id="st-total">0</b><span>収録した設問</span></div>
+      <div><b id="st-due">0</b><span>今日の出題</span></div>
+      <div><b id="st-done">0</b><span>覚えた（間隔30日）</span></div>
+      <div><b id="st-days">51</b><span>試験廃止まで（日）</span></div>
+    </div>
+    <p class="save" id="save">進み具合を読み込んでいます</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="モード">
+    <button type="button" role="tab" id="tab-drill" aria-controls="drill" aria-selected="true">暗記ドリル</button>
+    <button type="button" role="tab" id="tab-index" aria-controls="index" aria-selected="false">逆引き一覧</button>
+  </div>
+
+  <section class="panel" id="drill" role="tabpanel" aria-labelledby="tab-drill">
+    <div class="filters" id="f-drill"><span class="lab">出題する巻</span></div>
+    <div class="qbar"><div class="t"><span id="q-left">残り 0枚</span><span id="q-done">今回 0枚</span></div><div class="track"><div class="fill" id="q-fill"></div></div></div>
+    <article class="flash" id="flash" aria-live="polite"></article>
+    <section class="mastery" aria-labelledby="h-mastery">
+      <h2 id="h-mastery">巻ごとの定着度</h2>
+      <div id="mastery"></div>
+      <div class="legend"><span><i class="l1"></i>学習中（間隔1〜3日）</span><span><i class="l2"></i>定着中（7〜14日）</span><span><i class="l3"></i>覚えた（30日）</span><span><i></i>未学習</span></div>
+    </section>
+  </section>
+
+  <section class="panel" id="index" role="tabpanel" aria-labelledby="tab-index" hidden>
+    <div class="search">
+      <input type="search" id="search" placeholder="設問や答えの言葉で探す（例：管理単位、TAP、30日）" aria-label="設問を検索">
+      <button type="button" class="btn" id="open-all">答えを全部表示</button>
+    </div>
+    <div class="filters" id="f-index"><span class="lab">巻</span></div>
+    <p class="found" id="found"></p>
+    <div id="list"></div>
+  </section>
+
+  <footer class="foot">
+    <div class="sister" id="vol-links"></div>
+    <div class="sister"><a href="https://claude.ai/artifact/16xzViiC6KQoFzSYZeesw6" target="_blank" rel="noopener"><b>MS-102 控えめの法則</b><span>全章に効く3つの合言葉。最初の1枚に。</span></a><a href="https://claude.ai/artifact/KDPE54u1mEf7dMf21PuYJp" target="_blank" rel="noopener"><b>MS-102 総合テキスト</b><span>このシリーズの底本。細かい条件を確かめたいときに。</span></a><a href="https://claude.ai/artifact/Nzpf1jbjYVadj4nKQbn9CM" target="_blank" rel="noopener"><b>M365 ロール百貨店</b><span>誰が何をできるか、ロールの整理に。</span></a></div>
+    <p>設問と答えは各巻の「ここが出る！」から自動で集めています。底本は MS-102 総合テキスト（公式スキル測定 2026年4月28日版準拠）。受験前に Microsoft Learn で最新の情報を確認してください。</p>
+  </footer>
+</main>
+
+<script>
+const DATA = {"items": [{"vol": "01", "card": "01", "cid": "c01", "topic": "テナントとドメイン", "title": "テナントを作ったあと、変えられないものは？", "q": "テナントの国／地域や初期ドメインの名前を変えたい", "a": "変更できない。新しいテナントを作って移行する"}, {"vol": "01", "card": "01", "cid": "c01", "topic": "テナントとドメイン", "title": "テナントを作ったあと、変えられないものは？", "q": "カスタム ドメインを削除しようとしたら失敗した。まず何をする？", "a": "そのドメインを UPN やプロキシ アドレスに使っているユーザー・グループの参照を別ドメインに付け替える"}, {"vol": "01", "card": "01", "cid": "c01", "topic": "テナントとドメイン", "title": "テナントを作ったあと、変えられないものは？", "q": "SPF が正しく機能しない。よくある原因は", "a": "SPF の TXT レコードが複数ある・分割されている。1行にまとめ、v=spf1 を先頭に置く"}, {"vol": "01", "card": "01", "cid": "c01", "topic": "テナントとドメイン", "title": "テナントを作ったあと、変えられないものは？", "q": "TXT で所有権を確認したのに、そのドメイン宛てのメールが届かない", "a": "検証とサービス用の DNS 構成は別。MX レコードを設定する"}, {"vol": "01", "card": "02", "cid": "c02", "topic": "組織設定と更新チャネル", "title": "新機能を、情報システム部門だけ先に試すには？", "q": "情報システム部門のメンバーだけ、新機能を一般提供より先に使えるようにしたい", "a": "リリース設定で「選択したユーザーに対象指定リリース」を選び、ユーザーを指定する"}, {"vol": "01", "card": "02", "cid": "c02", "topic": "組織設定と更新チャネル", "title": "新機能を、情報システム部門だけ先に試すには？", "q": "Office アプリの更新を、月1回の決まった日にまとめたい", "a": "月次エンタープライズ チャネル"}, {"vol": "01", "card": "02", "cid": "c02", "topic": "組織設定と更新チャネル", "title": "新機能を、情報システム部門だけ先に試すには？", "q": "Office アプリの更新の適用状況とクラッシュ状況を確認したい", "a": "Microsoft 365 Apps の正常性"}, {"vol": "01", "card": "03", "cid": "c03", "topic": "サービス正常性と利用状況の監視", "title": "障害の「今」と、変更の「予告」はどこで見る？", "q": "ユーザーからの報告を待たずに、障害を知りたい", "a": "サービス正常性のメール通知を構成する"}, {"vol": "01", "card": "03", "cid": "c03", "topic": "サービス正常性と利用状況の監視", "title": "障害の「今」と、変更の「予告」はどこで見る？", "q": "ヘルプデスク担当者に、サービス正常性だけを見せたい", "a": "サービス サポート管理者（またはグローバル閲覧者）"}, {"vol": "01", "card": "03", "cid": "c03", "topic": "サービス正常性と利用状況の監視", "title": "障害の「今」と、変更の「予告」はどこで見る？", "q": "Entra Connect サーバーを動かす Azure VM の障害情報を確認したい", "a": "Azure portal の [Monitor] → [Service Health]"}, {"vol": "01", "card": "03", "cid": "c03", "topic": "サービス正常性と利用状況の監視", "title": "障害の「今」と、変更の「予告」はどこで見る？", "q": "特定の支社だけ Teams の品質が悪い。どう対処する方向か", "a": "VPN や本社プロキシを経由させず、支社の近くでインターネットに出す（ローカル ブレイクアウト）"}, {"vol": "01", "card": "04", "cid": "c04", "topic": "Microsoft 365 Backup", "title": "ランサムウェアで暗号化された数千のサイトを、短時間で戻すには？", "q": "ランサムウェアで暗号化された数千サイトを、短時間で被害前に戻したい", "a": "Microsoft 365 Backup"}, {"vol": "01", "card": "04", "cid": "c04", "topic": "Microsoft 365 Backup", "title": "ランサムウェアで暗号化された数千のサイトを、短時間で戻すには？", "q": "Microsoft 365 Backup を有効にする前提は", "a": "従量課金の構成（Azure サブスクリプションとの紐付け）"}, {"vol": "01", "card": "04", "cid": "c04", "topic": "Microsoft 365 Backup", "title": "ランサムウェアで暗号化された数千のサイトを、短時間で戻すには？", "q": "法的な要件で、決められた期間は削除させたくない", "a": "Purview の保持ポリシー（Backup ではない）"}, {"vol": "01", "card": "05", "cid": "c05", "topic": "ユーザーと退職者の処理", "title": "退職者のサインインは止めた。ライセンスを外す前にやることは？", "q": "退職者のサインインを止めた。ライセンスを解放する前の最善の対応は", "a": "メールボックスを共有メールボックスに変換し、OneDrive のデータを後任者が見られるようにしてから解放する"}, {"vol": "01", "card": "05", "cid": "c05", "topic": "ユーザーと退職者の処理", "title": "退職者のサインインは止めた。ライセンスを外す前にやることは？", "q": "外部の取引先をアドレス帳に載せたいが、アクセスは不要", "a": "メール連絡先"}, {"vol": "01", "card": "05", "cid": "c05", "topic": "ユーザーと退職者の処理", "title": "退職者のサインインは止めた。ライセンスを外す前にやることは？", "q": "外部の協力会社の人を Teams に招待したい", "a": "ゲスト ユーザー（B2B）"}, {"vol": "01", "card": "05", "cid": "c05", "topic": "ユーザーと退職者の処理", "title": "退職者のサインインは止めた。ライセンスを外す前にやることは？", "q": "ユーザーは有効でライセンスの空きも十分なのに、割り当てが失敗する", "a": "使用場所（Usage location）を確認する"}, {"vol": "01", "card": "06", "cid": "c06", "topic": "グループと共有メールボックス", "title": "その目的に合うグループはどれ？", "q": "ライセンスを自動で配りたい", "a": "セキュリティ グループとグループ ベース ライセンス（Entra ID P1）"}, {"vol": "01", "card": "06", "cid": "c06", "topic": "グループと共有メールボックス", "title": "その目的に合うグループはどれ？", "q": "部署の異動に合わせて、メンバーを自動で入れ替えたい", "a": "動的グループ（Entra ID P1）"}, {"vol": "01", "card": "06", "cid": "c06", "topic": "グループと共有メールボックス", "title": "その目的に合うグループはどれ？", "q": "放置されたチームを自動で片付けたい", "a": "Microsoft 365 グループの有効期限ポリシー"}, {"vol": "01", "card": "06", "cid": "c06", "topic": "グループと共有メールボックス", "title": "その目的に合うグループはどれ？", "q": "配布グループの所有者に、自分でアップグレードさせたい", "a": "できない。管理者が EAC から要求を送り、所有者が承認する"}, {"vol": "01", "card": "06", "cid": "c06", "topic": "グループと共有メールボックス", "title": "その目的に合うグループはどれ？", "q": "社外に送ったメールが届かないと言われた。最初の一手は", "a": "メッセージ追跡（message trace）で、どこで止まっているかを確認する"}, {"vol": "01", "card": "07", "cid": "c07", "topic": "ライセンス管理", "title": "ライセンスの割り当てが失敗する。何を疑う？", "q": "グループ ベース ライセンスで「サービス プランの競合」エラーが出た", "a": "同じサービス プランを含む製品が2つ付いている。片方で該当のサービス プランを無効化する"}, {"vol": "01", "card": "07", "cid": "c07", "topic": "ライセンス管理", "title": "ライセンスの割り当てが失敗する。何を疑う？", "q": "グループから継承したライセンスの一部を、特定のユーザーだけ外したい", "a": "ユーザー側では外せない。グループ側でサービス プランを制御するか、別グループに分ける"}, {"vol": "01", "card": "08", "cid": "c08", "topic": "一括管理と PowerShell", "title": "スクリプトで大量のユーザーを更新したい。いま使えるモジュールは？", "q": "スクリプトで大量のユーザー属性を更新したい。サポートされている方法は（2つ）", "a": "Microsoft Graph PowerShell（Connect-MgGraph）と Microsoft Entra PowerShell（Connect-Entra）"}, {"vol": "01", "card": "08", "cid": "c08", "topic": "一括管理と PowerShell", "title": "スクリプトで大量のユーザーを更新したい。いま使えるモジュールは？", "q": "サブスクリプションの一覧を読むだけ。最小のスコープは", "a": "LicenseAssignment.Read.All（なければ並んだ中で最も狭いもの）"}, {"vol": "01", "card": "09", "cid": "c09", "topic": "ロールとロールグループ", "title": "パスワードを戻せるのは誰？ 最小特権ならどのロール？", "q": "一般ユーザーのパスワードを、最小権限でリセットさせたい", "a": "パスワード管理者"}, {"vol": "01", "card": "09", "cid": "c09", "topic": "ロールとロールグループ", "title": "パスワードを戻せるのは誰？ 最小特権ならどのロール？", "q": "パスワードに加えて MFA の再登録もさせたい", "a": "認証管理者"}, {"vol": "01", "card": "09", "cid": "c09", "topic": "ロールとロールグループ", "title": "パスワードを戻せるのは誰？ 最小特権ならどのロール？", "q": "全体管理者の MFA をリセットできるのは誰", "a": "特権認証管理者（と全体管理者自身）"}, {"vol": "01", "card": "09", "cid": "c09", "topic": "ロールとロールグループ", "title": "パスワードを戻せるのは誰？ 最小特権ならどのロール？", "q": "サービス サポート管理者は、パスワードをリセットできる？", "a": "できない。正常性の閲覧とサポート依頼の起票だけ"}, {"vol": "01", "card": "09", "cid": "c09", "topic": "ロールとロールグループ", "title": "パスワードを戻せるのは誰？ 最小特権ならどのロール？", "q": "Purview で、検索に一致したメールを一括削除する権限を持つ既定のロールグループは", "a": "組織管理（Organization Management）"}, {"vol": "01", "card": "10", "cid": "c10", "topic": "管理単位と PIM", "title": "権限の「範囲」を絞る？ 「時間」を絞る？", "q": "大阪支社のヘルプデスクに、大阪支社のユーザーのパスワードだけを戻させたい", "a": "大阪支社のユーザーを含む管理単位を作り、そこにスコープしてヘルプデスク管理者を割り当てる"}, {"vol": "01", "card": "10", "cid": "c10", "topic": "管理単位と PIM", "title": "権限の「範囲」を絞る？ 「時間」を絞る？", "q": "AU1 にグループ G1 を追加し、User2 に AU1 スコープのパスワード管理者を付けた。G1 のメンバーの PW は戻せる？", "a": "戻せない。メンバーを AU1 に直接追加する必要がある"}, {"vol": "01", "card": "10", "cid": "c10", "topic": "管理単位と PIM", "title": "権限の「範囲」を絞る？ 「時間」を絞る？", "q": "特権ロールを常時持たせず、承認と MFA を求め、8時間で外したい", "a": "PIM（Microsoft Entra ID P2）"}, {"vol": "01", "card": "10", "cid": "c10", "topic": "管理単位と PIM", "title": "権限の「範囲」を絞る？ 「時間」を絞る？", "q": "役員のアカウントを、テナント全体のユーザー管理者からも守りたい", "a": "制限付き管理単位"}, {"vol": "02", "card": "01", "cid": "c01", "topic": "ID モデルと同期の準備", "title": "同期を始める前に、何を整えておく？", "q": "同期されたユーザーの部署（department）を変えたい。どこで変える？", "a": "オンプレミスの Active Directory（ユーザーとコンピューター）"}, {"vol": "02", "card": "01", "cid": "c01", "topic": "ID モデルと同期の準備", "title": "同期を始める前に、何を整えておく？", "q": "同期したらユーザーの UPN が .onmicrosoft.com になってしまった", "a": "オンプレミスの UPN サフィックスが検証済みドメインではない。AD 側で UPN を付け替える"}, {"vol": "02", "card": "01", "cid": "c01", "topic": "ID モデルと同期の準備", "title": "同期を始める前に、何を整えておく？", "q": "同期前にクラウドで作ったユーザーを、AD の同じ人と結びつけたい", "a": "ソフト マッチ（プライマリ SMTP アドレスによる突き合わせ）"}, {"vol": "02", "card": "01", "cid": "c01", "topic": "ID モデルと同期の準備", "title": "同期を始める前に、何を整えておく？", "q": "同期の前に、AD の重複や無効な文字を見つけて直したい", "a": "IdFix"}, {"vol": "02", "card": "02", "cid": "c02", "topic": "Entra Connect Sync と Cloud Sync", "title": "Connect Sync と Cloud Sync、どちらを選ぶ？", "q": "買収した会社の AD と自社 AD に信頼関係がない。両方を1テナントに同期したい", "a": "Entra Cloud Sync"}, {"vol": "02", "card": "02", "cid": "c02", "topic": "Entra Connect Sync と Cloud Sync", "title": "Connect Sync と Cloud Sync、どちらを選ぶ？", "q": "ハイブリッド Entra 参加のデバイスを使いたい", "a": "Entra Connect Sync（デバイス同期が必要）"}, {"vol": "02", "card": "02", "cid": "c02", "topic": "Entra Connect Sync と Cloud Sync", "title": "Connect Sync と Cloud Sync、どちらを選ぶ？", "q": "同期サーバーの単一障害点をなくしたい", "a": "Cloud Sync（複数エージェントで冗長化）"}, {"vol": "02", "card": "02", "cid": "c02", "topic": "Entra Connect Sync と Cloud Sync", "title": "Connect Sync と Cloud Sync、どちらを選ぶ？", "q": "Connect Sync のまま、同期サーバーの可用性を高めたい", "a": "2台目をステージング モードで用意しておく"}, {"vol": "02", "card": "02", "cid": "c02", "topic": "Entra Connect Sync と Cloud Sync", "title": "Connect Sync と Cloud Sync、どちらを選ぶ？", "q": "Entra Connect がオンプレミス AD を読むときのプロトコルは", "a": "LDAP"}, {"vol": "02", "card": "03", "cid": "c03", "topic": "PHS・PTA・フェデレーション", "title": "パスワードは、どこで確かめる？", "q": "AD FS を使っている。Identity Protection の「漏洩した資格情報」を検出したい", "a": "パスワード ハッシュ同期（PHS）を有効にする"}, {"vol": "02", "card": "03", "cid": "c03", "topic": "PHS・PTA・フェデレーション", "title": "パスワードは、どこで確かめる？", "q": "オンプレミスが止まってもサインインできる認証方式は", "a": "PHS"}, {"vol": "02", "card": "03", "cid": "c03", "topic": "PHS・PTA・フェデレーション", "title": "パスワードは、どこで確かめる？", "q": "オンプレミスとクラウドで別のパスワードを使わされている。PTA を展開して1つにするのは正しい解か", "a": "正しい（Yes）"}, {"vol": "02", "card": "03", "cid": "c03", "topic": "PHS・PTA・フェデレーション", "title": "パスワードは、どこで確かめる？", "q": "Entra Connect と WAP の間のファイアウォールで開けるポートは", "a": "443・88・5985"}, {"vol": "02", "card": "04", "cid": "c04", "topic": "同期の監視とトラブルシューティング", "title": "同期の範囲を変えたい。最初にやることは？", "q": "パイロットのグループ フィルターをやめ、OU の全員を同期したい。最初にやることは", "a": "同期スケジューラーを止める（Set-ADSyncScheduler -SyncCycleEnabled $false）"}, {"vol": "02", "card": "04", "cid": "c04", "topic": "同期の監視とトラブルシューティング", "title": "同期の範囲を変えたい。最初にやることは？", "q": "AD FS の認証件数と認証エラーを監視したい", "a": "Connect Health for AD FS のエージェントを AD FS サーバーと WAP サーバーに入れる"}, {"vol": "02", "card": "04", "cid": "c04", "topic": "同期の監視とトラブルシューティング", "title": "同期の範囲を変えたい。最初にやることは？", "q": "同期ルールを変えた。既存の全オブジェクトに反映させたい", "a": "完全同期（Initial）"}, {"vol": "02", "card": "04", "cid": "c04", "topic": "同期の監視とトラブルシューティング", "title": "同期の範囲を変えたい。最初にやることは？", "q": "同期の間隔を15分にしたい", "a": "Set-ADSyncScheduler -CustomizedSyncCycleInterval 00:15:00"}, {"vol": "02", "card": "05", "cid": "c05", "topic": "認証方法の管理", "title": "フィッシングに強い MFA は、どれ？", "q": "新入社員が、MFA を何も登録していない状態で初日にサインインする必要がある", "a": "一時アクセス パス（TAP）を発行する"}, {"vol": "02", "card": "05", "cid": "c05", "topic": "認証方法の管理", "title": "フィッシングに強い MFA は、どれ？", "q": "セキュリティ キーを紛失したユーザーを復旧させたい", "a": "一時アクセス パス（TAP）"}, {"vol": "02", "card": "05", "cid": "c05", "topic": "認証方法の管理", "title": "フィッシングに強い MFA は、どれ？", "q": "Authenticator のパスワードレス サインインを有効にする場所は", "a": "認証方法ポリシーの Microsoft Authenticator（認証ポリシー管理者以上）"}, {"vol": "02", "card": "05", "cid": "c05", "topic": "認証方法の管理", "title": "フィッシングに強い MFA は、どれ？", "q": "「フィッシング耐性 MFA」に入る方式は", "a": "FIDO2・パスキー、Windows Hello for Business、証明書ベース認証"}, {"vol": "02", "card": "06", "cid": "c06", "topic": "SSPR とパスワード保護", "title": "自分でパスワードを戻させるとき、ハイブリッドで忘れてはいけないのは？", "q": "Contoso2026! のような、自社名入りのパスワードを禁止したい", "a": "カスタム禁止パスワード リスト"}, {"vol": "02", "card": "06", "cid": "c06", "topic": "SSPR とパスワード保護", "title": "自分でパスワードを戻させるとき、ハイブリッドで忘れてはいけないのは？", "q": "同じ禁止ルールをオンプレミス AD にも効かせたい", "a": "DC エージェントとプロキシ サービスを入れ、監査モードで検証してから強制モードにする"}, {"vol": "02", "card": "06", "cid": "c06", "topic": "SSPR とパスワード保護", "title": "自分でパスワードを戻させるとき、ハイブリッドで忘れてはいけないのは？", "q": "管理者にだけセキュリティの質問によるリセットを許可したい", "a": "できない。管理者には2つの方法が必須の強い既定ポリシーが適用される"}, {"vol": "02", "card": "06", "cid": "c06", "topic": "SSPR とパスワード保護", "title": "自分でパスワードを戻させるとき、ハイブリッドで忘れてはいけないのは？", "q": "ハイブリッド環境で、SSPR でのリセットをオンプレミスにも反映させたい", "a": "パスワード ライトバックを有効にする（Entra ID P1）"}, {"vol": "02", "card": "07", "cid": "c07", "topic": "Identity Protection", "title": "人が危ないのか、今回のサインインが怪しいのか？", "q": "サインイン リスクが「中」以上のとき、追加の本人確認を求めたい", "a": "条件付きアクセスで、サインイン リスクが中以上のときに MFA を要求する"}, {"vol": "02", "card": "07", "cid": "c07", "topic": "Identity Protection", "title": "人が危ないのか、今回のサインインが怪しいのか？", "q": "漏洩した資格情報が見つかったユーザーへの推奨の対処は", "a": "ユーザー リスクとして扱い、セキュアなパスワード変更を要求する"}, {"vol": "02", "card": "07", "cid": "c07", "topic": "Identity Protection", "title": "人が危ないのか、今回のサインインが怪しいのか？", "q": "E3 のまま、Identity Protection のリスク ベース ポリシーを使いたい", "a": "Entra ID P2 のアドオン（または E5 Security 相当）を追加する"}, {"vol": "02", "card": "08", "cid": "c08", "topic": "条件付きアクセス", "title": "ポリシーが複数当たったら、どう決まる？", "q": "条件付きアクセスのポリシーを有効にできない。セキュリティ既定値群が有効になっている", "a": "セキュリティ既定値群を無効にする"}, {"vol": "02", "card": "08", "cid": "c08", "topic": "条件付きアクセス", "title": "ポリシーが複数当たったら、どう決まる？", "q": "緊急アクセス（ブレークグラス）用アカウントの扱いは", "a": "すべての条件付きアクセス ポリシーから除外する"}, {"vol": "02", "card": "08", "cid": "c08", "topic": "条件付きアクセス", "title": "ポリシーが複数当たったら、どう決まる？", "q": "POP や IMAP など、MFA を回避する抜け道を塞ぎたい", "a": "条件付きアクセスでレガシー認証をブロックする"}, {"vol": "02", "card": "08", "cid": "c08", "topic": "条件付きアクセス", "title": "ポリシーが複数当たったら、どう決まる？", "q": "Azure の管理操作だけに MFA を求めたい", "a": "クラウド アプリに Microsoft Azure Management を指定する（すべてのクラウド アプリは広すぎる）"}, {"vol": "02", "card": "08", "cid": "c08", "topic": "条件付きアクセス", "title": "ポリシーが複数当たったら、どう決まる？", "q": "新しいポリシーを、特定のユーザーと SaaS アプリで適用前に試したい", "a": "What If ツール（とレポート専用モード）"}, {"vol": "02", "card": "09", "cid": "c09", "topic": "MFA の実装とデバイス ID", "title": "MFA はどの方法で有効にする？ デバイスはどう登録する？", "q": "特定のユーザーだけ MFA を免除したい", "a": "条件付きアクセス ポリシーの除外を使う"}, {"vol": "02", "card": "09", "cid": "c09", "topic": "MFA の実装とデバイス ID", "title": "MFA はどの方法で有効にする？ デバイスはどう登録する？", "q": "Windows デバイスを Entra ID に参加させて Intune のポリシーを当てたい。最小要件は", "a": "Windows 10 以上で、Home 以外のエディション"}, {"vol": "02", "card": "09", "cid": "c09", "topic": "MFA の実装とデバイス ID", "title": "MFA はどの方法で有効にする？ デバイスはどう登録する？", "q": "ハイブリッド Entra 参加に必要な同期の方式は", "a": "Entra Connect Sync（Cloud Sync はデバイス同期に非対応）"}, {"vol": "02", "card": "10", "cid": "c10", "topic": "Application Proxy", "title": "VPN なしで、社内の Web アプリを社外から使わせるには？", "q": "オンプレミスの Web アプリに、VPN なしで社外から安全にアクセスさせ、条件付きアクセスも適用したい", "a": "Application Proxy（社内にコネクタを入れ、アプリを Entra ID に公開する）"}, {"vol": "02", "card": "10", "cid": "c10", "topic": "Application Proxy", "title": "VPN なしで、社内の Web アプリを社外から使わせるには？", "q": "業務アプリを追加して SSO を有効にしたい。Entra ID のどこで設定する？", "a": "エンタープライズ アプリケーション"}, {"vol": "02", "card": "10", "cid": "c10", "topic": "Application Proxy", "title": "VPN なしで、社内の Web アプリを社外から使わせるには？", "q": "Application Proxy のために、ファイアウォールで受信ポートを開ける必要は？", "a": "ない。コネクタは外向きに接続する"}, {"vol": "03", "card": "01", "cid": "c01", "topic": "Defender XDR の全体像", "title": "4つの Defender は、それぞれ何を守る？", "q": "端末をマルウェアから一元的に守りたい", "a": "Defender for Endpoint"}, {"vol": "03", "card": "01", "cid": "c01", "topic": "Defender XDR の全体像", "title": "4つの Defender は、それぞれ何を守る？", "q": "サーバーの system ログを集めて分析したい", "a": "Log Analytics ワークスペースとエージェントの両方が必要（Intune は別物）"}, {"vol": "03", "card": "01", "cid": "c01", "topic": "Defender XDR の全体像", "title": "4つの Defender は、それぞれ何を守る？", "q": "セキュリティ担当者に Defender for Office 365 の設定と調査だけを任せたい", "a": "Defender XDR 統合 RBAC で、範囲を Defender for Office 365 に絞ったロールを割り当てる"}, {"vol": "03", "card": "02", "cid": "c02", "topic": "インシデント対応と自動化", "title": "自動修復を取り消したい。どこで操作する？", "q": "自動修復でファイルが隔離された。業務に必要なので元に戻したい", "a": "アクション センターの履歴から元に戻す"}, {"vol": "03", "card": "02", "cid": "c02", "topic": "インシデント対応と自動化", "title": "自動修復を取り消したい。どこで操作する？", "q": "一部のサーバーだけ自動修復を止めたい", "a": "そのサーバーのデバイス グループを作り、自動化レベルを下げる"}, {"vol": "03", "card": "03", "cid": "c03", "topic": "高度なハンティング", "title": "同じ条件の事象を、これからも自動で検知したい。どうする？", "q": "悪意ある URL をクリックした人を洗い出し、今後も自動でアラートを上げたい", "a": "KQL クエリを作り、カスタム検出ルールとして保存する"}, {"vol": "03", "card": "03", "cid": "c03", "topic": "高度なハンティング", "title": "同じ条件の事象を、これからも自動で検知したい。どうする？", "q": "メールが実際にどう配送されたかの経路を追いたい", "a": "メッセージ トレース（クリックの記録は扱わない）"}, {"vol": "03", "card": "04", "cid": "c04", "topic": "露出管理と脅威インテリジェンス", "title": "3つのスコアのうち、低いほど良いのはどれ？", "q": "新しいランサムウェア キャンペーンに対する自社の露出を確認したい", "a": "脅威分析（Threat analytics）"}, {"vol": "03", "card": "04", "cid": "c04", "topic": "露出管理と脅威インテリジェンス", "title": "3つのスコアのうち、低いほど良いのはどれ？", "q": "セキュア スコア・デバイスのセキュリティ スコア・露出スコアのうち、低いほど良いのは", "a": "露出スコア"}, {"vol": "03", "card": "04", "cid": "c04", "topic": "露出管理と脅威インテリジェンス", "title": "3つのスコアのうち、低いほど良いのはどれ？", "q": "特定のファイル ハッシュを全社の端末でブロックしたい", "a": "Defender for Endpoint のインジケーター"}, {"vol": "03", "card": "05", "cid": "c05", "topic": "EOP と Defender for Office 365", "title": "その機能は、EOP？ Plan 1？ Plan 2？", "q": "受信メールの送信元をすべて認証したい", "a": "フィッシング対策ポリシー（EOP に含まれる）"}, {"vol": "03", "card": "05", "cid": "c05", "topic": "EOP と Defender for Office 365", "title": "その機能は、EOP？ Plan 1？ Plan 2？", "q": "攻撃シミュレーション トレーニングや脅威エクスプローラーを使いたい", "a": "Defender for Office 365 Plan 2"}, {"vol": "03", "card": "05", "cid": "c05", "topic": "EOP と Defender for Office 365", "title": "その機能は、EOP？ Plan 1？ Plan 2？", "q": "SharePoint・OneDrive・Teams 上の悪意あるファイルから守りたい", "a": "安全な添付ファイル（グローバル設定でオン）"}, {"vol": "03", "card": "06", "cid": "c06", "topic": "脅威ポリシーとプリセット", "title": "カスタム ポリシーを作ったのに効かない。なぜ？", "q": "役員だけ、標準より積極的に検疫したい。管理の手間は最小で", "a": "役員を対象に厳格プリセットを有効にする"}, {"vol": "03", "card": "06", "cid": "c06", "topic": "脅威ポリシーとプリセット", "title": "カスタム ポリシーを作ったのに効かない。なぜ？", "q": "既定のスパム対策ポリシーで、通常のフィッシングはどう処理される？", "a": "迷惑メール フォルダーへ移動（高確度フィッシングは検疫）"}, {"vol": "03", "card": "06", "cid": "c06", "topic": "脅威ポリシーとプリセット", "title": "カスタム ポリシーを作ったのに効かない。なぜ？", "q": "p=reject を宣言したドメインのなりすましを、宣言どおり拒否したい", "a": "フィッシング対策ポリシーの「DMARC レコード ポリシーを尊重する」"}, {"vol": "03", "card": "06", "cid": "c06", "topic": "脅威ポリシーとプリセット", "title": "カスタム ポリシーを作ったのに効かない。なぜ？", "q": "経営幹部を狙うフィッシングが続く。他の社員と差をつけた保護を足したい", "a": "優先アカウント保護（ユーザー タグ）と厳格プリセットの組み合わせ"}, {"vol": "03", "card": "07", "cid": "c07", "topic": "検疫・制限付きエンティティ・許可／ブロック", "title": "「メールが送れない」と言われた。何から始める？", "q": "大量の迷惑メールを送ったユーザーが送信できなくなった。対応の順序は", "a": "制限付きエンティティで確認 → 侵害を調べてパスワードをリセット → ブロックを解除"}, {"vol": "03", "card": "07", "cid": "c07", "topic": "検疫・制限付きエンティティ・許可／ブロック", "title": "「メールが送れない」と言われた。何から始める？", "q": "マルウェアと判定されたファイルを許可したい", "a": "一覧からは作れない。申請（Submissions）でクリーンと確認して許可エントリを作る"}, {"vol": "03", "card": "07", "cid": "c07", "topic": "検疫・制限付きエンティティ・許可／ブロック", "title": "「メールが送れない」と言われた。何から始める？", "q": "他社製のフィッシング訓練メールがフィルターで止められてしまう", "a": "高度な配信で「フィッシング シミュレーション」として登録する"}, {"vol": "03", "card": "08", "cid": "c08", "topic": "攻撃シミュレーション トレーニング", "title": "何度も引っかかる人に、トレーニングだけを割り当てるには？", "q": "2回以上引っかかった人に、追加のシミュレーションなしでトレーニングだけ割り当て、結果を見たい", "a": "対象は再犯者、割り当てはトレーニング キャンペーン、確認はキャンペーンのレポート"}, {"vol": "03", "card": "08", "cid": "c08", "topic": "攻撃シミュレーション トレーニング", "title": "何度も引っかかる人に、トレーニングだけを割り当てるには？", "q": "再犯者とみなす既定のしきい値は", "a": "連続2回（間に合格をはさむとリセット）"}, {"vol": "03", "card": "09", "cid": "c09", "topic": "Defender for Endpoint", "title": "特定のファイルを止めたい。誤検知を黙らせたい。道具はどれ？", "q": "検証用に Windows 11 を5台だけオンボードしたい", "a": "ローカル スクリプト（10台以下の検証向け）"}, {"vol": "03", "card": "09", "cid": "c09", "topic": "Defender for Endpoint", "title": "特定のファイルを止めたい。誤検知を黙らせたい。道具はどれ？", "q": "既知の安全なファイルが誤検知され続ける。アラートを止めたい", "a": "抑制ルール（ブロックはしない）"}, {"vol": "03", "card": "09", "cid": "c09", "topic": "Defender for Endpoint", "title": "特定のファイルを止めたい。誤検知を黙らせたい。道具はどれ？", "q": "侵害の疑いがある端末を今すぐネットワークから切り離したい", "a": "デバイスの分離"}, {"vol": "03", "card": "09", "cid": "c09", "topic": "Defender for Endpoint", "title": "特定のファイルを止めたい。誤検知を黙らせたい。道具はどれ？", "q": "脆弱なソフトウェアの修正を IT 部門に依頼したい", "a": "MDVM の推奨事項から修復を依頼し、Intune のセキュリティ タスクとして連携する"}, {"vol": "03", "card": "10", "cid": "c10", "topic": "Defender for Cloud Apps", "title": "社員が勝手に使うクラウド サービスを、端末から止めるには？", "q": "許可していないファイル共有サービスの利用状況を、追加のインフラなしで知りたい", "a": "Cloud Discovery を Defender for Endpoint 連携で使う"}, {"vol": "03", "card": "10", "cid": "c10", "topic": "Defender for Cloud Apps", "title": "社員が勝手に使うクラウド サービスを、端末から止めるには？", "q": "SharePoint で外部共有されている機密ファイルを見つけたい", "a": "ファイル ポリシー（Microsoft 365 アプリ コネクタが前提）"}, {"vol": "03", "card": "10", "cid": "c10", "topic": "Defender for Cloud Apps", "title": "社員が勝手に使うクラウド サービスを、端末から止めるには？", "q": "非管理デバイスからのダウンロードだけ禁止したい", "a": "条件付きアクセス アプリ制御のセッション制御"}, {"vol": "03", "card": "10", "cid": "c10", "topic": "Defender for Cloud Apps", "title": "社員が勝手に使うクラウド サービスを、端末から止めるには？", "q": "危険な OAuth アプリへの同意を取り消したい", "a": "OAuth アプリ ポリシー／アプリ ガバナンス"}, {"vol": "03", "card": "10", "cid": "c10", "topic": "Defender for Cloud Apps", "title": "社員が勝手に使うクラウド サービスを、端末から止めるには？", "q": "シャドー IT の発見だけを、コストを抑えて行いたい", "a": "Microsoft 365 E3（Entra ID P1 に含まれる Cloud App Discovery）"}, {"vol": "04", "card": "01", "cid": "c01", "topic": "Purview の全体像", "title": "Purview の仕事は、どこから始まる？", "q": "ユーザーが手動で付けた「高度機密」ラベルを条件に、Exchange の DLP で送信を止めたい。E5 が必要？", "a": "不要。E3 の範囲で実現できる"}, {"vol": "04", "card": "01", "cid": "c01", "topic": "Purview の全体像", "title": "Purview の仕事は、どこから始まる？", "q": "条件に一致した文書に、秘密度ラベルを自動で付けたい。必要なライセンスは", "a": "E5 相当（または E5 Compliance などのアドオン）"}, {"vol": "04", "card": "02", "cid": "c02", "topic": "機密情報の種類と分類子", "title": "その情報、どの方法で見つける？", "q": "自社の顧客 ID の一覧と完全に一致する値だけを検出したい（他社の似た番号は除く）", "a": "完全一致データ（EDM）"}, {"vol": "04", "card": "02", "cid": "c02", "topic": "機密情報の種類と分類子", "title": "その情報、どの方法で見つける？", "q": "契約書らしい文書を自動で見つけたい", "a": "トレーニング可能な分類子"}, {"vol": "04", "card": "02", "cid": "c02", "topic": "機密情報の種類と分類子", "title": "その情報、どの方法で見つける？", "q": "特定の書式の番号を検出したい", "a": "カスタムの機密情報の種類（正規表現）"}, {"vol": "04", "card": "02", "cid": "c02", "topic": "機密情報の種類と分類子", "title": "その情報、どの方法で見つける？", "q": "決まった様式の申請書を見分けたい", "a": "ドキュメント指紋"}, {"vol": "04", "card": "03", "cid": "c03", "topic": "秘密度ラベル", "title": "ラベルを作ったのに、Word に表示されない。なぜ？", "q": "秘密度ラベルを作ったが、ユーザーの Word や Outlook に表示されない。最初に確認するのは", "a": "ラベル ポリシーでそのユーザーに発行されているか"}, {"vol": "04", "card": "03", "cid": "c03", "topic": "秘密度ラベル", "title": "ラベルを作ったのに、Word に表示されない。なぜ？", "q": "秘密度ラベルのカスタム ヘッダーが表示されないアプリは", "a": "Outlook（メールにヘッダー・フッター・透かしのマーキングは付かない）"}, {"vol": "04", "card": "03", "cid": "c03", "topic": "秘密度ラベル", "title": "ラベルを作ったのに、Word に表示されない。なぜ？", "q": "「グループとサイトの保護」を設定できるグループは", "a": "Microsoft 365 グループだけ"}, {"vol": "04", "card": "03", "cid": "c03", "topic": "秘密度ラベル", "title": "ラベルを作ったのに、Word に表示されない。なぜ？", "q": "マイナンバーを含むメールを、外部に送れないようにしたい", "a": "DLP ポリシー（またはメール フロー ルール）。ラベルだけでは止められない"}, {"vol": "04", "card": "04", "cid": "c04", "topic": "保持ポリシーと保持ラベル", "title": "保持ポリシーと保持ラベルが重なったら、どうなる？", "q": "組織全体で10年保持、経理部向けに5年後削除、保持ラベルで3年後削除。このメールは", "a": "10年間保持され、その後に削除される"}, {"vol": "04", "card": "04", "cid": "c04", "topic": "保持ポリシーと保持ラベル", "title": "保持ポリシーと保持ラベルが重なったら、どうなる？", "q": "退職日を起点に7年間保持したい", "a": "保持ラベルのイベント ベースの保持"}, {"vol": "04", "card": "04", "cid": "c04", "topic": "保持ポリシーと保持ラベル", "title": "保持ポリシーと保持ラベルが重なったら、どうなる？", "q": "保持の対象を、部署の異動に自動で追随させたい", "a": "アダプティブ スコープ"}, {"vol": "04", "card": "04", "cid": "c04", "topic": "保持ポリシーと保持ラベル", "title": "保持ポリシーと保持ラベルが重なったら、どうなる？", "q": "保持中の Teams チャットのデータはどこにある？", "a": "Exchange の回復可能なアイテム内の SubstrateHolds フォルダー"}, {"vol": "04", "card": "05", "cid": "c05", "topic": "保持ロック・レコード・廃棄レビュー", "title": "誰にも変えさせない。期限が来たら確認してから消す。どうする？", "q": "保持ポリシーを、管理者でも緩められないようにしたい", "a": "保持ロック"}, {"vol": "04", "card": "05", "cid": "c05", "topic": "保持ロック・レコード・廃棄レビュー", "title": "誰にも変えさせない。期限が来たら確認してから消す。どうする？", "q": "規制上の要件で、アイテムを誰も変更・削除できないようにしたい", "a": "保持ラベルで「規制のレコード」として宣言する"}, {"vol": "04", "card": "05", "cid": "c05", "topic": "保持ロック・レコード・廃棄レビュー", "title": "誰にも変えさせない。期限が来たら確認してから消す。どうする？", "q": "SharePoint の保持ポリシーを誤って無効にした。データはどうなる？", "a": "30日の猶予期間がある。その間に再び有効にすれば、データを失わずに保持が再開される"}, {"vol": "04", "card": "05", "cid": "c05", "topic": "保持ロック・レコード・廃棄レビュー", "title": "誰にも変えさせない。期限が来たら確認してから消す。どうする？", "q": "全体管理者で Purview の「廃棄」ページを開けない", "a": "廃棄管理ロールがない。レコード管理ロールグループなどに追加する"}, {"vol": "04", "card": "05", "cid": "c05", "topic": "保持ロック・レコード・廃棄レビュー", "title": "誰にも変えさせない。期限が来たら確認してから消す。どうする？", "q": "保持ロックをかけたうえで、対象を部署の属性で動的に決めたい", "a": "保持ロックはアダプティブ スコープと併用できない。静的スコープにする"}, {"vol": "04", "card": "06", "cid": "c06", "topic": "ラベル使用状況の監視", "title": "ラベル付きのファイルは何件？ 先週ラベルを外したのは誰？", "q": "先週、機密ラベルの付いた文書のラベルを誰かが格下げした。誰がいつ行ったか調べたい", "a": "アクティビティ エクスプローラー"}, {"vol": "04", "card": "06", "cid": "c06", "topic": "ラベル使用状況の監視", "title": "ラベル付きのファイルは何件？ 先週ラベルを外したのは誰？", "q": "「高度機密」ラベルの付いたファイルが、どこに何件あるかを知りたい", "a": "コンテンツ エクスプローラー"}, {"vol": "04", "card": "07", "cid": "c07", "topic": "データ損失防止（DLP）", "title": "ラベルが付いたメールを、誰にも送らせないには？", "q": "新しい DLP ポリシーの影響を、業務を止めずに把握したい", "a": "シミュレーション モード（ポリシー ヒントなし）で始める"}, {"vol": "04", "card": "07", "cid": "c07", "topic": "データ損失防止（DLP）", "title": "ラベルが付いたメールを、誰にも送らせないには？", "q": "「高度機密」ラベルが付いたメールを、すべての受信者に送らせない", "a": "アクション「アクセスを制限するか、コンテンツを暗号化する」で全員をブロック（上書きはオフ）"}, {"vol": "04", "card": "07", "cid": "c07", "topic": "データ損失防止（DLP）", "title": "ラベルが付いたメールを、誰にも送らせないには？", "q": "ユーザーが正当な理由で送信できるようにしたい", "a": "アクションで上書きの許可を有効にする"}, {"vol": "04", "card": "07", "cid": "c07", "topic": "データ損失防止（DLP）", "title": "ラベルが付いたメールを、誰にも送らせないには？", "q": "秘密度ラベルが付いた文書の外部共有だけを止めたい", "a": "DLP ルールの条件に秘密度ラベルを指定する"}, {"vol": "04", "card": "08", "cid": "c08", "topic": "エンドポイント DLP", "title": "USB メモリへのコピーを止めるには？", "q": "USB メモリへのコピーを禁止したい", "a": "エンドポイント DLP（デバイスのオンボードと E5 が前提）"}, {"vol": "04", "card": "08", "cid": "c08", "topic": "エンドポイント DLP", "title": "USB メモリへのコピーを止めるには？", "q": "MDE にオンボード済みの端末を、Purview のエンドポイント DLP で使いたい", "a": "Purview の設定でデバイスのオンボードを有効にするだけ"}, {"vol": "04", "card": "08", "cid": "c08", "topic": "エンドポイント DLP", "title": "USB メモリへのコピーを止めるには？", "q": "Office で秘密度ラベルを手動で付けるのに、PC のオンボードは必要？", "a": "不要"}, {"vol": "04", "card": "09", "cid": "c09", "topic": "インサイダー リスク管理", "title": "退職予定者の持ち出しを見つけるには？", "q": "退職予定者の、退職前の持ち出しを検知したい。人事システムの退職日を使いたい", "a": "HR コネクタをトリガーに「退職するユーザーによるデータの窃盗」テンプレートを使う"}, {"vol": "04", "card": "09", "cid": "c09", "topic": "インサイダー リスク管理", "title": "退職予定者の持ち出しを見つけるには？", "q": "インサイダー リスクのアラートをトリアージせず放置すると、重大度は", "a": "変わらないのではなく、上がることがある"}, {"vol": "04", "card": "09", "cid": "c09", "topic": "インサイダー リスク管理", "title": "退職予定者の持ち出しを見つけるには？", "q": "E3 の組織で、IRM だけを安く使いたい", "a": "E5 Insider Risk Management アドオン"}, {"vol": "04", "card": "10", "cid": "c10", "topic": "監査とコミュニケーション コンプライアンス", "title": "操作を調べたい？ やり取りを見張りたい？", "q": "9か月前に監査を有効にした E3 テナント。14日前・30日前・60日前のサインインを Purview 監査で確認できる？", "a": "すべて確認できる（Standard は180日）"}, {"vol": "04", "card": "10", "cid": "c10", "topic": "監査とコミュニケーション コンプライアンス", "title": "操作を調べたい？ やり取りを見張りたい？", "q": "社内のやり取りに不適切な表現がないか監視したい", "a": "コミュニケーション コンプライアンス"}, {"vol": "04", "card": "10", "cid": "c10", "topic": "監査とコミュニケーション コンプライアンス", "title": "操作を調べたい？ やり取りを見張りたい？", "q": "特定の件名キーワードを含むメールを、特定の部署間でやり取りできないようにしたい", "a": "Exchange のメール フロー ルール（トランスポート ルール）"}, {"vol": "04", "card": "10", "cid": "c10", "topic": "監査とコミュニケーション コンプライアンス", "title": "操作を調べたい？ やり取りを見張りたい？", "q": "特定のユーザーのサインインやアプリの利用状況を調べたい", "a": "Purview 監査（統合監査ログ）"}], "vols": [{"no": "01", "short": "テナント", "url": "https://claude.ai/artifact/5BnRho7DVbhMcB87kNR1Gs", "colors": ["#1F57C8", "#D94A14", "#86A8FF", "#FF8248"]}, {"no": "02", "short": "Entra ID", "url": "https://claude.ai/artifact/PY28R5A28mo3CHNcqnFQEe", "colors": ["#0B7A66", "#1F57C8", "#4FD1B5", "#86A8FF"]}, {"no": "03", "short": "Defender XDR", "url": "https://claude.ai/artifact/NENPSAdHgUY5bcLptgAMZm", "colors": ["#D94A14", "#1C5BD0", "#FF8248", "#82A8FF"]}, {"no": "04", "short": "Purview", "url": "https://claude.ai/artifact/T1MvTVzR7PjiyFHrTzmZC6", "colors": ["#8A3AA8", "#0B7A66", "#D9A0F2", "#4FD1B5"]}]};
+(function(){
+  'use strict';
+  const INT = [0, 1, 3, 7, 14, 30];       // 箱ごとの間隔（日）
+  const NEW_LIMIT = 15;                    // 1回に混ぜる新しい設問の数
+  const LS_KEY = 'ms102-drill-v1';
+
+  function hash(s){ let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h.toString(36); }
+  function today(){ const d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 86400000); }
+  function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  const VOLS = {}; DATA.vols.forEach(v => { VOLS[v.no] = v; });
+  const seen = {};
+  const items = DATA.items.map(it => {
+    let k = it.vol + ':' + hash(it.q);
+    while (seen[k]) k += '+';
+    seen[k] = 1;
+    return Object.assign({ key: k }, it);
+  });
+
+  // ---- 保存（アカウント → ブラウザ → なし） ----
+  let state = {};                          // key -> [box, dueDay, updatedMs]
+  let lsOK = true;
+  try { const raw = localStorage.getItem(LS_KEY); if (raw) { const o = JSON.parse(raw); if (o && o.s) state = o.s; } } catch (e) { lsOK = false; }
+  function lsSave(){ if (!lsOK) return; try { localStorage.setItem(LS_KEY, JSON.stringify({ v: 1, s: state })); } catch (e) { lsOK = false; } }
+  const saveEl = document.getElementById('save');
+  function setSave(mode){
+    saveEl.classList.toggle('acct', mode === 'account');
+    saveEl.textContent = mode === 'account' ? '進み具合はあなたのアカウントに保存され、他の端末でも続きから使えます'
+      : mode === 'local' ? '進み具合はこのブラウザに保存されます'
+      : '進み具合はこのページを開いている間だけ残ります';
+  }
+  setSave(lsOK ? 'local' : 'none');
+
+  let ref = null, writing = false, dirty = false, timer = null;
+  function save(){
+    lsSave();
+    if (!ref) return;
+    dirty = true; clearTimeout(timer); timer = setTimeout(flush, 1200);
+  }
+  async function flush(){
+    if (writing || !dirty || !ref) return;
+    writing = true; dirty = false;
+    try { await ref.set({ v: 1, s: state }); }
+    catch (e) {
+      const code = e && e.code;
+      if (code === 'unavailable' || code === 'resource_exhausted') dirty = true;
+      else { ref = null; setSave(lsOK ? 'local' : 'none'); }
+    }
+    writing = false;
+    if (dirty && ref) timer = setTimeout(flush, 4000);
+  }
+  function merge(remote){
+    if (!remote) return;
+    Object.keys(remote).forEach(k => {
+      const r = remote[k];
+      if (!Array.isArray(r) || r.length < 3) return;
+      if (!state[k] || r[2] > state[k][2]) state[k] = r;
+    });
+  }
+  async function connect(){
+    if (!window.claude || typeof window.claude.use !== 'function') return;
+    try {
+      const [user, db] = await Promise.all([window.claude.use('user'), window.claude.use('db')]);
+      if (!user || !db) return;
+      const id = await user.id();
+      if (!id) return;
+      const r = db.doc('data/users/' + id + '/drill');
+      const snap = await r.get();
+      const remote = snap.exists ? ((snap.data() || {}).s || {}) : null;
+      merge(remote);
+      ref = r;
+      setSave('account');
+      lsSave();
+      if (JSON.stringify(remote || {}) !== JSON.stringify(state)) save();
+      refreshAll(doneCount === 0 && !revealed);
+    } catch (e) { /* ブラウザ保存のまま続ける */ }
+  }
+
+  // ---- 絞り込み ----
+  const pickDrill = {}; const pickIndex = {};
+  DATA.vols.forEach(v => { pickDrill[v.no] = true; pickIndex[v.no] = true; });
+  function chips(hostId, pick, onChange){
+    const host = document.getElementById(hostId);
+    DATA.vols.forEach(v => {
+      const n = items.filter(i => i.vol === v.no).length;
+      const b = el('button', 'chip v' + v.no);
+      b.type = 'button';
+      b.setAttribute('aria-pressed', 'true');
+      b.append('VOL.' + v.no + ' ' + v.short, el('small', null, n + '問'));
+      b.addEventListener('click', () => {
+        const on = b.getAttribute('aria-pressed') !== 'true';
+        if (!on && Object.values(pick).filter(Boolean).length === 1) return;
+        pick[v.no] = on; b.setAttribute('aria-pressed', on ? 'true' : 'false'); onChange();
+      });
+      host.appendChild(b);
+    });
+  }
+
+  // ---- 出題の組み立て ----
+  let queue = [], doneCount = 0, total = 0, revealed = false, extraNew = 0;
+  function buildQueue(){
+    const t = today();
+    const pool = items.filter(i => pickDrill[i.vol]);
+    const due = pool.filter(i => state[i.key] && state[i.key][1] <= t);
+    // 新しい設問は巻をまたいで交互に混ぜる
+    const byVol = DATA.vols.map(v => pool.filter(i => i.vol === v.no && !state[i.key]));
+    const fresh = [];
+    for (let r = 0; fresh.length < NEW_LIMIT + extraNew && byVol.some(a => a.length > r); r++) {
+      byVol.forEach(a => { if (a[r] && fresh.length < NEW_LIMIT + extraNew) fresh.push(a[r]); });
+    }
+    queue = due.concat(fresh);
+    for (let i = queue.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [queue[i], queue[j]] = [queue[j], queue[i]]; }
+    doneCount = 0; total = queue.length; revealed = false;
+  }
+  function next(b){ return b === 0 ? 2 : Math.min(5, b + 1); }   // 初見で覚えていたら3日後から
+  function boxOf(i){ return state[i.key] ? state[i.key][0] : 0; }
+  function label(days){ return days <= 0 ? 'もう一度' : days === 1 ? '明日' : days + '日後'; }
+
+  const flash = document.getElementById('flash');
+  function renderFlash(){
+    flash.replaceChildren();
+    const left = queue.length;
+    document.getElementById('q-left').textContent = '残り ' + left + '枚';
+    document.getElementById('q-done').textContent = '今回 ' + doneCount + '枚';
+    document.getElementById('q-fill').style.width = (total ? Math.round(doneCount / (doneCount + left) * 100) : 100) + '%';
+    if (!left) {
+      flash.className = 'flash';
+      const d = el('div', 'done');
+      const fresh = items.filter(i => pickDrill[i.vol] && !state[i.key]).length;
+      d.append(el('p', 'big', doneCount ? '今日の分は、ここまで。' : '今日の出題はありません。'));
+      d.append(el('p', null, fresh ? 'まだ見ていない設問が ' + fresh + '問あります。続けるなら追加できます。' : '全部の設問に一度は答えました。次の出題日に、また戻ってきます。'));
+      const bs = el('div', 'btns');
+      if (fresh) {
+        const more = el('button', 'btn primary', '新しい設問を' + Math.min(NEW_LIMIT, fresh) + '問追加');
+        more.type = 'button';
+        more.addEventListener('click', () => { extraNew += NEW_LIMIT; buildQueue(); renderFlash(); });
+        bs.append(more);
+      }
+      const idx = el('button', 'btn', '逆引き一覧を見る');
+      idx.type = 'button'; idx.addEventListener('click', () => showTab('index'));
+      bs.append(idx);
+      d.append(bs);
+      flash.append(d);
+      return;
+    }
+    const it = queue[0];
+    const v = VOLS[it.vol];
+    flash.className = 'flash v' + it.vol;
+    const meta = el('div', 'meta');
+    meta.append(el('span', 'vtag', 'VOL.' + it.vol), el('span', null, 'CARD ' + it.card + '・' + it.topic));
+    const b = boxOf(it);
+    meta.append(el('span', 'box-tag', b ? '間隔 ' + INT[b] + '日の箱' : 'はじめて'));
+    flash.append(meta, el('p', 'fq', it.q));
+    if (!revealed) {
+      const r = el('button', 'reveal', '答えを見る');
+      r.type = 'button'; r.addEventListener('click', reveal);
+      flash.append(r);
+      const k = el('p', 'keys'); k.innerHTML = '<kbd>Space</kbd> で答えを表示'; flash.append(k);
+      return;
+    }
+    const fa = el('div', 'fa');
+    fa.append(el('p', null, it.a));
+    if (v && v.url) {
+      const a = el('a', null, 'VOL.' + it.vol + ' の CARD ' + it.card + ' で確認する →');
+      a.href = v.url + '#' + it.cid; a.target = '_blank'; a.rel = 'noopener';
+      fa.append(a);
+    }
+    flash.append(fa);
+    const g = el('div', 'grades');
+    const nb = next(b);
+    [['g1', '忘れた', label(0), 1], ['g2', 'あやしい', label(1), 2], ['g3', '覚えてた', label(INT[nb]), 3]].forEach(([cls, t, sub, n]) => {
+      const btn = el('button', 'grade ' + cls);
+      btn.type = 'button';
+      btn.append(el('b', null, t), el('small', null, sub));
+      btn.addEventListener('click', () => grade(n));
+      g.append(btn);
+    });
+    flash.append(g);
+    const k = el('p', 'keys'); k.innerHTML = '<kbd>1</kbd> 忘れた　<kbd>2</kbd> あやしい　<kbd>3</kbd> 覚えてた'; flash.append(k);
+  }
+  function reveal(){ if (!queue.length || revealed) return; revealed = true; renderFlash(); const g = flash.querySelector('.grade.g3'); if (g) g.focus({ preventScroll: true }); }
+  function grade(n){
+    if (!queue.length || !revealed) return;
+    const it = queue.shift();
+    const t = today(), b = boxOf(it);
+    if (n === 3) { const nb = next(b); state[it.key] = [nb, t + INT[nb], Date.now()]; doneCount++; }
+    else if (n === 2) { state[it.key] = [Math.max(1, b), t + 1, Date.now()]; doneCount++; }
+    else { state[it.key] = [1, t, Date.now()]; queue.splice(Math.min(3, queue.length), 0, it); }
+    revealed = false;
+    save();
+    renderFlash(); renderStats(); renderMastery(); markRow(it);
+  }
+
+  // ---- 数字と定着度 ----
+  function renderStats(){
+    document.getElementById('st-total').textContent = items.length;
+    document.getElementById('st-due').textContent = queue.length || 0;
+    document.getElementById('st-done').textContent = items.filter(i => boxOf(i) === 5).length;
+    const target = Date.UTC(2026, 10, 29, 15, 0, 0);
+    document.getElementById('st-days').textContent = Math.max(0, Math.ceil((target - Date.now()) / 86400000));
+  }
+  function renderMastery(){
+    const host = document.getElementById('mastery');
+    host.replaceChildren();
+    DATA.vols.forEach(v => {
+      const pool = items.filter(i => i.vol === v.no);
+      const c = [0, 0, 0, 0];
+      pool.forEach(i => { const b = boxOf(i); c[b === 0 ? 0 : b <= 2 ? 1 : b <= 4 ? 2 : 3]++; });
+      const row = el('div', 'mrow v' + v.no);
+      const nm = el('span', 'nm'); nm.append(el('i', null, 'VOL.' + v.no + ' '), v.short);
+      const st = el('div', 'stack'); st.setAttribute('role', 'img');
+      st.setAttribute('aria-label', v.short + '：覚えた' + c[3] + '、定着中' + c[2] + '、学習中' + c[1] + '、未学習' + c[0]);
+      [['s-done', c[3]], ['s-rev', c[2]], ['s-learn', c[1]], ['s-new', c[0]]].forEach(([cls, n]) => {
+        const s = el('span', cls); s.style.width = (pool.length ? n / pool.length * 100 : 0) + '%'; st.append(s);
+      });
+      row.append(nm, st, el('span', 'cnt', c[3] + ' / ' + pool.length));
+      host.append(row);
+    });
+  }
+
+  // ---- 逆引き一覧 ----
+  const rowEls = {};
+  let allOpen = false;
+  function renderList(){
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    const host = document.getElementById('list');
+    host.replaceChildren();
+    let n = 0;
+    DATA.vols.forEach(v => {
+      if (!pickIndex[v.no]) return;
+      const hits = items.filter(i => i.vol === v.no && (!q || (i.q + ' ' + i.a + ' ' + i.topic + ' ' + i.title).toLowerCase().indexOf(q) >= 0));
+      if (!hits.length) return;
+      n += hits.length;
+      const h = el('div', 'vol-h v' + v.no);
+      h.append(el('b', null, 'VOL.' + v.no), v.short, el('span', null, hits.length + '問'));
+      if (v.url) { const a = el('a', null, 'この巻を開く →'); a.href = v.url; a.target = '_blank'; a.rel = 'noopener'; h.append(a); }
+      const rows = el('div', 'rows v' + v.no);
+      hits.forEach(i => {
+        const d = el('details', 'rowi'); if (allOpen) d.open = true;
+        const s = el('summary');
+        const dot = el('span', 'dot b' + boxOf(i));
+        const qq = el('span'); qq.append(el('span', 'src', 'CARD ' + i.card + '・' + i.topic), i.q);
+        s.append(dot, qq);
+        const ans = el('div', 'ans'); ans.append(el('span', null, '→ ' + i.a));
+        if (v.url) { const a = el('a', null, 'CARD ' + i.card + ' で確認する →'); a.href = v.url + '#' + i.cid; a.target = '_blank'; a.rel = 'noopener'; ans.append(a); }
+        d.append(s, ans);
+        rows.append(d);
+        rowEls[i.key] = dot;
+      });
+      host.append(h, rows);
+    });
+    document.getElementById('found').textContent = n + '問' + (q ? '（「' + q + '」で絞り込み）' : '');
+    if (!n) host.append(el('p', 'empty', '見つかりませんでした。言葉を短くするか、巻の絞り込みを外してください。'));
+  }
+  function markRow(i){ const d = rowEls[i.key]; if (d) d.className = 'dot b' + boxOf(i); }
+
+  // ---- タブ・キー操作 ----
+  function showTab(name){
+    const drill = name === 'drill';
+    document.getElementById('drill').hidden = !drill;
+    document.getElementById('index').hidden = drill;
+    document.getElementById('tab-drill').setAttribute('aria-selected', drill ? 'true' : 'false');
+    document.getElementById('tab-index').setAttribute('aria-selected', drill ? 'false' : 'true');
+    if (!drill) renderList();
+    try { sessionStorage.setItem('ms102-drill-tab', name); } catch (e) {}
+  }
+  document.getElementById('tab-drill').addEventListener('click', () => showTab('drill'));
+  document.getElementById('tab-index').addEventListener('click', () => showTab('index'));
+  document.getElementById('search').addEventListener('input', renderList);
+  document.getElementById('open-all').addEventListener('click', e => {
+    allOpen = !allOpen; e.currentTarget.textContent = allOpen ? '答えを全部隠す' : '答えを全部表示'; renderList();
+  });
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('drill').hidden) return;
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (!revealed && (e.key === ' ' || e.key === 'Enter') && tag !== 'BUTTON') { e.preventDefault(); reveal(); }
+    else if (revealed && (e.key === '1' || e.key === '2' || e.key === '3')) { e.preventDefault(); grade(+e.key); }
+  });
+
+  // シリーズの巻へのリンク
+  const vl = document.getElementById('vol-links');
+  DATA.vols.forEach(v => {
+    if (!v.url) return;
+    const a = el('a', 'v' + v.no); a.href = v.url; a.target = '_blank'; a.rel = 'noopener';
+    a.append(el('b', null, 'VOL.' + v.no + ' ' + v.short), el('span', null, '図解ムックで読み直す'));
+    vl.append(a);
+  });
+
+  function refreshAll(rebuild){
+    if (rebuild) buildQueue();
+    renderFlash(); renderStats(); renderMastery();
+    if (!document.getElementById('index').hidden) renderList();
+  }
+  chips('f-drill', pickDrill, () => { extraNew = 0; refreshAll(true); });
+  chips('f-index', pickIndex, renderList);
+  refreshAll(true);
+  try { if (sessionStorage.getItem('ms102-drill-tab') === 'index') showTab('index'); } catch (e) {}
+  connect();
+})();
+</script>

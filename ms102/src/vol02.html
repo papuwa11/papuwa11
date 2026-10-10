@@ -1,0 +1,545 @@
+<!--COVER-->
+<svg viewBox="0 0 520 520" role="img" aria-label="入口の3層。同期は誰がいるか、認証は本人か、条件付きアクセスは入れてよいか">
+  <defs><marker id="cv2" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+  <circle class="sat" cx="260" cy="58" r="44"/>
+  <text class="w2" x="260" y="65" text-anchor="middle">ユーザー</text>
+  <path class="ln" d="M260 104 V128" marker-end="url(#cv2)"/>
+  <rect class="sat" x="50" y="134" width="420" height="92"/>
+  <text class="p" x="72" y="166">① 同期 ── 誰がいるか</text>
+  <text class="w2" x="72" y="204">Connect Sync ／ Cloud Sync</text>
+  <path class="ln" d="M260 228 V250" marker-end="url(#cv2)"/>
+  <rect class="sat" x="50" y="256" width="420" height="92"/>
+  <text class="p" x="72" y="288">② 認証 ── 本人か</text>
+  <text class="w2" x="72" y="326">PHS ／ PTA ／ フェデレーション</text>
+  <path class="ln" d="M260 350 V372" marker-end="url(#cv2)"/>
+  <rect class="core" x="50" y="378" width="420" height="92"/>
+  <text class="c1" x="72" y="410" style="font-size:15px">③ 条件付きアクセス ── 入れてよいか</text>
+  <text class="c1" x="72" y="448">IF 条件 → THEN 許可・ブロック</text>
+  <text class="os" x="260" y="502" text-anchor="middle">→ Microsoft 365 へ</text>
+</svg>
+<!--/COVER-->
+
+<!--CARDS-->
+<article class="card" id="c01" data-topic="ID モデルと同期の準備">
+<h2 class="q">同期を始める前に、何を整えておく？</h2>
+<p class="catch">汚れたまま、<em>同期しない</em>。</p>
+<p class="lead">ユーザーはクラウド専用か、オンプレミス AD を権威とするハイブリッドのどちらかです。同期を始める前に AD のデータを IdFix で掃除し、UPN サフィックスをテナントの検証済みドメインに揃えておきます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-1</span><span>2つの ID モデル</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>クラウド専用 ID</b><small>Entra ID にだけ存在</small></div><ul><li>AD を持たない組織、新設の組織向け</li><li>管理はシンプル。AD 資産とは連携しない</li></ul></div>
+      <div class="hot"><div class="hd"><b>ハイブリッド ID</b><small>オンプレミス AD が権威</small></div><ul><li>同じ資格情報でオンプレミスとクラウドを使える</li><li>同期ユーザーの属性はクラウドでは編集できない</li></ul></div>
+    </div>
+  </figure>
+  <div class="figs cols">
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図1-2</span><span>IdFix が見つける4種類</span></div>
+      <div class="tiles" style="--n:2">
+        <div class="tile hot"><span class="h">重複</span><span class="d">userPrincipalName・mail・proxyAddresses</span></div>
+        <div class="tile"><span class="h">無効な文字</span><span class="d">スペースや一部の記号</span></div>
+        <div class="tile"><span class="h">書式</span><span class="d">メール アドレスの形が不正</span></div>
+        <div class="tile"><span class="h">長さ</span><span class="d">長すぎる値、不正なトップレベル ドメイン</span></div>
+      </div>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図1-3</span><span>初回同期の突き合わせ</span></div>
+      <div class="vs2">
+        <div><div class="hd"><b>ハード マッチ</b><small>ソース アンカーで厳密に</small></div><ul><li>immutableId で照合</li><li>違う値が入っていればブロック</li></ul></div>
+        <div class="hot"><div class="hd"><b>ソフト マッチ</b><small>属性で緩やかに</small></div><ul><li>基本はプライマリ SMTP アドレス</li><li>先にクラウドで作ったユーザーを AD とひも付け</li></ul></div>
+      </div>
+    </figure>
+  </div>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-4</span><span>UPN サフィックスが合っていないと、こうなる</span></div>
+    <div class="route">
+      <div class="ln2 bad"><span>AD の UPN が taro@contoso.local のまま同期<br><small>→ クラウドでは taro@contoso.onmicrosoft.com に置き換わる</small></span><span class="res">×</span></div>
+      <div class="ln2 good"><span>AD に代替 UPN サフィックス contoso.com を追加し、UPN を付け替えてから同期<br><small>→ taro@contoso.com でサインインできる</small></span><span class="res">○</span></div>
+    </div>
+    <figcaption>Entra Connect の再インストールや同期のやり直しでは直らない。直すのはオンプレミス側。</figcaption>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>同期ユーザーの属性は<span class="mk">オンプレミス AD 側</span>で変える。ライセンスや使用場所などクラウド固有の属性だけはクラウドで操作する。</li>
+  <li>ソース アンカーの既定は <code>ms-DS-ConsistencyGuid</code>。フォレスト移行があっても対応関係を保てる。</li>
+  <li>ソフト マッチの基本は<span class="mk">SMTP マッチング</span>。UPN による突き合わせは SMTP がまだない場合の代替。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>同期されたユーザーの部署（department）を変えたい。どこで変える？</summary><p class="a">オンプレミスの Active Directory（ユーザーとコンピューター）</p></details>
+  <details class="qi"><summary>同期したらユーザーの UPN が .onmicrosoft.com になってしまった</summary><p class="a">オンプレミスの UPN サフィックスが検証済みドメインではない。AD 側で UPN を付け替える</p></details>
+  <details class="qi"><summary>同期前にクラウドで作ったユーザーを、AD の同じ人と結びつけたい</summary><p class="a">ソフト マッチ（プライマリ SMTP アドレスによる突き合わせ）</p></details>
+  <details class="qi"><summary>同期の前に、AD の重複や無効な文字を見つけて直したい</summary><p class="a">IdFix</p></details>
+</div>
+</article>
+
+<article class="card" id="c02" data-topic="Entra Connect Sync と Cloud Sync">
+<h2 class="q">Connect Sync と Cloud Sync、どちらを選ぶ？</h2>
+<p class="catch">頭脳が<em>オンプレ</em>か、<em>クラウド</em>か。</p>
+<p class="lead">ディレクトリ同期の実装は2つあります。Connect Sync はオンプレミスの同期サーバーに頭脳があり、Cloud Sync はクラウドに頭脳があって、オンプレミスには軽いエージェントだけを置きます。どちらを選ぶかの設問が繰り返し出ます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-1</span><span>同期の仕組みの違い</span></div>
+    <div class="lanes">
+      <div class="lane"><b>Connect Sync<small>従来型</small></b><div class="chain"><span>オンプレミス AD</span><i>→</i><span class="hot">同期サーバー<small>Windows Server＋SQL。アクティブは1台＋ステージング</small></span><i>→</i><span>Entra ID<small>既定30分ごと</small></span></div></div>
+      <div class="lane"><b>Cloud Sync<small>クラウド管理型</small></b><div class="chain"><span>オンプレミス AD</span><i>→</i><span>エージェント×複数<small>冗長化できる</small></span><i>→</i><span class="hot">クラウドのプロビジョニング サービス<small>約2分ごと。構成はクラウドに保持</small></span></div></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-2</span><span>できること早見表</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>機能</th><th>Connect Sync</th><th>Cloud Sync</th></tr></thead>
+        <tbody>
+          <tr class="pick"><td>切断されたフォレスト（信頼関係なし）</td><td class="x">×</td><td class="o">○</td></tr>
+          <tr class="pick"><td>デバイスの同期／ハイブリッド参加</td><td class="o">○</td><td class="x">×</td></tr>
+          <tr><td>パススルー認証（PTA）の構成</td><td class="o">○</td><td class="x">×</td></tr>
+          <tr><td>AD FS フェデレーションの構成</td><td class="o">○</td><td class="x">×</td></tr>
+          <tr><td>複数のアクティブな同期</td><td class="x">×</td><td class="o">○</td></tr>
+          <tr><td>複雑な同期ルール</td><td class="o">○</td><td>△ 限定的</td></tr>
+          <tr><td>オンデマンド プロビジョニング</td><td class="x">×</td><td class="o">○</td></tr>
+          <tr><td>PHS・パスワード ライトバック</td><td class="o">○</td><td class="o">○</td></tr>
+          <tr><td>規模</td><td>実質上限なし</td><td>ドメインあたり約15万</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>Entra Connect がオンプレミス AD を読むときのプロトコルは<span class="mk">LDAP</span>。クラウドへの書き込みは HTTPS。</li>
+  <li>Connect Sync のまま可用性を上げるなら、2台目を<span class="mk">ステージング モード</span>で待機させる。</li>
+  <li>同じフォレストで両方を併用することもできる（同じ OU をスコープしないなどの条件つき）。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>買収した会社の AD と自社 AD に信頼関係がない。両方を1テナントに同期したい</summary><p class="a">Entra Cloud Sync</p></details>
+  <details class="qi"><summary>ハイブリッド Entra 参加のデバイスを使いたい</summary><p class="a">Entra Connect Sync（デバイス同期が必要）</p></details>
+  <details class="qi"><summary>同期サーバーの単一障害点をなくしたい</summary><p class="a">Cloud Sync（複数エージェントで冗長化）</p></details>
+  <details class="qi"><summary>Connect Sync のまま、同期サーバーの可用性を高めたい</summary><p class="a">2台目をステージング モードで用意しておく</p></details>
+  <details class="qi"><summary>Entra Connect がオンプレミス AD を読むときのプロトコルは</summary><p class="a">LDAP</p></details>
+</div>
+</article>
+
+<article class="card" id="c03" data-topic="PHS・PTA・フェデレーション">
+<h2 class="q">パスワードは、どこで確かめる？</h2>
+<p class="catch"><em>預ける</em>か、<em>聞きに行く</em>か、<br><em>任せる</em>か。</p>
+<p class="lead">同期と認証は別の話です。ユーザー情報をどう運ぶかが同期、パスワードをどこで検証するかが認証方式。ハッシュをクラウドに預ける PHS、そのつどオンプレミスに聞きに行く PTA、AD FS に任せるフェデレーションの3つです。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-1</span><span>3つの認証の経路</span></div>
+    <div class="lanes">
+      <div class="lane pick"><b>PHS<small>既定・推奨</small></b><div class="chain"><span>ユーザー</span><i>→</i><span class="hot">Entra ID が検証<small>ハッシュをさらにハッシュ化して約2分ごとに同期</small></span></div></div>
+      <div class="lane"><b>PTA</b><div class="chain"><span>ユーザー</span><i>→</i><span>Entra ID が中継</span><i>→</i><span>認証エージェント → AD が検証<small>パスワードはクラウドに保存されない</small></span></div></div>
+      <div class="lane"><b>フェデレーション</b><div class="chain"><span>ユーザー</span><i>→</i><span>Entra ID がリダイレクト</span><i>→</i><span>AD FS が検証<small>スマートカードなど高度な要件向け</small></span></div></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-2</span><span>性質の違い</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>観点</th><th>PHS</th><th>PTA</th><th>フェデレーション</th></tr></thead>
+        <tbody>
+          <tr><td>オンプレミスが止まったら</td><td class="o">○</td><td class="x">×</td><td class="x">×</td></tr>
+          <tr class="pick"><td>漏洩した資格情報の検出</td><td class="o">○</td><td>PHS の併用が必要</td><td>PHS の併用が必要</td></tr>
+          <tr><td>追加のサーバー</td><td>不要</td><td>認証エージェント（3台以上推奨）</td><td>AD FS ＋ WAP</td></tr>
+          <tr><td>運用の手間</td><td>最小</td><td>中</td><td>最大</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-3</span><span>Entra Connect と WAP の間で開けるポート</span></div>
+    <div class="numstrip">
+      <div><b>443</b><span>HTTPS。構成と同期の本体</span></div>
+      <div><b>88</b><span>Kerberos 認証</span></div>
+      <div><b>5985</b><span>WinRM。リモート管理</span></div>
+    </div>
+    <figcaption>53・49443・5671 はこの区間では不要。似た数字に惑わされない。</figcaption>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">シームレス SSO</span> は PHS・PTA と組み合わせる。AD に AZUREADSSOACC が作られ、Kerberos で認証する。フェデレーションでは不要。</li>
+  <li>「オンプレミスとクラウドで別々のパスワード。PTA で1つにする」は<span class="mk">正しい</span>。AD FS が明示された問題だけ、先にドメインをマネージドへ変換する必要がある。</li>
+  <li>リセットしたパスワードをオンプレミスにも反映させたいなら、別途<span class="mk">パスワード ライトバック</span>。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>AD FS を使っている。Identity Protection の「漏洩した資格情報」を検出したい</summary><p class="a">パスワード ハッシュ同期（PHS）を有効にする</p></details>
+  <details class="qi"><summary>オンプレミスが止まってもサインインできる認証方式は</summary><p class="a">PHS</p></details>
+  <details class="qi"><summary>オンプレミスとクラウドで別のパスワードを使わされている。PTA を展開して1つにするのは正しい解か</summary><p class="a">正しい（Yes）</p></details>
+  <details class="qi"><summary>Entra Connect と WAP の間のファイアウォールで開けるポートは</summary><p class="a">443・88・5985</p></details>
+</div>
+</article>
+
+<article class="card" id="c04" data-topic="同期の監視とトラブルシューティング">
+<h2 class="q">同期の範囲を変えたい。最初にやることは？</h2>
+<p class="catch">フィルターを変える前に、<br><em>スケジューラーを止める</em>。</p>
+<p class="lead">同期の状態は Entra Connect Health で見張り、エラーは属性の重複や無効な文字が定番です。範囲（フィルター）を変えると、外れたオブジェクトは Entra ID 側で削除されます。30分ごとの同期が途中で走らないよう、手順の順番が問われます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-1</span><span>同期フィルターを変える手順</span></div>
+    <ol class="flow tight">
+      <li class="goal"><b>スケジューラーを止める（最初の一手）</b><small><code>Set-ADSyncScheduler -SyncCycleEnabled $false</code>。ステージング モードに切り替えてもよい</small></li>
+      <li><b>構成ウィザードでフィルターを変える</b><small>グループ ベースのフィルターはウィザードでのみ変更。一度無効にすると戻せない</small></li>
+      <li><b>完全同期を実行し、エクスポート予定を確認</b><small>意図しない削除が含まれていないか</small></li>
+      <li><b>スケジューラーを戻す</b><small><code>Set-ADSyncScheduler -SyncCycleEnabled $true</code></small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-2</span><span>Connect Health のエージェントは、見たいもの別</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">Connect Sync サーバーに</span><span class="h">for Sync</span><span class="d">同期の正常性・エラー・遅延</span></div>
+      <div class="tile hot"><span class="p">AD FS サーバーと WAP に</span><span class="h">for AD FS</span><span class="d">認証の件数・種類・エラー</span></div>
+      <div class="tile"><span class="p">ドメイン コントローラーに</span><span class="h">for AD DS</span><span class="d">レプリケーションと DC の正常性。認証活動は対象外</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-3</span><span>やりたいことと、使う道具</span></div>
+    <div class="map">
+      <div class="row"><span class="want">同期ルールの変更を、全オブジェクトに反映させたい</span><span class="arr"></span><span class="tool">完全同期<small>Start-ADSyncSyncCycle -PolicyType Initial</small></span></div>
+      <div class="row"><span class="want">変更した1人だけ、すぐ同期を試したい（Cloud Sync）</span><span class="arr"></span><span class="tool">オンデマンド プロビジョニング</span></div>
+      <div class="row"><span class="want">同期の状況を継続的に監視し、通知を受けたい</span><span class="arr"></span><span class="tool">Entra Connect Health<small>Entra ID P1 以上</small></span></div>
+      <div class="row"><span class="want">同期の間隔（既定30分）を変えたい</span><span class="arr"></span><span class="tool">Set-ADSyncScheduler<small>-CustomizedSyncCycleInterval</small></span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>UPN や proxyAddresses の重複は、<span class="mk">重複属性の回復性</span>で問題の属性だけが検疫され、同期そのものは続く。直すのはオンプレミス側。</li>
+  <li><span class="mk">誤削除防止機能</span>（既定500件）はあるが、手順の代わりにはならない。</li>
+  <li>「ウィザードを実行する」は必要な作業だが<span class="mk">2番目</span>。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>パイロットのグループ フィルターをやめ、OU の全員を同期したい。最初にやることは</summary><p class="a">同期スケジューラーを止める（Set-ADSyncScheduler -SyncCycleEnabled $false）</p></details>
+  <details class="qi"><summary>AD FS の認証件数と認証エラーを監視したい</summary><p class="a">Connect Health for AD FS のエージェントを AD FS サーバーと WAP サーバーに入れる</p></details>
+  <details class="qi"><summary>同期ルールを変えた。既存の全オブジェクトに反映させたい</summary><p class="a">完全同期（Initial）</p></details>
+  <details class="qi"><summary>同期の間隔を15分にしたい</summary><p class="a">Set-ADSyncScheduler -CustomizedSyncCycleInterval 00:15:00</p></details>
+</div>
+</article>
+
+<article class="card" id="c05" data-topic="認証方法の管理">
+<h2 class="q">フィッシングに強い MFA は、どれ？</h2>
+<p class="catch">コードを伝える方式は、<br><em>偽サイトに負ける</em>。</p>
+<p class="lead">認証方法は Entra 管理センターの認証方法ポリシーで一元管理します。SMS やプッシュ通知も多要素認証ですが、フィッシングへの耐性はありません。耐性があるのは、サイトのアドレスに結びついた鍵で署名する方式だけです。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-1</span><span>フィッシング耐性の分かれ目</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>コードを伝えて確認する</b><small>SMS・音声／OATH／Authenticator 通知</small></div><ul><li>コードには「どのサイト宛てか」の情報がない</li><li>偽サイトに中継されると、同じコードで通ってしまう</li></ul></div>
+      <div class="hot"><div class="hd"><b>鍵の署名で確認する</b><small>パスキー・FIDO2／Windows Hello for Business／証明書ベース認証</small></div><ul><li>秘密鍵は端末から出ず、登録したサイトと1対1</li><li>偽サイトではアドレスが一致せず、署名が作れない</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-2</span><span>認証方法の強さ</span></div>
+    <ol class="bars">
+      <li style="--w:18%"><span class="bar"></span><span class="lab"><b>SMS・音声通話</b><span>SIM スワップに弱い。できれば廃止</span></span></li>
+      <li style="--w:42%"><span class="bar"></span><span class="lab"><b>OATH トークン</b><span>時刻同期のワンタイム パスワード</span></span></li>
+      <li style="--w:68%"><span class="bar"></span><span class="lab"><b>Authenticator のプッシュ通知</b><span>番号照合と追加コンテキストが既定で有効（MFA 疲労攻撃の対策）</span></span></li>
+      <li class="rec" style="--w:100%"><span class="bar"></span><span class="lab"><b>パスキー／FIDO2・Windows Hello・証明書ベース<span class="tag">フィッシング耐性</span></b><span>条件付きアクセスの認証強度で要求できる</span></span></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-3</span><span>一時アクセス パス（TAP）の出番は2つ</span></div>
+    <div class="map">
+      <div class="row"><span class="want">入社初日、まだ何も登録していない人に MFA を登録させたい</span><span class="arr"></span><span class="tool hot">TAP<small>期限付き。1回限りか複数回かを選べる</small></span></div>
+      <div class="row"><span class="want">セキュリティ キーをなくした人を復旧させたい</span><span class="arr"></span><span class="tool hot">TAP</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>認証強度の組み込みは3つ。<span class="mk">多要素認証／パスワードレス MFA／フィッシング耐性 MFA</span>。特権ロールにはフィッシング耐性を求めるのが定番。</li>
+  <li>Authenticator のパスワードレスは、<span class="mk">保護 → 認証方法 → ポリシー → Microsoft Authenticator</span> で有効にする。必要なのは認証ポリシー管理者。</li>
+  <li>TAP は恒久的な認証手段ではない。アプリ パスワードは古いクライアント向けの仕組みで、初期登録の手段ではない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>新入社員が、MFA を何も登録していない状態で初日にサインインする必要がある</summary><p class="a">一時アクセス パス（TAP）を発行する</p></details>
+  <details class="qi"><summary>セキュリティ キーを紛失したユーザーを復旧させたい</summary><p class="a">一時アクセス パス（TAP）</p></details>
+  <details class="qi"><summary>Authenticator のパスワードレス サインインを有効にする場所は</summary><p class="a">認証方法ポリシーの Microsoft Authenticator（認証ポリシー管理者以上）</p></details>
+  <details class="qi"><summary>「フィッシング耐性 MFA」に入る方式は</summary><p class="a">FIDO2・パスキー、Windows Hello for Business、証明書ベース認証</p></details>
+</div>
+</article>
+
+<article class="card" id="c06" data-topic="SSPR とパスワード保護">
+<h2 class="q">自分でパスワードを戻させるとき、ハイブリッドで忘れてはいけないのは？</h2>
+<p class="catch">ハイブリッドなら、<em>ライトバック</em>。</p>
+<p class="lead">SSPR はユーザー自身にパスワードをリセットさせ、ヘルプデスクの負荷を下げる機能です。設定項目がそのまま出題されます。推測されやすいパスワードを禁止するのが Entra パスワード保護で、オンプレミス AD にも広げられます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-1</span><span>SSPR の設定画面は6項目</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="h">プロパティ</span><span class="d">対象を なし／選択済み／すべて。まずパイロット グループ</span></div>
+      <div class="tile"><span class="h">認証方法</span><span class="d">必要な数（1 か 2）と使える方法</span></div>
+      <div class="tile"><span class="h">登録</span><span class="d">サインイン時に登録を必須に、再確認の間隔</span></div>
+      <div class="tile"><span class="h">通知</span><span class="d">本人と、他の管理者に通知するか</span></div>
+      <div class="tile"><span class="h">カスタマイズ</span><span class="d">「管理者に連絡」リンクの行き先</span></div>
+      <div class="tile hot"><span class="h">オンプレミス統合</span><span class="d">パスワード ライトバック。ハイブリッドでは必須</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-2</span><span>パスワード保護をオンプレミスにも広げる</span></div>
+    <div class="chain">
+      <span>グローバル禁止リスト<small>Microsoft が管理。既定で有効、無効化できない</small></span><i>＋</i>
+      <span class="hot">カスタム禁止リスト<small>自社名など最大1000語（各4〜16文字）</small></span>
+    </div>
+    <ol class="flow tight">
+      <li><b>DC エージェントをドメイン コントローラーに</b><small>オンプレミスのパスワード変更を検査する</small></li>
+      <li><b>プロキシ サービスをドメイン参加サーバーに</b><small>クラウドからポリシーを取ってくる</small></li>
+      <li><b>監査モードで影響を評価</b><small>いきなり強制しない</small></li>
+      <li class="goal"><b>強制モードに切り替える</b></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-3</span><span>覚える数字</span></div>
+    <div class="numstrip">
+      <div><b>10<small>回</small></b><span>スマート ロックアウトの既定。失敗で60秒ロックし、以後延びる</span></div>
+      <div><b>1000<small>語</small></b><span>カスタム禁止リストの上限</span></div>
+      <div><b>2<small>つ</small></b><span>管理者の SSPR で必須の認証方法の数</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>Entra ID Free でできるのはパスワードの<span class="mk">変更</span>だけで、リセット（SSPR）はできない。ライトバックを伴うハイブリッド構成には Entra ID P1。</li>
+  <li>管理者ロールを持つ人には、SSPR の設定にかかわらず<span class="mk">強い既定のポリシー</span>が適用される。認証方法は2つ必須で、セキュリティの質問は使えない。</li>
+  <li>ハイブリッドでライトバックなしに SSPR を有効にすると、クラウドとオンプレミスでパスワードが食い違う。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>Contoso2026! のような、自社名入りのパスワードを禁止したい</summary><p class="a">カスタム禁止パスワード リスト</p></details>
+  <details class="qi"><summary>同じ禁止ルールをオンプレミス AD にも効かせたい</summary><p class="a">DC エージェントとプロキシ サービスを入れ、監査モードで検証してから強制モードにする</p></details>
+  <details class="qi"><summary>管理者にだけセキュリティの質問によるリセットを許可したい</summary><p class="a">できない。管理者には2つの方法が必須の強い既定ポリシーが適用される</p></details>
+  <details class="qi"><summary>ハイブリッド環境で、SSPR でのリセットをオンプレミスにも反映させたい</summary><p class="a">パスワード ライトバックを有効にする（Entra ID P1）</p></details>
+</div>
+</article>
+
+<article class="card" id="c07" data-topic="Identity Protection">
+<h2 class="q">人が危ないのか、今回のサインインが怪しいのか？</h2>
+<p class="catch">ユーザー リスクは<em>パスワード変更</em>、<br>サインイン リスクは <em>MFA</em>。</p>
+<p class="lead">Identity Protection は、サインインとアカウントに関するリスクを検出して自動で対処する仕組みです。リスクは2種類あり、対処が違います。実装は条件付きアクセスで行うのが現在の推奨で、全機能には Entra ID P2 が必要です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-1</span><span>2種類のリスクと、それぞれの対処</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>ユーザー リスク</b><small>この ID そのものが乗っ取られている確率</small></div><ul><li>漏洩した資格情報</li><li>Entra の脅威インテリジェンス</li><li>異常なユーザー アクティビティ</li></ul><p class="fix">セキュアなパスワード変更を要求</p></div>
+      <div class="hot"><div class="hd"><b>サインイン リスク</b><small>今回のサインインが本人でない確率</small></div><ul><li>匿名 IP アドレス・異常なトークン</li><li>通常とは異なる場所への移動</li><li>見慣れないサインイン、パスワード スプレー</li></ul><p class="fix">多要素認証（MFA）を要求</p></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-2</span><span>P1 と P2 で見える範囲</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>機能</th><th>Free／P1</th><th>P2</th></tr></thead>
+        <tbody>
+          <tr class="pick"><td>リスクを条件にした条件付きアクセス</td><td class="x">×</td><td class="o">○</td></tr>
+          <tr><td>危険なユーザーのレポート</td><td>限定的（詳細なし）</td><td class="o">全情報</td></tr>
+          <tr><td>危険なサインインのレポート</td><td>限定的（レベルなし）</td><td class="o">全情報</td></tr>
+          <tr><td>リスク検出のレポート</td><td>Free 不可・P1 限定的</td><td class="o">全情報</td></tr>
+          <tr><td>リスクのあるユーザーのアラート</td><td class="x">×</td><td class="o">○</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>危険なユーザーのレポートで管理者が<span class="mk">「侵害を確認」</span>すると、Microsoft の機械学習へのフィードバックになる。単なる状態変更ではない。</li>
+  <li>リスク ベースのポリシーで守られるのは、<span class="mk">P2 が割り当てられたユーザーだけ</span>。P2 は E5・EMS E5・Defender Suite・Entra Suite に含まれ、E3 は P1。</li>
+  <li>中核機能は「高度な機械学習」と「リスク ベースの条件付きアクセス」。PHS や同期の機能とは別物。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>サインイン リスクが「中」以上のとき、追加の本人確認を求めたい</summary><p class="a">条件付きアクセスで、サインイン リスクが中以上のときに MFA を要求する</p></details>
+  <details class="qi"><summary>漏洩した資格情報が見つかったユーザーへの推奨の対処は</summary><p class="a">ユーザー リスクとして扱い、セキュアなパスワード変更を要求する</p></details>
+  <details class="qi"><summary>E3 のまま、Identity Protection のリスク ベース ポリシーを使いたい</summary><p class="a">Entra ID P2 のアドオン（または E5 Security 相当）を追加する</p></details>
+</div>
+</article>
+
+<article class="card" id="c08" data-topic="条件付きアクセス">
+<h2 class="q">ポリシーが複数当たったら、どう決まる？</h2>
+<p class="catch"><em>ブロックが勝ち</em>、<em>除外が勝つ</em>。</p>
+<p class="lead">条件付きアクセスは「もし〜ならば、〜を要求する」というルールでアクセスを制御します。対象のポリシーはすべて評価され、順番や番号はありません。新しいポリシーはレポート専用モードから始めます。Entra ID P1 が必要で、リスクを条件にするなら P2 です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-1</span><span>ポリシーの組み立て</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">割り当て（IF）</span><span class="h">誰が、何に</span><ul><li>ユーザー・グループ・ロール・ゲスト</li><li>ターゲット リソース（クラウド アプリ・ユーザー操作）</li><li>ネットワーク（場所）</li></ul></div>
+      <div class="tile"><span class="p">条件</span><span class="h">どんな状況で</span><ul><li>ユーザー リスク・サインイン リスク</li><li>デバイス プラットフォーム</li><li>クライアント アプリ・デバイスのフィルター</li></ul></div>
+      <div class="tile hot"><span class="p">アクセス制御（THEN）</span><span class="h">どうする</span><ul><li>ブロック</li><li>MFA・認証強度・準拠デバイス・ハイブリッド参加</li><li>セッション：サインイン頻度・アプリ制御</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-2</span><span>評価の4つのルール</span></div>
+    <div class="tiles" style="--n:2">
+      <div class="tile"><span class="h">すべて評価される</span><span class="d">優先順位や番号はない</span></div>
+      <div class="tile hot"><span class="h">ブロックが勝つ</span><span class="d">1つでもブロックが当たればブロック</span></div>
+      <div class="tile"><span class="h">許可の条件はすべて満たす</span><span class="d">「すべてが必要」の場合</span></div>
+      <div class="tile hot"><span class="h">除外が勝つ</span><span class="d">緊急アクセス用アカウントは必ず除外</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-3</span><span>確かめたいことと、使う道具</span></div>
+    <div class="map">
+      <div class="row"><span class="want">制御が効かなかったサインインで、どの条件が一致しなかったか</span><span class="arr"></span><span class="tool">サインイン ログの「条件付きアクセス」タブ</span></div>
+      <div class="row"><span class="want">新しいポリシーを、適用前に特定のユーザーとアプリで試したい</span><span class="arr"></span><span class="tool hot">What If ツール<small>とレポート専用モード</small></span></div>
+      <div class="row"><span class="want">パートナーのブロックが、リスクによる要求の引き上げかを確かめたい</span><span class="arr"></span><span class="tool">Identity Protection のレポート</span></div>
+      <div class="row"><span class="want">Azure portal・CLI・PowerShell の管理操作だけを守りたい</span><span class="arr"></span><span class="tool">クラウド アプリに Microsoft Azure Management</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">セキュリティ既定値群と条件付きアクセスは併用できない</span>。条件付きアクセスを使うには先に既定値群を無効にする。</li>
+  <li><span class="mk">レガシー認証のブロック</span>は、条件のクライアント アプリで「その他のクライアント」を選んでブロックする。POP・IMAP・SMTP AUTH は MFA の抜け道になる。</li>
+  <li>管理ポータルへの MFA の必須化は、条件付きアクセスがなくても強制され、緊急アクセス用アカウントも例外にならない。パスキーや証明書ベース認証を用意しておく。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>条件付きアクセスのポリシーを有効にできない。セキュリティ既定値群が有効になっている</summary><p class="a">セキュリティ既定値群を無効にする</p></details>
+  <details class="qi"><summary>緊急アクセス（ブレークグラス）用アカウントの扱いは</summary><p class="a">すべての条件付きアクセス ポリシーから除外する</p></details>
+  <details class="qi"><summary>POP や IMAP など、MFA を回避する抜け道を塞ぎたい</summary><p class="a">条件付きアクセスでレガシー認証をブロックする</p></details>
+  <details class="qi"><summary>Azure の管理操作だけに MFA を求めたい</summary><p class="a">クラウド アプリに Microsoft Azure Management を指定する（すべてのクラウド アプリは広すぎる）</p></details>
+  <details class="qi"><summary>新しいポリシーを、特定のユーザーと SaaS アプリで適用前に試したい</summary><p class="a">What If ツール（とレポート専用モード）</p></details>
+</div>
+</article>
+
+<article class="card" id="c09" data-topic="MFA の実装とデバイス ID">
+<h2 class="q">MFA はどの方法で有効にする？ デバイスはどう登録する？</h2>
+<p class="catch">MFA は<em>条件付きアクセス</em>で。</p>
+<p class="lead">MFA を有効にする方法は歴史的に3つありますが、現在の推奨は条件付きアクセスです。デバイスも Entra ID のオブジェクトで、「準拠デバイスを要求」や Intune のポリシー配布は、デバイスが3つの状態のどれかで登録されていることが前提です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-1</span><span>MFA を有効にする3つの方法</span></div>
+    <ul class="ox">
+      <li class="o"><span><b>条件付きアクセス</b><small>推奨。ユーザー・アプリ・場所・リスクの条件で細かく制御。Entra ID P1</small></span></li>
+      <li class="t"><span><b>セキュリティ既定値群</b><small>ライセンスのない小規模組織向け。全員一律。条件付きアクセスと併用不可</small></span></li>
+      <li class="x"><span><b>ユーザーごとの MFA</b><small>レガシーで非推奨。条件付きアクセスと混ぜると挙動が分かりにくい</small></span></li>
+    </ul>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-2</span><span>デバイスの3つの状態</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">個人所有（BYOD）</span><span class="h">Entra 登録</span><span class="d">職場アカウントを追加するだけ。Windows・iOS・Android・macOS</span></div>
+      <div class="tile hot"><span class="p">組織所有・クラウド ネイティブ</span><span class="h">Entra 参加</span><span class="d">Windows 10／11 の Home 以外。サインイン画面から職場アカウントで</span></div>
+      <div class="tile"><span class="p">組織所有・オンプレミス AD あり</span><span class="h">ハイブリッド参加</span><span class="d">AD とクラウドの両方に登録。Connect Sync が必要（Cloud Sync は不可）</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>特定のユーザーだけ MFA を免除するなら、条件付きアクセスの<span class="mk">除外</span>。ユーザーごとの MFA を「無効」にする選択肢は誤り。</li>
+  <li><span class="mk">信頼できる場所</span>（本社の固定 IP など）からは MFA を求めない設計もできるが、場所だけを信頼する設計はゼロトラストでは弱いとされる。</li>
+  <li>条件付きアクセスのユーザー操作「セキュリティ情報の登録」で、MFA の登録を信頼できる場所からだけに絞れる。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>特定のユーザーだけ MFA を免除したい</summary><p class="a">条件付きアクセス ポリシーの除外を使う</p></details>
+  <details class="qi"><summary>Windows デバイスを Entra ID に参加させて Intune のポリシーを当てたい。最小要件は</summary><p class="a">Windows 10 以上で、Home 以外のエディション</p></details>
+  <details class="qi"><summary>ハイブリッド Entra 参加に必要な同期の方式は</summary><p class="a">Entra Connect Sync（Cloud Sync はデバイス同期に非対応）</p></details>
+</div>
+</article>
+
+<article class="card" id="c10" data-topic="Application Proxy">
+<h2 class="q">VPN なしで、社内の Web アプリを社外から使わせるには？</h2>
+<p class="catch">コネクタが外へ出ていくから、<br><em>穴は開けない</em>。</p>
+<p class="lead">Application Proxy は、オンプレミスの Web アプリの手前に Entra ID の認証（条件付きアクセスや MFA を含む）をかぶせて社外へ公開する機能です。社内に置くコネクタはクラウドへ外向きにだけ接続するので、受信ポートを開ける必要がありません。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-1</span><span>通信の流れ。コネクタは外向きに待ち受ける</span></div>
+    <div class="svgbox">
+      <svg viewBox="0 0 460 220" role="img" aria-label="社外のユーザーが Entra ID で事前認証を受け、Application Proxy サービスに届く。社内のコネクタはクラウドへ外向きに常時接続し、社内 Web アプリへ中継する">
+        <defs>
+          <marker id="v2a" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path class="ah" d="M0,0 L9,4.5 L0,9 z"/></marker>
+          <marker id="v2s" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path class="ahs" d="M0,0 L9,4.5 L0,9 z"/></marker>
+        </defs>
+        <rect class="nd" x="8" y="22" width="92" height="56"/><text class="tx" x="54" y="46" text-anchor="middle">社外の</text><text class="tx" x="54" y="64" text-anchor="middle">ユーザー</text>
+        <path class="ln" d="M100 50 H118" marker-end="url(#v2a)"/>
+        <rect class="nd hot" x="122" y="16" width="104" height="68"/><text class="tw" x="174" y="42" text-anchor="middle">Entra ID</text><text class="tws" x="174" y="60" text-anchor="middle">事前認証</text><text class="tws" x="174" y="75" text-anchor="middle">条件付きアクセス</text>
+        <path class="ln" d="M226 50 H244" marker-end="url(#v2a)"/>
+        <rect class="nd" x="248" y="22" width="98" height="56"/><text class="tx" x="297" y="46" text-anchor="middle">App Proxy</text><text class="ts" x="297" y="64" text-anchor="middle">（クラウド）</text>
+        <rect class="nd" x="362" y="22" width="90" height="56"/><text class="tx" x="407" y="46" text-anchor="middle">コネクタ</text><text class="ts" x="407" y="64" text-anchor="middle">社内サーバー</text>
+        <path class="ln hot dash" d="M392 80 C 380 118, 320 118, 306 84" marker-end="url(#v2s)"/>
+        <text class="tsp" x="334" y="134" text-anchor="middle">外向きに常時接続</text>
+        <path class="ln" d="M407 80 V150" marker-end="url(#v2a)"/>
+        <rect class="nd soft" x="352" y="154" width="100" height="50"/><text class="tx" x="402" y="176" text-anchor="middle">社内 Web</text><text class="ts" x="402" y="194" text-anchor="middle">アプリ</text>
+        <text class="tsp" x="170" y="168" text-anchor="middle">受信ポートの開放も</text>
+        <text class="tsp" x="170" y="188" text-anchor="middle">VPN も要らない</text>
+      </svg>
+    </div>
+    <figcaption>公開 URL は既定で *.msappproxy.net。カスタム ドメインなら CNAME レコードと TLS 証明書を用意する。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-2</span><span>アプリを扱う画面は2つ</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>アプリの登録</b><small>App registrations</small></div><ul><li>自社で開発したアプリを Entra ID に登録する</li></ul></div>
+      <div class="hot"><div class="hd"><b>エンタープライズ アプリケーション</b><small>Enterprise applications</small></div><ul><li>SSO でユーザーに割り当てるすべてのアプリ</li><li>割り当て・SSO 方式・条件付きアクセスの対象指定</li><li>App Proxy で公開したアプリもここに並ぶ</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>コネクタを複数台入れて<span class="mk">コネクタ グループ</span>を組むと、負荷分散と冗長化ができる。</li>
+  <li>SSO は統合 Windows 認証・ヘッダー ベース・フォーム ベースなど、アプリ側の認証方式に合わせて選ぶ。</li>
+  <li>Application Proxy には<span class="mk">Entra ID P1 以上</span>が必要。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>オンプレミスの Web アプリに、VPN なしで社外から安全にアクセスさせ、条件付きアクセスも適用したい</summary><p class="a">Application Proxy（社内にコネクタを入れ、アプリを Entra ID に公開する）</p></details>
+  <details class="qi"><summary>業務アプリを追加して SSO を有効にしたい。Entra ID のどこで設定する？</summary><p class="a">エンタープライズ アプリケーション</p></details>
+  <details class="qi"><summary>Application Proxy のために、ファイアウォールで受信ポートを開ける必要は？</summary><p class="a">ない。コネクタは外向きに接続する</p></details>
+</div>
+</article>
+<!--/CARDS-->
+
+<!--QUIZ-->
+<div class="qz" data-answer="D">
+  <p class="qq"><b>Q1</b>買収した企業の AD フォレストは、自社フォレストとの信頼関係がない。両方のユーザーを1つの Entra テナントへ同期したい。最も適した方法は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>Entra Connect Sync を各フォレストに1台ずつ、どちらもアクティブで導入する</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>Entra Connect Sync を1台導入し、もう1台をステージング モードで導入する</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>フォレストの信頼関係を構成してから Entra Connect Sync を導入する</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>Entra Cloud Sync を使う</span></button>
+  </div>
+  <p class="why" hidden><b>正解は D。</b>Cloud Sync は切断されたフォレストを、それぞれのエージェント経由で同じテナントに同期できる。A は Connect Sync がアクティブ1台しか取れないため不可、B は待機構成、C は重い前提を課す。→ CARD 02</p>
+</div>
+<div class="qz" data-answer="A">
+  <p class="qq"><b>Q2</b>AD FS によるフェデレーション認証を使っている。Identity Protection の「漏洩した資格情報」を検出できるようにしたい。何をする？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>パスワード ハッシュ同期を有効にする</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>パススルー認証を有効にする</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>シームレス SSO を有効にする</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>Entra Connect Health を有効にする</span></button>
+  </div>
+  <p class="why" hidden><b>正解は A。</b>漏洩した資格情報の検出は、同期したハッシュと流出情報の突き合わせで成り立つ。フェデレーションのまま PHS をバックアップとして有効にできる。PTA もハッシュを同期しない。→ CARD 03</p>
+</div>
+<div class="qz" data-answer="C">
+  <p class="qq"><b>Q3</b>条件付きアクセス ポリシーを新しく作ったが、有効にできない。テナントではセキュリティ既定値群が有効。どうする？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>Microsoft Entra ID P2 にアップグレードする</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>ユーザーごとの MFA をすべて無効にする</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>セキュリティ既定値群を無効にする</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>ポリシーをレポート専用モードで保存する</span></button>
+  </div>
+  <p class="why" hidden><b>正解は C。</b>セキュリティ既定値群と条件付きアクセスは排他。条件付きアクセス自体は P1 で使えるので A は不要、D は検証手段で適用にはならない。→ CARD 08</p>
+</div>
+<div class="qz" data-answer="B">
+  <p class="qq"><b>Q4</b>新入社員が入社初日に、MFA の方法を何も登録していない状態でサインインする必要がある。管理者が発行するものは？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>OATH ハードウェア トークン</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>一時アクセス パス（TAP）</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>アプリ パスワード</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>SSPR の登録リンク</span></button>
+  </div>
+  <p class="why" hidden><b>正解は B。</b>TAP は強い認証手段をまだ持たない人に、期限付きのパスコードを渡して初期登録させるための機能。アプリ パスワードは古いクライアント向けで、初期登録の手段ではない。→ CARD 05</p>
+</div>
+<div class="qz" data-answer="A">
+  <p class="qq"><b>Q5</b>Connect Sync で「Operations OU にいて、かつ ADDPilot グループのメンバー」だけを同期している。グループの絞り込みをやめて OU の全員を同期したい。意図しない変更を避けるため、最初にやることは？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>Set-ADSyncScheduler -SyncCycleEnabled $false で同期スケジューラーを止める</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>構成ウィザードを実行し、グループ ベースのフィルターを無効にする</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>Start-ADSyncSyncCycle -PolicyType Initial で完全同期する</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>ADDPilot グループに OU の全ユーザーを追加する</span></button>
+  </div>
+  <p class="why" hidden><b>正解は A。</b>フィルターを変えると、範囲から外れたオブジェクトは削除される。途中で30分ごとの同期が走らないよう、まず止める。B は2番目、C は変更後の確認。→ CARD 04</p>
+</div>
+<!--/QUIZ-->
+
+<!--MEMO-->
+<div><small>CARD 01</small>同期ユーザーの属性は、オンプレミス AD で直す</div>
+<div><small>CARD 01</small>UPN が onmicrosoft.com になる原因は UPN サフィックス</div>
+<div><small>CARD 02</small>切断フォレストは Cloud Sync、デバイス・AD FS・PTA は Connect Sync</div>
+<div><small>CARD 03</small>漏洩した資格情報の検出には PHS</div>
+<div><small>CARD 03</small>Connect と WAP の間は 443・88・5985</div>
+<div><small>CARD 04</small>フィルター変更は、まずスケジューラーを止める</div>
+<div><small>CARD 05</small>初期登録と紛失時の復旧は TAP</div>
+<div><small>CARD 05</small>フィッシング耐性は FIDO2・Windows Hello・証明書ベース</div>
+<div><small>CARD 06</small>ハイブリッドの SSPR にはパスワード ライトバック</div>
+<div><small>CARD 07</small>ユーザー リスクはパスワード変更、サインイン リスクは MFA</div>
+<div><small>CARD 08</small>ブロックが勝ち、除外が勝つ。既定値群とは併用不可</div>
+<div><small>CARD 10</small>App Proxy のコネクタは外向き。受信ポートは開けない</div>
+<!--/MEMO-->

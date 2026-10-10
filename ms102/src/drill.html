@@ -1,0 +1,521 @@
+<title>MS-102 逆引きドリル</title>
+@@FONTS@@
+<style>
+/* Layout: 単語帳のように1枚ずつめくるドリルと、設問の言い回しから引ける逆引き一覧を、タブで切り替える1カラム。巻ごとの色はシリーズの表紙色。 */
+:root{
+  --desk:#DADEE5;
+  --paper:#FFFFFF;
+  --paper-2:#F2F3F6;
+  --ink:#16181D;
+  --ink-2:#4B505C;
+  --line:#D4D7DE;
+  --spot:#3A3FB0;
+  --on-spot:#FFFFFF;
+  --ok:#1D7A45;
+  --ng:#C2321E;
+  --mid:#9A6A00;
+  --note:#FFF2B3;
+  --v01:#1F57C8; --v02:#0B7A66; --v03:#D94A14; --v04:#8A3AA8;
+  --on-vc:#FFFFFF;
+
+  --gothic:"M PLUS 1","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  --mincho:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --hand:"Yusei Magic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --num:"Barlow Condensed","Arial Narrow","M PLUS 1",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#0B0D11; --paper:#181B22; --paper-2:#21252E; --ink:#ECEEF3; --ink-2:#A8AEBC; --line:#323745;
+    --spot:#A6AAFF; --on-spot:#15171C; --ok:#6FD39A; --ng:#FF8A7A; --mid:#E8C060; --note:#38321A;
+    --v01:#86A8FF; --v02:#4FD1B5; --v03:#FF8248; --v04:#D9A0F2; --on-vc:#15171C;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#0B0D11; --paper:#181B22; --paper-2:#21252E; --ink:#ECEEF3; --ink-2:#A8AEBC; --line:#323745;
+  --spot:#A6AAFF; --on-spot:#15171C; --ok:#6FD39A; --ng:#FF8A7A; --mid:#E8C060; --note:#38321A;
+  --v01:#86A8FF; --v02:#4FD1B5; --v03:#FF8248; --v04:#D9A0F2; --on-vc:#15171C;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--gothic);font-size:15.5px;line-height:1.8;-webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1;word-break:auto-phrase;line-break:strict}
+h1,h2,h3,p{margin:0}
+a{color:inherit}
+button{font:inherit;color:inherit}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--spot);outline-offset:2px}
+.v01{--vc:var(--v01)} .v02{--vc:var(--v02)} .v03{--vc:var(--v03)} .v04{--vc:var(--v04)}
+
+.wrap{max-width:780px;margin:0 auto;padding-inline:clamp(16px,3vw,24px);padding-block:24px 72px;display:grid;gap:20px}
+
+/* 表紙 */
+.mast{background:var(--spot);color:var(--on-spot);padding:clamp(22px,4vw,36px);display:grid;gap:12px}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.16em}
+.mast h1{font-weight:900;font-size:clamp(2.4rem,7vw,3.6rem);line-height:1.05;letter-spacing:.02em}
+.mast h1 small{display:block;font-family:var(--num);font-weight:800;font-size:.5em;letter-spacing:.04em;margin-bottom:4px}
+.mast .lede{font-family:var(--mincho);font-weight:600;font-size:1rem;line-height:1.9;max-width:40rem}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid var(--on-spot);border-bottom:2px solid var(--on-spot);margin-top:6px}
+.stats div{padding:8px 10px;display:grid;gap:0;min-width:0}
+.stats div + div{border-left:1px solid color-mix(in srgb,var(--on-spot) 35%,transparent)}
+.stats b{font-family:var(--num);font-weight:800;font-size:2.1rem;line-height:1.05;font-variant-numeric:tabular-nums}
+.stats span{font-size:.74rem;font-weight:700;line-height:1.4}
+.save{font-size:.78rem;font-weight:700;display:flex;gap:8px;align-items:baseline}
+.save::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--on-spot);opacity:.6;transform:translateY(-1px)}
+.save.acct::before{opacity:1}
+
+/* タブ */
+.tabs{display:flex;gap:0;border-bottom:3px solid var(--ink)}
+.tabs button{flex:1;border:0;background:var(--paper-2);padding:10px 12px;font-weight:900;font-size:.95rem;cursor:pointer;border-top:3px solid transparent}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.panel{display:grid;gap:16px}
+
+/* 絞り込み */
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.filters .lab{font-size:.78rem;font-weight:900;letter-spacing:.08em;margin-right:4px}
+.chip{border:2px solid var(--vc,var(--ink));background:var(--paper);padding:2px 10px;font-weight:900;font-size:.82rem;cursor:pointer;line-height:1.6}
+.chip[aria-pressed="true"]{background:var(--vc,var(--ink));color:var(--on-vc)}
+.chip small{font-weight:700;font-size:.72rem;margin-left:4px;opacity:.85}
+
+/* 単語帳 */
+.flash{background:var(--paper);border-top:8px solid var(--vc,var(--spot));padding:clamp(20px,4vw,32px);display:grid;gap:18px;min-height:340px;align-content:start;box-shadow:0 18px 40px -26px color-mix(in srgb,var(--ink) 45%,transparent)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.78rem;font-weight:700;color:var(--ink-2)}
+.vtag{background:var(--vc);color:var(--on-vc);padding:0 8px;font-family:var(--num);font-weight:800;font-size:.9rem;letter-spacing:.04em}
+.box-tag{margin-left:auto;padding:0 8px;border:1.5px solid var(--line);font-size:.72rem}
+.fq{font-weight:900;font-size:clamp(1.25rem,3.4vw,1.6rem);line-height:1.55}
+.fq::before{content:"Q";display:inline-block;margin-right:10px;padding:0 8px;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;line-height:1.3}
+.reveal{width:100%;padding:14px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:900;font-size:1rem;cursor:pointer}
+.reveal:hover{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.fa{background:var(--note);padding:14px 16px;display:grid;gap:8px}
+.fa p{font-weight:900;font-size:clamp(1.05rem,2.8vw,1.25rem);line-height:1.6}
+.fa p::before{content:"→ ";color:var(--vc,var(--spot))}
+.fa a{justify-self:start;font-size:.8rem;font-weight:700}
+.grades{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.grade{display:grid;gap:0;padding:10px 8px;border:2px solid var(--g);background:var(--paper);cursor:pointer;text-align:center}
+.grade b{font-weight:900;font-size:1rem;color:var(--g)}
+.grade small{font-size:.74rem;font-weight:700;color:var(--ink-2)}
+.grade:hover{background:color-mix(in srgb,var(--g) 12%,var(--paper))}
+.grade.g1{--g:var(--ng)} .grade.g2{--g:var(--mid)} .grade.g3{--g:var(--ok)}
+.keys{font-size:.74rem;color:var(--ink-2);text-align:center}
+.keys kbd{font-family:var(--num);font-weight:800;border:1px solid var(--line);padding:0 5px;margin:0 2px}
+.qbar{display:grid;gap:4px}
+.qbar .t{display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;color:var(--ink-2)}
+.qbar .track{height:6px;background:var(--paper-2)}
+.qbar .fill{height:100%;width:0;background:var(--spot);transition:width .3s}
+.done{display:grid;gap:12px;text-align:center;justify-items:center;padding-block:20px}
+.done .big{font-family:var(--hand);font-size:clamp(1.6rem,4vw,2.2rem);color:var(--spot);line-height:1.4}
+.done p{font-size:.92rem;color:var(--ink-2);max-width:30rem}
+.btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.btn{padding:8px 16px;border:2px solid var(--ink);background:var(--paper);font-weight:900;font-size:.88rem;cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn:hover{border-color:var(--spot)}
+
+/* 巻ごとの定着度 */
+.mastery{background:var(--paper);padding:18px 20px;display:grid;gap:12px}
+.mastery h2{font-weight:900;font-size:1rem}
+.mrow{display:grid;grid-template-columns:9.5rem minmax(0,1fr) 4.5rem;gap:10px;align-items:center;font-size:.82rem}
+.mrow .nm{font-weight:900}
+.mrow .nm i{font-style:normal;font-family:var(--num);font-weight:800;color:var(--vc)}
+.stack{display:flex;height:14px;background:var(--paper-2);overflow:hidden}
+.stack span{display:block;height:100%}
+.s-new{background:transparent}
+.s-learn{background:color-mix(in srgb,var(--vc) 30%,var(--paper))}
+.s-rev{background:color-mix(in srgb,var(--vc) 65%,var(--paper))}
+.s-done{background:var(--vc)}
+.mrow .cnt{font-family:var(--num);font-weight:800;font-size:.95rem;text-align:right;font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.74rem;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:4px;vertical-align:-1px;border:1px solid var(--line)}
+.legend .l1{background:color-mix(in srgb,var(--ink-2) 25%,var(--paper))}
+.legend .l2{background:color-mix(in srgb,var(--ink-2) 55%,var(--paper))}
+.legend .l3{background:var(--ink-2)}
+
+/* 逆引き一覧 */
+.search{display:flex;gap:8px;flex-wrap:wrap}
+.search input{flex:1 1 16rem;min-width:0;padding:10px 12px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);font:inherit;font-size:.95rem}
+.found{font-size:.8rem;font-weight:700;color:var(--ink-2)}
+.vol-h{display:flex;align-items:baseline;gap:10px;padding:8px 12px;background:var(--vc);color:var(--on-vc);font-weight:900;font-size:.95rem}
+.vol-h b{font-family:var(--num);font-weight:800;font-size:1.1rem}
+.vol-h a{margin-left:auto;font-size:.76rem;font-weight:700}
+.rows{display:grid;background:var(--paper)}
+.rowi{border-bottom:1px solid var(--line)}
+.rowi summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 12px;font-size:.92rem;line-height:1.6}
+.rowi summary::-webkit-details-marker{display:none}
+.dot{width:10px;height:10px;margin-top:.5em;border-radius:50%;border:2px solid var(--vc)}
+.dot.b1,.dot.b2{background:color-mix(in srgb,var(--vc) 30%,var(--paper))}
+.dot.b3,.dot.b4{background:color-mix(in srgb,var(--vc) 65%,var(--paper))}
+.dot.b5{background:var(--vc)}
+.rowi .src{display:block;font-size:.72rem;font-weight:700;color:var(--ink-2)}
+.rowi summary::after{content:"答え";padding:0 8px;border:1.5px solid var(--ink);font-size:.72rem;font-weight:900;line-height:1.7;white-space:nowrap}
+.rowi[open] summary::after{content:"閉じる";background:var(--ink);color:var(--paper)}
+.rowi .ans{margin:0 12px 12px 32px;padding:8px 12px;background:var(--note);font-weight:900;font-size:.92rem;line-height:1.6;display:grid;gap:4px}
+.rowi .ans a{font-size:.76rem;font-weight:700;justify-self:start}
+.empty{padding:24px;text-align:center;color:var(--ink-2);background:var(--paper)}
+
+.foot{display:grid;gap:10px;font-size:.8rem;color:var(--ink-2)}
+.sister{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sister a{display:grid;padding:9px 14px;border:2px solid var(--ink);text-decoration:none;background:var(--paper);color:var(--ink)}
+.sister a b{font-weight:900;font-size:.92rem}
+.sister a span{font-size:.76rem;color:var(--ink-2)}
+.sister a.v01,.sister a.v02,.sister a.v03,.sister a.v04{border-color:var(--vc)}
+
+@media (max-width:560px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats div:nth-child(3){border-left:0}
+  .stats div:nth-child(n+3){border-top:1px solid color-mix(in srgb,var(--on-spot) 35%,transparent)}
+  .mrow{grid-template-columns:6rem minmax(0,1fr);}
+  .mrow .cnt{grid-column:2;text-align:left}
+  .sister{grid-template-columns:1fr}
+  .grade small{display:none}
+}
+@media (prefers-reduced-motion:reduce){.qbar .fill{transition:none}}
+</style>
+
+<main class="wrap">
+  <header class="mast">
+    <span class="eyebrow">MS-102 図解ムック 別冊</span>
+    <h1><small>REVERSE DRILL</small>逆引きドリル</h1>
+    <p class="lede">全4巻の「ここが出る！」を、設問の言い回しから答えを思い出す形で出題します。忘れたものほど早く、覚えたものほど間をあけて戻ってきます。</p>
+    <div class="stats" aria-live="polite">
+      <div><b id="st-total">0</b><span>収録した設問</span></div>
+      <div><b id="st-due">0</b><span>今日の出題</span></div>
+      <div><b id="st-done">0</b><span>覚えた（間隔30日）</span></div>
+      <div><b id="st-days">51</b><span>試験廃止まで（日）</span></div>
+    </div>
+    <p class="save" id="save">進み具合を読み込んでいます</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="モード">
+    <button type="button" role="tab" id="tab-drill" aria-controls="drill" aria-selected="true">暗記ドリル</button>
+    <button type="button" role="tab" id="tab-index" aria-controls="index" aria-selected="false">逆引き一覧</button>
+  </div>
+
+  <section class="panel" id="drill" role="tabpanel" aria-labelledby="tab-drill">
+    <div class="filters" id="f-drill"><span class="lab">出題する巻</span></div>
+    <div class="qbar"><div class="t"><span id="q-left">残り 0枚</span><span id="q-done">今回 0枚</span></div><div class="track"><div class="fill" id="q-fill"></div></div></div>
+    <article class="flash" id="flash" aria-live="polite"></article>
+    <section class="mastery" aria-labelledby="h-mastery">
+      <h2 id="h-mastery">巻ごとの定着度</h2>
+      <div id="mastery"></div>
+      <div class="legend"><span><i class="l1"></i>学習中（間隔1〜3日）</span><span><i class="l2"></i>定着中（7〜14日）</span><span><i class="l3"></i>覚えた（30日）</span><span><i></i>未学習</span></div>
+    </section>
+  </section>
+
+  <section class="panel" id="index" role="tabpanel" aria-labelledby="tab-index" hidden>
+    <div class="search">
+      <input type="search" id="search" placeholder="設問や答えの言葉で探す（例：管理単位、TAP、30日）" aria-label="設問を検索">
+      <button type="button" class="btn" id="open-all">答えを全部表示</button>
+    </div>
+    <div class="filters" id="f-index"><span class="lab">巻</span></div>
+    <p class="found" id="found"></p>
+    <div id="list"></div>
+  </section>
+
+  <footer class="foot">
+    <div class="sister" id="vol-links"></div>
+    <div class="sister">@@SISTERS@@</div>
+    <p>設問と答えは各巻の「ここが出る！」から自動で集めています。底本は MS-102 総合テキスト（公式スキル測定 2026年4月28日版準拠）。受験前に Microsoft Learn で最新の情報を確認してください。</p>
+  </footer>
+</main>
+
+<script>
+const DATA = /*@@DATA@@*/null;
+(function(){
+  'use strict';
+  const INT = [0, 1, 3, 7, 14, 30];       // 箱ごとの間隔（日）
+  const NEW_LIMIT = 15;                    // 1回に混ぜる新しい設問の数
+  const LS_KEY = 'ms102-drill-v1';
+
+  function hash(s){ let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h.toString(36); }
+  function today(){ const d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 86400000); }
+  function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  const VOLS = {}; DATA.vols.forEach(v => { VOLS[v.no] = v; });
+  const seen = {};
+  const items = DATA.items.map(it => {
+    let k = it.vol + ':' + hash(it.q);
+    while (seen[k]) k += '+';
+    seen[k] = 1;
+    return Object.assign({ key: k }, it);
+  });
+
+  // ---- 保存（アカウント → ブラウザ → なし） ----
+  let state = {};                          // key -> [box, dueDay, updatedMs]
+  let lsOK = true;
+  try { const raw = localStorage.getItem(LS_KEY); if (raw) { const o = JSON.parse(raw); if (o && o.s) state = o.s; } } catch (e) { lsOK = false; }
+  function lsSave(){ if (!lsOK) return; try { localStorage.setItem(LS_KEY, JSON.stringify({ v: 1, s: state })); } catch (e) { lsOK = false; } }
+  const saveEl = document.getElementById('save');
+  function setSave(mode){
+    saveEl.classList.toggle('acct', mode === 'account');
+    saveEl.textContent = mode === 'account' ? '進み具合はあなたのアカウントに保存され、他の端末でも続きから使えます'
+      : mode === 'local' ? '進み具合はこのブラウザに保存されます'
+      : '進み具合はこのページを開いている間だけ残ります';
+  }
+  setSave(lsOK ? 'local' : 'none');
+
+  let ref = null, writing = false, dirty = false, timer = null;
+  function save(){
+    lsSave();
+    if (!ref) return;
+    dirty = true; clearTimeout(timer); timer = setTimeout(flush, 1200);
+  }
+  async function flush(){
+    if (writing || !dirty || !ref) return;
+    writing = true; dirty = false;
+    try { await ref.set({ v: 1, s: state }); }
+    catch (e) {
+      const code = e && e.code;
+      if (code === 'unavailable' || code === 'resource_exhausted') dirty = true;
+      else { ref = null; setSave(lsOK ? 'local' : 'none'); }
+    }
+    writing = false;
+    if (dirty && ref) timer = setTimeout(flush, 4000);
+  }
+  function merge(remote){
+    if (!remote) return;
+    Object.keys(remote).forEach(k => {
+      const r = remote[k];
+      if (!Array.isArray(r) || r.length < 3) return;
+      if (!state[k] || r[2] > state[k][2]) state[k] = r;
+    });
+  }
+  async function connect(){
+    if (!window.claude || typeof window.claude.use !== 'function') return;
+    try {
+      const [user, db] = await Promise.all([window.claude.use('user'), window.claude.use('db')]);
+      if (!user || !db) return;
+      const id = await user.id();
+      if (!id) return;
+      const r = db.doc('data/users/' + id + '/drill');
+      const snap = await r.get();
+      const remote = snap.exists ? ((snap.data() || {}).s || {}) : null;
+      merge(remote);
+      ref = r;
+      setSave('account');
+      lsSave();
+      if (JSON.stringify(remote || {}) !== JSON.stringify(state)) save();
+      refreshAll(doneCount === 0 && !revealed);
+    } catch (e) { /* ブラウザ保存のまま続ける */ }
+  }
+
+  // ---- 絞り込み ----
+  const pickDrill = {}; const pickIndex = {};
+  DATA.vols.forEach(v => { pickDrill[v.no] = true; pickIndex[v.no] = true; });
+  function chips(hostId, pick, onChange){
+    const host = document.getElementById(hostId);
+    DATA.vols.forEach(v => {
+      const n = items.filter(i => i.vol === v.no).length;
+      const b = el('button', 'chip v' + v.no);
+      b.type = 'button';
+      b.setAttribute('aria-pressed', 'true');
+      b.append('VOL.' + v.no + ' ' + v.short, el('small', null, n + '問'));
+      b.addEventListener('click', () => {
+        const on = b.getAttribute('aria-pressed') !== 'true';
+        if (!on && Object.values(pick).filter(Boolean).length === 1) return;
+        pick[v.no] = on; b.setAttribute('aria-pressed', on ? 'true' : 'false'); onChange();
+      });
+      host.appendChild(b);
+    });
+  }
+
+  // ---- 出題の組み立て ----
+  let queue = [], doneCount = 0, total = 0, revealed = false, extraNew = 0;
+  function buildQueue(){
+    const t = today();
+    const pool = items.filter(i => pickDrill[i.vol]);
+    const due = pool.filter(i => state[i.key] && state[i.key][1] <= t);
+    // 新しい設問は巻をまたいで交互に混ぜる
+    const byVol = DATA.vols.map(v => pool.filter(i => i.vol === v.no && !state[i.key]));
+    const fresh = [];
+    for (let r = 0; fresh.length < NEW_LIMIT + extraNew && byVol.some(a => a.length > r); r++) {
+      byVol.forEach(a => { if (a[r] && fresh.length < NEW_LIMIT + extraNew) fresh.push(a[r]); });
+    }
+    queue = due.concat(fresh);
+    for (let i = queue.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [queue[i], queue[j]] = [queue[j], queue[i]]; }
+    doneCount = 0; total = queue.length; revealed = false;
+  }
+  function next(b){ return b === 0 ? 2 : Math.min(5, b + 1); }   // 初見で覚えていたら3日後から
+  function boxOf(i){ return state[i.key] ? state[i.key][0] : 0; }
+  function label(days){ return days <= 0 ? 'もう一度' : days === 1 ? '明日' : days + '日後'; }
+
+  const flash = document.getElementById('flash');
+  function renderFlash(){
+    flash.replaceChildren();
+    const left = queue.length;
+    document.getElementById('q-left').textContent = '残り ' + left + '枚';
+    document.getElementById('q-done').textContent = '今回 ' + doneCount + '枚';
+    document.getElementById('q-fill').style.width = (total ? Math.round(doneCount / (doneCount + left) * 100) : 100) + '%';
+    if (!left) {
+      flash.className = 'flash';
+      const d = el('div', 'done');
+      const fresh = items.filter(i => pickDrill[i.vol] && !state[i.key]).length;
+      d.append(el('p', 'big', doneCount ? '今日の分は、ここまで。' : '今日の出題はありません。'));
+      d.append(el('p', null, fresh ? 'まだ見ていない設問が ' + fresh + '問あります。続けるなら追加できます。' : '全部の設問に一度は答えました。次の出題日に、また戻ってきます。'));
+      const bs = el('div', 'btns');
+      if (fresh) {
+        const more = el('button', 'btn primary', '新しい設問を' + Math.min(NEW_LIMIT, fresh) + '問追加');
+        more.type = 'button';
+        more.addEventListener('click', () => { extraNew += NEW_LIMIT; buildQueue(); renderFlash(); });
+        bs.append(more);
+      }
+      const idx = el('button', 'btn', '逆引き一覧を見る');
+      idx.type = 'button'; idx.addEventListener('click', () => showTab('index'));
+      bs.append(idx);
+      d.append(bs);
+      flash.append(d);
+      return;
+    }
+    const it = queue[0];
+    const v = VOLS[it.vol];
+    flash.className = 'flash v' + it.vol;
+    const meta = el('div', 'meta');
+    meta.append(el('span', 'vtag', 'VOL.' + it.vol), el('span', null, 'CARD ' + it.card + '・' + it.topic));
+    const b = boxOf(it);
+    meta.append(el('span', 'box-tag', b ? '間隔 ' + INT[b] + '日の箱' : 'はじめて'));
+    flash.append(meta, el('p', 'fq', it.q));
+    if (!revealed) {
+      const r = el('button', 'reveal', '答えを見る');
+      r.type = 'button'; r.addEventListener('click', reveal);
+      flash.append(r);
+      const k = el('p', 'keys'); k.innerHTML = '<kbd>Space</kbd> で答えを表示'; flash.append(k);
+      return;
+    }
+    const fa = el('div', 'fa');
+    fa.append(el('p', null, it.a));
+    if (v && v.url) {
+      const a = el('a', null, 'VOL.' + it.vol + ' の CARD ' + it.card + ' で確認する →');
+      a.href = v.url + '#' + it.cid; a.target = '_blank'; a.rel = 'noopener';
+      fa.append(a);
+    }
+    flash.append(fa);
+    const g = el('div', 'grades');
+    const nb = next(b);
+    [['g1', '忘れた', label(0), 1], ['g2', 'あやしい', label(1), 2], ['g3', '覚えてた', label(INT[nb]), 3]].forEach(([cls, t, sub, n]) => {
+      const btn = el('button', 'grade ' + cls);
+      btn.type = 'button';
+      btn.append(el('b', null, t), el('small', null, sub));
+      btn.addEventListener('click', () => grade(n));
+      g.append(btn);
+    });
+    flash.append(g);
+    const k = el('p', 'keys'); k.innerHTML = '<kbd>1</kbd> 忘れた　<kbd>2</kbd> あやしい　<kbd>3</kbd> 覚えてた'; flash.append(k);
+  }
+  function reveal(){ if (!queue.length || revealed) return; revealed = true; renderFlash(); const g = flash.querySelector('.grade.g3'); if (g) g.focus({ preventScroll: true }); }
+  function grade(n){
+    if (!queue.length || !revealed) return;
+    const it = queue.shift();
+    const t = today(), b = boxOf(it);
+    if (n === 3) { const nb = next(b); state[it.key] = [nb, t + INT[nb], Date.now()]; doneCount++; }
+    else if (n === 2) { state[it.key] = [Math.max(1, b), t + 1, Date.now()]; doneCount++; }
+    else { state[it.key] = [1, t, Date.now()]; queue.splice(Math.min(3, queue.length), 0, it); }
+    revealed = false;
+    save();
+    renderFlash(); renderStats(); renderMastery(); markRow(it);
+  }
+
+  // ---- 数字と定着度 ----
+  function renderStats(){
+    document.getElementById('st-total').textContent = items.length;
+    document.getElementById('st-due').textContent = queue.length || 0;
+    document.getElementById('st-done').textContent = items.filter(i => boxOf(i) === 5).length;
+    const target = Date.UTC(2026, 10, 29, 15, 0, 0);
+    document.getElementById('st-days').textContent = Math.max(0, Math.ceil((target - Date.now()) / 86400000));
+  }
+  function renderMastery(){
+    const host = document.getElementById('mastery');
+    host.replaceChildren();
+    DATA.vols.forEach(v => {
+      const pool = items.filter(i => i.vol === v.no);
+      const c = [0, 0, 0, 0];
+      pool.forEach(i => { const b = boxOf(i); c[b === 0 ? 0 : b <= 2 ? 1 : b <= 4 ? 2 : 3]++; });
+      const row = el('div', 'mrow v' + v.no);
+      const nm = el('span', 'nm'); nm.append(el('i', null, 'VOL.' + v.no + ' '), v.short);
+      const st = el('div', 'stack'); st.setAttribute('role', 'img');
+      st.setAttribute('aria-label', v.short + '：覚えた' + c[3] + '、定着中' + c[2] + '、学習中' + c[1] + '、未学習' + c[0]);
+      [['s-done', c[3]], ['s-rev', c[2]], ['s-learn', c[1]], ['s-new', c[0]]].forEach(([cls, n]) => {
+        const s = el('span', cls); s.style.width = (pool.length ? n / pool.length * 100 : 0) + '%'; st.append(s);
+      });
+      row.append(nm, st, el('span', 'cnt', c[3] + ' / ' + pool.length));
+      host.append(row);
+    });
+  }
+
+  // ---- 逆引き一覧 ----
+  const rowEls = {};
+  let allOpen = false;
+  function renderList(){
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    const host = document.getElementById('list');
+    host.replaceChildren();
+    let n = 0;
+    DATA.vols.forEach(v => {
+      if (!pickIndex[v.no]) return;
+      const hits = items.filter(i => i.vol === v.no && (!q || (i.q + ' ' + i.a + ' ' + i.topic + ' ' + i.title).toLowerCase().indexOf(q) >= 0));
+      if (!hits.length) return;
+      n += hits.length;
+      const h = el('div', 'vol-h v' + v.no);
+      h.append(el('b', null, 'VOL.' + v.no), v.short, el('span', null, hits.length + '問'));
+      if (v.url) { const a = el('a', null, 'この巻を開く →'); a.href = v.url; a.target = '_blank'; a.rel = 'noopener'; h.append(a); }
+      const rows = el('div', 'rows v' + v.no);
+      hits.forEach(i => {
+        const d = el('details', 'rowi'); if (allOpen) d.open = true;
+        const s = el('summary');
+        const dot = el('span', 'dot b' + boxOf(i));
+        const qq = el('span'); qq.append(el('span', 'src', 'CARD ' + i.card + '・' + i.topic), i.q);
+        s.append(dot, qq);
+        const ans = el('div', 'ans'); ans.append(el('span', null, '→ ' + i.a));
+        if (v.url) { const a = el('a', null, 'CARD ' + i.card + ' で確認する →'); a.href = v.url + '#' + i.cid; a.target = '_blank'; a.rel = 'noopener'; ans.append(a); }
+        d.append(s, ans);
+        rows.append(d);
+        rowEls[i.key] = dot;
+      });
+      host.append(h, rows);
+    });
+    document.getElementById('found').textContent = n + '問' + (q ? '（「' + q + '」で絞り込み）' : '');
+    if (!n) host.append(el('p', 'empty', '見つかりませんでした。言葉を短くするか、巻の絞り込みを外してください。'));
+  }
+  function markRow(i){ const d = rowEls[i.key]; if (d) d.className = 'dot b' + boxOf(i); }
+
+  // ---- タブ・キー操作 ----
+  function showTab(name){
+    const drill = name === 'drill';
+    document.getElementById('drill').hidden = !drill;
+    document.getElementById('index').hidden = drill;
+    document.getElementById('tab-drill').setAttribute('aria-selected', drill ? 'true' : 'false');
+    document.getElementById('tab-index').setAttribute('aria-selected', drill ? 'false' : 'true');
+    if (!drill) renderList();
+    try { sessionStorage.setItem('ms102-drill-tab', name); } catch (e) {}
+  }
+  document.getElementById('tab-drill').addEventListener('click', () => showTab('drill'));
+  document.getElementById('tab-index').addEventListener('click', () => showTab('index'));
+  document.getElementById('search').addEventListener('input', renderList);
+  document.getElementById('open-all').addEventListener('click', e => {
+    allOpen = !allOpen; e.currentTarget.textContent = allOpen ? '答えを全部隠す' : '答えを全部表示'; renderList();
+  });
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('drill').hidden) return;
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (!revealed && (e.key === ' ' || e.key === 'Enter') && tag !== 'BUTTON') { e.preventDefault(); reveal(); }
+    else if (revealed && (e.key === '1' || e.key === '2' || e.key === '3')) { e.preventDefault(); grade(+e.key); }
+  });
+
+  // シリーズの巻へのリンク
+  const vl = document.getElementById('vol-links');
+  DATA.vols.forEach(v => {
+    if (!v.url) return;
+    const a = el('a', 'v' + v.no); a.href = v.url; a.target = '_blank'; a.rel = 'noopener';
+    a.append(el('b', null, 'VOL.' + v.no + ' ' + v.short), el('span', null, '図解ムックで読み直す'));
+    vl.append(a);
+  });
+
+  function refreshAll(rebuild){
+    if (rebuild) buildQueue();
+    renderFlash(); renderStats(); renderMastery();
+    if (!document.getElementById('index').hidden) renderList();
+  }
+  chips('f-drill', pickDrill, () => { extraNew = 0; refreshAll(true); });
+  chips('f-index', pickIndex, renderList);
+  refreshAll(true);
+  try { if (sessionStorage.getItem('ms102-drill-tab') === 'index') showTab('index'); } catch (e) {}
+  connect();
+})();
+</script>

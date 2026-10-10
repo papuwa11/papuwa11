@@ -1,0 +1,1305 @@
+<title>MS-102 図解ムック テナント編</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@400;500;700;900&family=Shippori+Mincho+B1:wght@600;800&family=Yusei+Magic&family=Barlow+Condensed:wght@600;800&display=swap">
+<style>
+/* Layout: 2色刷りのムック誌面を「1テーマ1カード」に組み直す。表紙→目次→カード（問い→一言の答え→図→押さえどころ→ここが出る）を縦に積み、上部に細いカード番号バー。 */
+:root{
+  --desk:#DADEE5;
+  --paper:#FFFFFF;
+  --paper-2:#F2F3F6;
+  --ink:#16181D;
+  --ink-2:#4B505C;
+  --line:#D4D7DE;
+  --spot:#D94A14;
+  --alt:#1C5BD0;
+  --on-spot:#FFFFFF;
+  --ok:#1D7A45;
+  --ng:#C2321E;
+  --marker:#FFE14D;
+  --note:#FFF2B3;
+
+  --gothic:"M PLUS 1","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  --mincho:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --hand:"Yusei Magic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --num:"Barlow Condensed","Arial Narrow","M PLUS 1",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#0B0D11;
+    --paper:#181B22;
+    --paper-2:#21252E;
+    --ink:#ECEEF3;
+    --ink-2:#A8AEBC;
+    --line:#323745;
+    --spot:#FF8248;
+    --alt:#82A8FF;
+    --on-spot:#15171C;
+    --ok:#6FD39A;
+    --ng:#FF8A7A;
+    --marker:#5C4C0C;
+    --note:#38321A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#0B0D11;
+  --paper:#181B22;
+  --paper-2:#21252E;
+  --ink:#ECEEF3;
+  --ink-2:#A8AEBC;
+  --line:#323745;
+  --spot:#FF8248;
+  --alt:#82A8FF;
+  --on-spot:#15171C;
+  --ok:#6FD39A;
+  --ng:#FF8A7A;
+  --marker:#5C4C0C;
+  --note:#38321A;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 56px)}
+body{
+  margin:0;
+  background:var(--desk);
+  color:var(--ink);
+  font-family:var(--gothic);
+  font-size:15.5px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;
+  word-break:auto-phrase;
+  line-break:strict;
+}
+h1,h2,h3,h4,p{margin:0}
+h1,h2,h3{text-wrap:balance}
+a{color:inherit}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--alt);outline-offset:3px}
+code{font-family:var(--mono);font-size:.86em}
+
+/* ================= 上部バー ================= */
+.topbar{
+  position:sticky;
+  top:env(safe-area-inset-top,0px);
+  z-index:20;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px clamp(12px,3vw,24px);
+  background:var(--ink);
+  color:var(--paper);
+  font-size:.8rem;
+  font-weight:700;
+}
+.tb-home{flex:none;text-decoration:none;white-space:nowrap;letter-spacing:.04em}
+.tb-home b{font-family:var(--num);font-weight:800;font-size:1rem;margin-right:6px;color:var(--spot)}
+.tb-chips{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0;margin-left:auto}
+.tb-chips::-webkit-scrollbar{display:none}
+.tb-chips a{
+  flex:none;
+  min-width:2.1rem;
+  padding:2px 7px;
+  text-align:center;
+  text-decoration:none;
+  font-family:var(--num);
+  font-weight:800;
+  font-size:.95rem;
+  border:1.5px solid color-mix(in srgb,var(--paper) 35%,transparent);
+}
+.tb-chips a.txt{font-family:var(--gothic);font-size:.74rem;font-weight:900;padding-top:4px}
+.tb-chips a:hover{border-color:var(--paper)}
+.tb-chips a.here{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+
+.book{
+  max-width:940px;
+  margin:0 auto;
+  padding-inline:clamp(16px,3vw,28px);
+  padding-block:24px 80px;
+  display:grid;
+  gap:clamp(20px,3.4vw,32px);
+}
+
+/* ================= 表紙 ================= */
+.cover{
+  position:relative;
+  overflow:hidden;
+  background:var(--spot);
+  color:var(--on-spot);
+  padding:clamp(22px,4vw,44px);
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
+  gap:24px 32px;
+  box-shadow:0 18px 40px -24px color-mix(in srgb,var(--ink) 55%,transparent);
+}
+.mast{display:grid;gap:14px;align-content:start;min-width:0}
+.issue{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;font-weight:700;font-size:.8rem;letter-spacing:.14em}
+.issue b{font-family:var(--num);font-weight:800;font-size:1.5rem;letter-spacing:.04em}
+.logo{display:grid;gap:2px}
+.logo .en{font-family:var(--num);font-weight:800;font-size:clamp(4rem,11vw,7.6rem);line-height:.8;letter-spacing:-.02em}
+.logo .ja{font-weight:900;font-size:clamp(1.8rem,4.6vw,3rem);line-height:1.05;letter-spacing:.04em}
+.feature{display:grid;gap:10px;margin-top:4px}
+.feature .kick{justify-self:start;padding:2px 12px;background:var(--on-spot);color:var(--spot);font-weight:900;font-size:.9rem;letter-spacing:.1em}
+.feature h1{font-weight:900;font-size:clamp(2rem,5.4vw,3.4rem);line-height:1.1;letter-spacing:-.01em}
+.clines{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:9px}
+.clines li span{
+  background:var(--paper);
+  color:var(--ink);
+  padding:3px 10px;
+  font-weight:900;
+  font-size:clamp(.9rem,1.7vw,1.02rem);
+  line-height:2.05;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
+.clines li.main span{font-size:clamp(1.2rem,2.6vw,1.6rem);line-height:1.75}
+.clines li em{font-style:normal;color:var(--spot)}
+.cover-art{position:relative;display:grid;place-items:center;min-width:0}
+.cover-art svg{width:100%;max-width:440px;height:auto;display:block}
+.cover-art .ring{fill:none;stroke:var(--on-spot);stroke-width:2;stroke-dasharray:6 7}
+.cover-art .sat{fill:var(--paper);stroke:var(--ink);stroke-width:2.5}
+.cover-art .core{fill:var(--ink)}
+.cover-art .ln{fill:none;stroke:var(--on-spot);stroke-width:2.5}
+.cover-art .ah{fill:var(--on-spot)}
+.cover-art .p{font-family:var(--gothic);font-size:14px;font-weight:700;fill:var(--ink-2)}
+.cover-art .w{font-family:var(--gothic);font-size:22px;font-weight:900;fill:var(--ink)}
+.cover-art .w2{font-family:var(--gothic);font-size:19px;font-weight:900;fill:var(--ink)}
+.cover-art .c1{font-family:var(--gothic);font-size:19px;font-weight:700;fill:var(--paper)}
+.cover-art .c2{font-family:var(--num);font-size:46px;font-weight:800;fill:var(--paper)}
+.cover-art .os{font-family:var(--gothic);font-size:14px;font-weight:900;fill:var(--on-spot)}
+.badge{
+  position:absolute;
+  top:0;right:0;
+  width:100px;
+  aspect-ratio:1;
+  max-width:100%;
+  border-radius:50%;
+  background:var(--marker);
+  color:var(--ink);
+  display:grid;
+  place-content:center;
+  text-align:center;
+  font-weight:900;
+  line-height:1.15;
+  transform:rotate(10deg);
+  box-shadow:0 0 0 3px var(--spot),0 0 0 5px var(--marker);
+}
+.badge b{display:block;font-size:1.45rem}
+.badge small{display:block;font-size:.7rem;font-weight:700}
+.cover-foot{
+  grid-column:1/-1;
+  border-top:2px solid var(--on-spot);
+  padding-top:12px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:10px 24px;
+  font-size:.8rem;
+  font-weight:700;
+}
+.vols{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.vols li > *{display:block;padding:1px 10px;border:1.5px solid var(--on-spot);text-decoration:none}
+.vols li a:hover{background:color-mix(in srgb,var(--on-spot) 18%,transparent)}
+.vols li.on > *{background:var(--on-spot);color:var(--spot)}
+
+/* ================= 紙面（目次・巻末） ================= */
+.sheet{
+  background:var(--paper);
+  padding:clamp(22px,4vw,40px);
+  display:grid;
+  gap:20px;
+  box-shadow:0 18px 40px -26px color-mix(in srgb,var(--ink) 45%,transparent);
+}
+.kicker{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-weight:900;font-size:.82rem;letter-spacing:.12em}
+.kicker .part{background:var(--spot);color:var(--on-spot);padding:0 10px;font-family:var(--num);font-weight:800;font-size:1.05rem;letter-spacing:.06em}
+.sheet-h{font-weight:900;font-size:clamp(1.5rem,3vw,2rem);line-height:1.3}
+.toc-h{font-family:var(--num);font-weight:800;font-size:clamp(2.8rem,7vw,4rem);line-height:.9;letter-spacing:.02em}
+.toc-h small{display:block;font-family:var(--gothic);font-size:.85rem;font-weight:900;letter-spacing:.12em;color:var(--spot);margin-top:8px}
+.toc{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}
+.toc li{border-bottom:1px solid var(--line);min-width:0}
+.toc a{display:grid;grid-template-columns:2.6rem minmax(0,1fr);gap:10px;align-items:baseline;padding:9px 0;text-decoration:none}
+.toc a:hover .tt b{color:var(--spot)}
+.toc .pg{font-family:var(--num);font-weight:800;font-size:1.5rem;line-height:1;color:var(--spot)}
+.toc .tt b{display:block;font-weight:900;font-size:.95rem;line-height:1.45}
+.toc .tt small{display:block;font-size:.78rem;line-height:1.5;color:var(--ink-2)}
+.toc .end .pg{color:var(--ink)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.howto{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:ht}
+.howto li{counter-increment:ht;display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:12px;align-items:start}
+.howto li::before{content:counter(ht);display:grid;place-items:center;height:2.2rem;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.3rem}
+.howto b{display:block;font-weight:900;font-size:.95rem;line-height:1.45}
+.howto span{font-size:.82rem;line-height:1.6;color:var(--ink-2)}
+.sister{display:grid;gap:8px}
+.sister a{display:grid;gap:0;padding:9px 14px;border:2px solid var(--ink);text-decoration:none}
+.sister a:hover{background:var(--paper-2)}
+.sister a.hot{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.sister a b{font-weight:900;font-size:.95rem}
+.sister a span{font-size:.78rem;opacity:.85}
+.sub-h{font-weight:900;font-size:.82rem;letter-spacing:.12em}
+
+/* ================= カード ================= */
+.card{
+  position:relative;
+  background:var(--paper);
+  padding:clamp(22px,4vw,40px) clamp(20px,4vw,40px) 28px;
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+  min-width:0;
+  border-top:6px solid var(--spot);
+  box-shadow:0 18px 40px -26px color-mix(in srgb,var(--ink) 45%,transparent);
+}
+.card-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 14px}
+.card-h .no{font-weight:900;font-size:.78rem;letter-spacing:.14em;color:var(--ink-2)}
+.card-h .no b{font-family:var(--num);font-weight:800;font-size:1.7rem;letter-spacing:.02em;color:var(--spot);margin-right:2px}
+.card-h .topic{padding:1px 10px;background:var(--paper-2);font-weight:900;font-size:.78rem;letter-spacing:.06em}
+.card .q{font-weight:900;font-size:clamp(1.15rem,2.4vw,1.4rem);line-height:1.5;color:var(--ink-2)}
+.card .q::before{content:"Q";display:inline-block;margin-right:10px;padding:0 8px;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.1em;line-height:1.3}
+.card .catch{font-weight:900;font-size:clamp(1.85rem,4.2vw,2.6rem);line-height:1.25;letter-spacing:-.01em;margin-top:-10px}
+.card .catch em{font-style:normal;color:var(--spot)}
+.lead{font-family:var(--mincho);font-weight:600;font-size:1.02rem;line-height:2;max-width:46rem}
+.mk{background:linear-gradient(transparent 58%,var(--marker) 58%);font-weight:700}
+.figs{display:grid;gap:26px}
+.figs.cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 22px;align-items:start}
+.card-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--line);font-size:.82rem;font-weight:900}
+.card-nav a{text-decoration:none;padding:4px 10px;border:1.5px solid var(--line)}
+.card-nav a:hover{border-color:var(--ink)}
+.card-nav .next{margin-left:auto;background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+/* 押さえどころ */
+.osae{position:relative;border:2px solid var(--ink);padding:24px 18px 16px;margin-top:6px}
+.osae > .t{position:absolute;top:-.9em;left:14px;background:var(--paper);padding:0 8px;font-weight:900;font-size:.92rem;letter-spacing:.1em}
+.osae ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.93rem;line-height:1.75}
+.osae li{position:relative;padding-left:1.25em}
+.osae li::before{content:"";position:absolute;left:0;top:.62em;width:.55em;height:.55em;background:var(--spot)}
+
+/* ここが出る（タップで答え） */
+.qa{
+  background:var(--note);
+  padding:14px 18px 16px;
+  display:grid;
+  gap:8px;
+  box-shadow:0 10px 18px -14px color-mix(in srgb,var(--ink) 60%,transparent);
+}
+.qa > .t{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px}
+.qa > .t b{font-family:var(--hand);font-weight:400;font-size:1.3rem;line-height:1.3;color:var(--spot)}
+.qa > .t span{font-size:.74rem;font-weight:700;color:var(--ink-2)}
+.qi{border-top:1px dashed color-mix(in srgb,var(--ink) 30%,transparent)}
+.qi summary{
+  list-style:none;
+  cursor:pointer;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:start;
+  padding:8px 0;
+  font-size:.9rem;
+  line-height:1.6;
+}
+.qi summary::-webkit-details-marker{display:none}
+.qi summary::after{
+  content:"答え";
+  padding:0 8px;
+  border:1.5px solid var(--ink);
+  font-size:.72rem;
+  font-weight:900;
+  line-height:1.7;
+  white-space:nowrap;
+}
+.qi[open] summary::after{content:"閉じる";background:var(--ink);color:var(--paper)}
+.qi .a{margin:0 0 10px;font-weight:700;font-size:.95rem;line-height:1.6}
+.qi .a::before{content:"→ ";color:var(--spot);font-weight:900}
+
+/* 図版 */
+.fig{margin:0;display:grid;gap:12px;min-width:0}
+.fig-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font-weight:900;font-size:1.02rem;line-height:1.45}
+.fig-h .no{font-family:var(--num);font-weight:800;font-size:1.1rem;color:var(--spot);letter-spacing:.04em}
+.fig figcaption{font-size:.8rem;line-height:1.65;color:var(--ink-2)}
+.hand{font-family:var(--hand);color:var(--spot);font-weight:400}
+.svgbox{overflow-x:auto}
+.svgbox svg{display:block;width:100%;height:auto;min-width:340px;max-width:620px;margin:0 auto}
+.svgbox .nd{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+.svgbox .nd.hot{fill:var(--spot);stroke:var(--spot)}
+.svgbox .nd.soft{fill:var(--paper-2);stroke:var(--line)}
+.svgbox .ln{fill:none;stroke:var(--ink-2);stroke-width:2}
+.svgbox .ln.hot{stroke:var(--spot)}
+.svgbox .ln.dash{stroke-dasharray:6 5}
+.svgbox .ah{fill:var(--ink-2)}
+.svgbox .ahs{fill:var(--spot)}
+.svgbox .tx{font-family:var(--gothic);font-size:13px;font-weight:900;fill:var(--ink)}
+.svgbox .ts{font-family:var(--gothic);font-size:11.5px;font-weight:500;fill:var(--ink-2)}
+.svgbox .tw{font-family:var(--gothic);font-size:13px;font-weight:900;fill:var(--on-spot)}
+.svgbox .tws{font-family:var(--gothic);font-size:11.5px;font-weight:500;fill:var(--on-spot)}
+.svgbox .tsp{font-family:var(--gothic);font-size:12px;font-weight:900;fill:var(--spot)}
+.svgbox .mid{font-family:var(--hand);font-size:15px;fill:var(--spot)}
+
+/* コラム */
+.column{background:var(--paper-2);border-top:5px solid var(--ink);padding:14px 18px 18px;display:grid;gap:8px}
+.column .t{display:flex;align-items:baseline;gap:10px;font-weight:900;font-size:1.02rem}
+.column .t b{font-family:var(--num);font-weight:800;font-size:.95rem;letter-spacing:.14em;color:var(--spot)}
+.column p{font-size:.9rem;line-height:1.8}
+
+/* ================= 図版の部品 ================= */
+/* やりたいこと → 道具 */
+.map{display:grid;gap:8px}
+.map .row{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,.9fr);align-items:stretch;gap:6px}
+.map .want{padding:8px 12px;background:var(--paper-2);font-size:.88rem;line-height:1.55;display:flex;align-items:center}
+.map .arr{position:relative}
+.map .arr::before{content:"";position:absolute;left:2px;right:8px;top:50%;height:2px;background:var(--spot)}
+.map .arr::after{content:"";position:absolute;right:0;top:50%;margin-top:-6px;border-left:9px solid var(--spot);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.map .tool{padding:8px 12px;border:2px solid var(--ink);font-weight:900;font-size:.92rem;line-height:1.45;display:flex;flex-direction:column;justify-content:center}
+.map .tool small{font-weight:500;font-size:.76rem;color:var(--ink-2)}
+.map .tool.hot{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.map .tool.hot small{color:var(--on-spot)}
+
+/* 手順（縦・番号つき） */
+.flow{list-style:none;margin:0;padding:0;display:grid;gap:22px;counter-reset:st}
+.flow li{position:relative;border:2px solid var(--ink);padding:10px 14px 10px 54px;display:grid;gap:2px;counter-increment:st}
+.flow li::before{
+  content:counter(st);
+  position:absolute;left:0;top:0;bottom:0;
+  width:40px;
+  display:grid;place-items:center;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--num);font-weight:800;font-size:1.4rem;
+}
+.flow li + li::after{
+  content:"";
+  position:absolute;
+  left:50%;top:-20px;
+  margin-left:-8px;
+  border-top:12px solid var(--spot);
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+}
+.flow b{font-weight:900;font-size:.98rem;line-height:1.45}
+.flow small{font-size:.8rem;color:var(--ink-2);line-height:1.55}
+.flow li.goal{border-color:var(--spot)}
+.flow li.goal::before{background:var(--spot);color:var(--on-spot)}
+.flow.tight{gap:16px}
+.flow.tight li + li::after{top:-15px;border-top-width:9px}
+
+/* 横に流れるチェーン */
+.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px}
+.chain > span{padding:6px 10px;border:2px solid var(--ink);font-size:.84rem;font-weight:700;line-height:1.45;display:flex;flex-direction:column;justify-content:center}
+.chain > span small{font-weight:500;font-size:.74rem;color:var(--ink-2)}
+.chain > span.hot{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.chain > span.hot small{color:var(--on-spot)}
+.chain > span.soft{border-style:dashed;border-color:var(--ink-2)}
+.chain > i{align-self:center;font-style:normal;font-weight:900;color:var(--spot)}
+
+/* レーン（横3本の比較） */
+.lanes{display:grid;gap:10px}
+.lane{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:12px;align-items:center;padding:10px 12px;background:var(--paper-2)}
+.lane > b{font-weight:900;font-size:.92rem;line-height:1.4}
+.lane > b small{display:block;font-weight:700;font-size:.72rem;color:var(--spot)}
+.lane .chain > span{background:var(--paper)}
+.lane .chain > span.hot{background:var(--spot)}
+.lane.pick{outline:3px solid var(--spot);outline-offset:-3px}
+
+/* 2〜4枚のタイル */
+.tiles{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:10px}
+.tile{border:2px solid var(--ink);padding:10px 14px 12px;display:grid;gap:3px;align-content:start;min-width:0}
+.tile .p{font-size:.76rem;font-weight:700;color:var(--ink-2)}
+.tile .h{font-weight:900;font-size:1.12rem;line-height:1.4}
+.tile .h small{font-size:.66em;font-weight:700;margin-left:3px;white-space:nowrap}
+.tile .d{font-size:.8rem;line-height:1.6;color:var(--ink-2)}
+.tile ul{margin:2px 0 0;padding-left:1.1em;font-size:.8rem;line-height:1.6}
+.tile.hot{border-color:var(--spot);background:color-mix(in srgb,var(--spot) 9%,var(--paper))}
+.tile.hot .h{color:var(--spot)}
+.tile.solid{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.tile.solid .p,.tile.solid .d{color:color-mix(in srgb,var(--paper) 75%,var(--ink))}
+.tile.dash{border-style:dashed;border-color:var(--ink-2)}
+
+/* 2者比較（見出し帯つき） */
+.vs2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.vs2 > div{border:2px solid var(--ink);display:grid;grid-template-rows:auto 1fr;min-width:0}
+.vs2 .hd{padding:8px 12px;background:var(--ink);color:var(--paper);display:grid}
+.vs2 .hd b{font-weight:900;font-size:1.02rem;line-height:1.4}
+.vs2 .hd small{font-size:.74rem;opacity:.85}
+.vs2 > div.hot{border-color:var(--spot)}
+.vs2 > div.hot .hd{background:var(--spot);color:var(--on-spot)}
+.vs2 ul{list-style:none;margin:0;padding:10px 12px 12px;display:grid;gap:6px;align-content:start;font-size:.84rem;line-height:1.55}
+.vs2 li{position:relative;padding-left:.95em}
+.vs2 li::before{content:"";position:absolute;left:0;top:.62em;width:.42em;height:.42em;background:var(--spot)}
+.vs2 .fix{margin:0 12px 12px;padding:6px 10px;background:var(--paper-2);font-weight:900;font-size:.88rem;line-height:1.5}
+.vs2 .fix::before{content:"対処 → ";color:var(--spot)}
+
+/* ○× リスト */
+.ox{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ox li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:10px;align-items:start;padding:7px 10px;background:var(--paper-2);font-size:.86rem;line-height:1.55}
+.ox li::before{display:grid;place-items:center;height:1.6rem;font-weight:900;font-size:1rem}
+.ox li.o::before{content:"○";color:var(--ok);border:2px solid var(--ok)}
+.ox li.x::before{content:"×";color:var(--ng);border:2px solid var(--ng)}
+.ox li.t::before{content:"△";color:var(--ink-2);border:2px solid var(--ink-2)}
+.ox li b{font-weight:900}
+.ox li small{display:block;font-size:.76rem;color:var(--ink-2)}
+
+/* 帯の長さで比べる（段階） */
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.bars li{display:grid;gap:3px}
+.bars .bar{height:12px;width:var(--w);background:color-mix(in srgb,var(--ink) 22%,var(--paper))}
+.bars li.rec .bar{background:var(--spot)}
+.bars .lab{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;font-size:.86rem;line-height:1.45}
+.bars .lab b{font-weight:900}
+.bars .lab span{font-size:.78rem;color:var(--ink-2)}
+.bars .tag{margin-left:6px;padding:0 6px;background:var(--spot);color:var(--on-spot);font-size:.72rem;font-weight:900}
+
+/* 順位（幅が縮む） */
+.podium{list-style:none;margin:0;padding:0;display:grid;gap:5px;counter-reset:pd}
+.podium li{
+  counter-increment:pd;
+  width:calc(100% - var(--i) * 8%);
+  display:flex;align-items:center;gap:10px;
+  padding:6px 12px;
+  background:color-mix(in srgb,var(--spot) calc(36% - var(--i) * 6%),var(--paper));
+  font-size:.86rem;font-weight:700;line-height:1.45;
+}
+.podium li::before{content:counter(pd);font-family:var(--num);font-weight:800;font-size:1.25rem;min-width:1em}
+.podium li:first-child{background:var(--spot);color:var(--on-spot)}
+.podium li small{font-weight:500;font-size:.74rem;opacity:.85}
+
+/* 数字の帯 */
+.numstrip{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+.numstrip div{padding:10px 12px;display:grid;gap:2px;min-width:0}
+.numstrip div + div{border-left:1px solid var(--line)}
+.numstrip b{font-family:var(--num);font-weight:800;font-size:2.4rem;line-height:1;color:var(--spot);font-variant-numeric:tabular-nums}
+.numstrip b small{font-family:var(--gothic);font-size:.38em;font-weight:900;color:var(--ink);margin-left:2px}
+.numstrip span{font-size:.78rem;line-height:1.5;color:var(--ink-2)}
+
+/* ×の選択肢 */
+.ng{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.ng li{padding:3px 10px;border:1.5px dashed var(--ink-2);color:var(--ink-2);font-size:.84rem;text-decoration:line-through;text-decoration-color:var(--ng);text-decoration-thickness:2px}
+
+/* 小さな表 */
+.tblbox{overflow-x:auto}
+.mini{width:100%;border-collapse:collapse;font-size:.82rem;line-height:1.5;min-width:400px}
+.mini th,.mini td{padding:7px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.mini thead th{border-bottom:2px solid var(--ink);font-size:.74rem;letter-spacing:.06em;color:var(--ink-2);white-space:nowrap}
+.mini td b{color:var(--spot)}
+.mini td.o,.mini td.x{text-align:center;font-weight:900;font-size:1rem}
+.mini td.o{color:var(--ok)}
+.mini td.x{color:var(--ng)}
+.mini tr.pick td{background:color-mix(in srgb,var(--spot) 10%,var(--paper))}
+
+/* 単語チップ */
+.chips{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+.chips span,.chips code{padding:1px 8px;background:var(--paper-2);border:1px solid var(--line);font-size:.78rem;line-height:1.7;overflow-wrap:anywhere}
+.chips .odd{border-color:var(--spot);color:var(--spot)}
+
+/* --- 個別の図（主に VOL.03） --- */
+.funnel{display:grid;gap:8px}
+.al{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 12px;border:1.5px dashed var(--ink-2);font-size:.86rem;line-height:1.5}
+.al i{font-style:normal;font-family:var(--num);font-weight:800;font-size:.95rem;color:var(--spot);white-space:nowrap}
+.down{justify-self:center;width:0;height:0;border-top:16px solid var(--spot);border-left:14px solid transparent;border-right:14px solid transparent}
+.inc{background:var(--ink);color:var(--paper);padding:10px 14px;display:grid;gap:2px}
+.inc b{font-weight:900;font-size:1.15rem}
+.inc small{font-size:.8rem;opacity:.85}
+.ac{border:2px solid var(--ink)}
+.ac-h{background:var(--ink);color:var(--paper);padding:6px 12px;font-weight:900;font-size:.92rem}
+.ac-b{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.ac-b div{padding:10px 12px;display:grid;gap:2px;font-size:.84rem;line-height:1.55}
+.ac-b div + div{border-left:2px solid var(--ink);background:color-mix(in srgb,var(--spot) 10%,var(--paper))}
+.ac-b b{font-weight:900;font-size:.95rem}
+.ranked{list-style:none;margin:0;padding:0;display:grid;gap:6px;counter-reset:rk}
+.ranked li{counter-increment:rk;display:grid;grid-template-columns:3.2rem minmax(0,1fr) auto;align-items:center;gap:10px;padding:6px 10px;background:var(--paper-2);font-size:.86rem}
+.ranked li::before{content:"ランク" counter(rk);font-size:.72rem;font-weight:900;color:var(--ink-2)}
+.ranked li.hit{background:var(--spot);color:var(--on-spot)}
+.ranked li.hit::before{color:var(--on-spot)}
+.ranked em{font-style:normal;font-size:.76rem;font-weight:700}
+.surname{display:grid;gap:8px}
+.sn{display:grid;grid-template-columns:8.6rem minmax(0,1fr);gap:4px 12px;align-items:start;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.sn:last-child{border-bottom:0;padding-bottom:0}
+.sn .pre{font-family:var(--mono);font-weight:700;font-size:.95rem;line-height:1.5}
+.sn .pre small{display:block;font-family:var(--gothic);font-size:.72rem;font-weight:700;color:var(--spot)}
+.gauges{display:grid;gap:10px}
+.gauge{display:grid;grid-template-columns:3.4rem minmax(0,1fr);gap:12px;align-items:center}
+.gauge .dir{height:3.4rem;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:2.2rem;line-height:1}
+.gauge.low .dir{background:var(--spot);color:var(--on-spot)}
+.gauge b{display:block;font-weight:900;font-size:.98rem;line-height:1.45}
+.gauge span{font-size:.8rem;line-height:1.5;color:var(--ink-2)}
+.gauge.low b em{font-style:normal;color:var(--spot)}
+.bldg{display:grid;gap:0;border:3px solid var(--ink);border-top:0}
+.roof{height:0;border-bottom:22px solid var(--ink);border-left:30px solid transparent;border-right:30px solid transparent;margin:0 -3px}
+.floor{display:grid;grid-template-columns:3rem minmax(0,1fr);border-top:3px solid var(--ink)}
+.floor .fl{display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.5rem}
+.floor .fb{padding:10px 12px 12px;display:grid;gap:6px;min-width:0}
+.floor .fn{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px}
+.floor .fn b{font-weight:900;font-size:.98rem;line-height:1.4}
+.floor .fn span{padding:0 8px;font-size:.72rem;font-weight:900;border:1.5px solid var(--ink)}
+.floor.f3{background:color-mix(in srgb,var(--spot) 22%,var(--paper))}
+.floor.f3 .fn span{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.floor.f2{background:color-mix(in srgb,var(--spot) 9%,var(--paper))}
+.floor.f1{background:var(--paper)}
+.rooms{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.rooms li{padding:2px 8px;background:var(--paper);border:1.5px solid var(--ink);font-size:.78rem;font-weight:700;line-height:1.5}
+.rooms.seq{counter-reset:rm}
+.rooms.seq li{counter-increment:rm}
+.rooms.seq li::before{content:counter(rm);display:inline-block;min-width:1.2em;margin-right:5px;padding:0 3px;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;text-align:center}
+.rooms.also li{border-style:dashed}
+.street{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;background:var(--ink);color:var(--paper);font-size:.78rem;font-weight:700}
+.heat{display:grid;grid-template-columns:minmax(6.5rem,1.3fr) repeat(3,minmax(0,1fr));gap:3px;font-size:.82rem;line-height:1.35}
+.heat > div{padding:7px 8px;min-width:0;display:flex;align-items:center}
+.heat .h{font-weight:900;justify-content:center;background:var(--ink);color:var(--paper)}
+.heat .h.blank{background:none}
+.heat .k{font-weight:700;background:var(--paper-2)}
+.heat .j{justify-content:center;background:color-mix(in srgb,var(--alt) 14%,var(--paper));font-weight:700}
+.heat .qq{justify-content:center;background:var(--spot);color:var(--on-spot);font-weight:900}
+.heat .n{justify-content:center;font-family:var(--num);font-weight:800;font-size:1.15rem;background:var(--paper-2)}
+.heat .trap{outline:3px solid var(--marker);outline-offset:-3px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.76rem;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:4px;vertical-align:-1px}
+.legend .lj{background:color-mix(in srgb,var(--alt) 14%,var(--paper));border:1px solid var(--line)}
+.legend .lq{background:var(--spot)}
+.fork{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fork > div{border:2px solid var(--ink);display:grid;grid-template-rows:auto 1fr;min-width:0}
+.fork .if{padding:8px 12px;background:var(--paper-2);font-size:.84rem;line-height:1.55}
+.fork .if b{display:block;font-size:.72rem;letter-spacing:.1em;color:var(--ink-2)}
+.fork .then{padding:10px 12px;display:grid;gap:4px;align-content:start}
+.fork .then b{font-weight:900;font-size:.98rem;line-height:1.45}
+.fork .then small{font-size:.78rem;line-height:1.55;color:var(--ink-2)}
+.fork .then .x{color:var(--ng);font-weight:700}
+.streak{display:grid;gap:10px}
+.st-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
+.marks{display:flex;gap:4px}
+.marks span{width:34px;height:34px;display:grid;place-items:center;font-weight:900;font-size:1rem;border:2px solid var(--ink)}
+.marks .x{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.marks .o{background:var(--paper)}
+.st-row p{font-size:.86rem;line-height:1.55}
+.st-row p b{font-weight:900}
+.onb{display:grid;gap:6px}
+.onb .row{display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:10px;align-items:start;padding:8px 10px;background:var(--paper-2)}
+.onb .os{font-weight:900;font-size:.88rem;line-height:1.45}
+.onb .how{display:flex;flex-wrap:wrap;gap:5px}
+.onb .how span{padding:1px 8px;background:var(--paper);border:1.5px solid var(--ink);font-size:.78rem;font-weight:700;line-height:1.6}
+.onb .how span.key{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.onb .how span.key small{font-weight:500}
+.route{display:grid;gap:8px}
+.route .ln2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 12px;border:2px solid var(--ink);font-size:.86rem;line-height:1.5}
+.route .ln2 .res{font-family:var(--num);font-weight:800;font-size:1.3rem;padding:0 10px}
+.route .ln2.bad{border-style:dashed;color:var(--ink-2)}
+.route .ln2.bad .res{color:var(--ng)}
+.route .ln2.good{background:color-mix(in srgb,var(--spot) 10%,var(--paper));border-color:var(--spot)}
+.route .ln2.good .res{background:var(--spot);color:var(--on-spot)}
+.lic{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;align-items:end}
+.lic li{display:grid;align-content:start;gap:4px;padding:8px 8px 10px;min-height:calc(4.6rem + var(--h) * 1.6rem);background:color-mix(in srgb,var(--spot) calc(var(--h) * 9%),var(--paper));border-top:4px solid var(--ink);font-size:.76rem;line-height:1.45;min-width:0}
+.lic li b{font-weight:900;font-size:.82rem}
+.lic li span{font-weight:700}
+.lic li.top{background:var(--spot);color:var(--on-spot);border-top-color:var(--spot)}
+
+/* ================= 腕試し ================= */
+.quiz-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.score{font-weight:900;font-size:.92rem}
+.score b{font-family:var(--num);font-weight:800;font-size:1.6rem;color:var(--spot);margin:0 2px}
+.qz{display:grid;gap:10px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.qz:last-child{border-bottom:0;padding-bottom:0}
+.qz .qq{font-weight:700;font-size:.95rem;line-height:1.7}
+.qz .qq b{font-family:var(--num);font-weight:800;font-size:1.15rem;color:var(--spot);margin-right:6px}
+.opts{display:grid;gap:6px}
+.opt{
+  display:grid;grid-template-columns:1.8rem minmax(0,1fr);gap:8px;align-items:start;
+  width:100%;
+  padding:7px 10px;
+  border:1.5px solid var(--line);
+  background:var(--paper);
+  color:var(--ink);
+  font:inherit;font-size:.86rem;line-height:1.55;
+  text-align:left;
+  cursor:pointer;
+}
+.opt:hover{border-color:var(--ink)}
+.opt i{font-style:normal;font-family:var(--num);font-weight:800;font-size:1.05rem;line-height:1.35}
+.qz.done .opt{cursor:default}
+.qz.done .opt:hover{border-color:var(--line)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--paper))}
+.opt.wrong{border-color:var(--ng);background:color-mix(in srgb,var(--ng) 12%,var(--paper))}
+.why{padding:10px 12px;background:var(--note);font-size:.84rem;line-height:1.7}
+.why b{font-weight:900}
+
+/* ================= 暗記カード・奥付 ================= */
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:2px dashed var(--ink-2)}
+.cards div{padding:10px 12px;font-size:.84rem;font-weight:700;line-height:1.55;border-bottom:2px dashed var(--ink-2);min-width:0}
+.cards div:nth-child(odd){border-right:2px dashed var(--ink-2)}
+.cards div:nth-last-child(-n+2){border-bottom:0}
+.cards div small{display:block;font-size:.7rem;font-weight:900;letter-spacing:.08em;color:var(--spot)}
+.cut{display:flex;align-items:center;gap:10px;font-size:.72rem;font-weight:700;letter-spacing:.2em;color:var(--ink-2)}
+.cut::before,.cut::after{content:"";flex:1;border-top:2px dashed var(--ink-2)}
+.series{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.series li > *{border:2px solid var(--ink);padding:10px 12px;display:grid;gap:2px;height:100%;text-decoration:none}
+.series li a:hover{background:var(--paper-2)}
+.series b{font-family:var(--num);font-weight:800;font-size:1.05rem;letter-spacing:.06em}
+.series span{font-weight:900;font-size:.95rem}
+.series small{font-size:.76rem;color:var(--ink-2)}
+.series li.on > *{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.series li.on small{color:var(--on-spot)}
+.okuduke{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:12px 0;display:grid;gap:4px;font-size:.8rem;line-height:1.7}
+.okuduke dl{margin:0;display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:2px 10px}
+.okuduke dt{font-weight:900}
+.okuduke dd{margin:0;color:var(--ink-2)}
+.okuduke .ttl{font-weight:900;font-size:.95rem}
+
+/* ================= responsive ================= */
+@media (max-width:760px){
+  .cover{grid-template-columns:1fr}
+  .cover-art{order:-1}
+  .badge{width:84px}
+  .two,.figs.cols{grid-template-columns:1fr}
+  .toc{grid-template-columns:1fr}
+  .series{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lic{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lic li{min-height:0}
+  .tiles{--n:2 !important}
+}
+@media (max-width:520px){
+  .tiles,.vs2,.fork,.cards,.ac-b{grid-template-columns:1fr}
+  .tiles{--n:1 !important}
+  .cards div:nth-child(odd){border-right:0}
+  .cards div:nth-last-child(2){border-bottom:2px dashed var(--ink-2)}
+  .ac-b div + div{border-left:0;border-top:2px solid var(--ink)}
+  .map .row{grid-template-columns:1fr}
+  .map .arr{height:14px}
+  .map .arr::before{left:50%;right:auto;top:0;bottom:4px;width:2px;height:auto}
+  .map .arr::after{left:50%;right:auto;top:auto;bottom:0;margin:0 0 0 -6px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--spot);border-bottom:0}
+  .sn,.onb .row,.lane{grid-template-columns:1fr;gap:4px}
+  .numstrip{grid-template-columns:1fr}
+  .numstrip div + div{border-left:0;border-top:1px solid var(--line)}
+  .podium li{width:100%}
+  .heat{font-size:.74rem}
+  .heat > div{padding:6px 5px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+}
+
+:root{--spot:#1F57C8;--alt:#D94A14}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--spot:#86A8FF;--alt:#FF8248}}
+:root[data-theme="dark"]{--spot:#86A8FF;--alt:#FF8248}
+</style>
+<nav class="topbar" aria-label="カード一覧"><a class="tb-home" href="#top"><b>VOL.01</b>テナント</a><div class="tb-chips"><a href="#c01" aria-label="カード01">01</a><a href="#c02" aria-label="カード02">02</a><a href="#c03" aria-label="カード03">03</a><a href="#c04" aria-label="カード04">04</a><a href="#c05" aria-label="カード05">05</a><a href="#c06" aria-label="カード06">06</a><a href="#c07" aria-label="カード07">07</a><a href="#c08" aria-label="カード08">08</a><a href="#c09" aria-label="カード09">09</a><a href="#c10" aria-label="カード10">10</a><a class="txt" href="#quiz">腕試し</a><a class="txt" href="#memo">暗記</a></div></nav>
+<main class="book">
+<header class="cover" id="top">
+  <div class="mast">
+    <div class="issue"><b>VOL.01</b><span>2026 AUTUMN</span><span>試験対策シリーズ</span></div>
+    <div class="logo"><span class="en">MS-102</span><span class="ja">図解ムック</span></div>
+    <div class="feature"><span class="kick">特集</span><h1>テナント運用<br>まるごと図解</h1></div>
+    <ul class="clines"><li class="main"><span>配点 <em>25–30%</em>、すべての章の<em>土台</em>を図で固める</span></li><li><span>変えられないものは最初に決まる</span></li><li><span>退職者の処理は順番がすべて</span></li><li><span>パスワードを戻せるのは誰？</span></li><li><span>範囲は管理単位、時間は PIM</span></li><li><span>巻末 腕試し5問＋切り取り暗記カード</span></li></ul>
+  </div>
+  <div class="cover-art"><svg viewBox="0 0 520 520" role="img" aria-label="テナントの入れ子構造。テナントと1対1の Entra ID ディレクトリ、複数のドメイン、サブスクリプションとライセンス">
+  <rect class="ring" x="12" y="12" width="496" height="496"/>
+  <text class="os" x="32" y="46">Microsoft 365 テナント</text>
+  <rect class="sat" x="36" y="64" width="448" height="214"/>
+  <text class="p" x="56" y="94">Entra ID ディレクトリ（テナントと1対1）</text>
+  <rect class="core" x="56" y="110" width="196" height="66"/><text class="c1" x="154" y="150" text-anchor="middle">ユーザー</text>
+  <rect class="core" x="268" y="110" width="196" height="66"/><text class="c1" x="366" y="150" text-anchor="middle">グループ</text>
+  <rect class="core" x="56" y="190" width="196" height="66"/><text class="c1" x="154" y="230" text-anchor="middle">ロール</text>
+  <rect class="core" x="268" y="190" width="196" height="66"/><text class="c1" x="366" y="230" text-anchor="middle">管理単位</text>
+  <rect class="sat" x="36" y="294" width="448" height="86"/>
+  <text class="p" x="56" y="322">ドメイン（いくつでも追加できる）</text>
+  <text class="w2" x="56" y="358">contoso.onmicrosoft.com</text>
+  <text class="p" x="330" y="358">＋ contoso.com</text>
+  <rect class="core" x="36" y="396" width="448" height="96"/>
+  <text class="c1" x="260" y="436" text-anchor="middle">サブスクリプション</text>
+  <text class="c1" x="260" y="470" text-anchor="middle" style="font-size:15px">E3 ×200 ／ E5 ×50 → ライセンスを配る</text>
+</svg>
+    <div class="badge" aria-label="保存版"><b>保存版</b><small>図版 27点</small></div>
+  </div>
+  <div class="cover-foot">
+    <ul class="vols" aria-label="シリーズ"><li class="on"><span>VOL.01 テナント</span></li><li><a href="https://claude.ai/artifact/PY28R5A28mo3CHNcqnFQEe" target="_blank" rel="noopener">VOL.02 Entra ID</a></li><li><a href="https://claude.ai/artifact/NENPSAdHgUY5bcLptgAMZm" target="_blank" rel="noopener">VOL.03 Defender XDR</a></li><li><a href="https://claude.ai/artifact/T1MvTVzR7PjiyFHrTzmZC6" target="_blank" rel="noopener">VOL.04 Purview</a></li></ul>
+    <span>公式スキル測定 2026.04.28 版準拠 ／ 試験は 2026.11.30 廃止予定</span>
+  </div>
+</header>
+<section class="sheet" id="contents" aria-labelledby="h-toc">
+  <h2 class="toc-h" id="h-toc">CONTENTS<small>特集 テナント運用 まるごと図解 ／ 第1章・配点 25–30%</small></h2>
+  <ol class="toc"><li><a href="#c01"><span class="pg">01</span><span class="tt"><b>テナントを作ったあと、変えられないものは？</b><small>器の形は、最初に決まる。</small></span></a></li><li><a href="#c02"><span class="pg">02</span><span class="tt"><b>新機能を、情報システム部門だけ先に試すには？</b><small>先に試すのは、選んだ人だけ。</small></span></a></li><li><a href="#c03"><span class="pg">03</span><span class="tt"><b>障害の「今」と、変更の「予告」はどこで見る？</b><small>今はサービス正常性、 これからはメッセージ センター。</small></span></a></li><li><a href="#c04"><span class="pg">04</span><span class="tt"><b>ランサムウェアで暗号化された数千のサイトを、短時間で戻すには？</b><small>戻すならバックアップ、 消させないなら保持。</small></span></a></li><li><a href="#c05"><span class="pg">05</span><span class="tt"><b>退職者のサインインは止めた。ライセンスを外す前にやることは？</b><small>ライセンス解放と削除は、いちばん最後。</small></span></a></li><li><a href="#c06"><span class="pg">06</span><span class="tt"><b>その目的に合うグループはどれ？</b><small>グループは、用途で選ぶ。</small></span></a></li><li><a href="#c07"><span class="pg">07</span><span class="tt"><b>ライセンスの割り当てが失敗する。何を疑う？</b><small>まず使用場所を疑う。</small></span></a></li><li><a href="#c08"><span class="pg">08</span><span class="tt"><b>スクリプトで大量のユーザーを更新したい。いま使えるモジュールは？</b><small>MSOnline と AzureAD は、もう使えない。</small></span></a></li><li><a href="#c09"><span class="pg">09</span><span class="tt"><b>パスワードを戻せるのは誰？ 最小特権ならどのロール？</b><small>答えは、いちばん狭いロール。</small></span></a></li><li><a href="#c10"><span class="pg">10</span><span class="tt"><b>権限の「範囲」を絞る？ 「時間」を絞る？</b><small>範囲は管理単位、時間は PIM。</small></span></a></li><li class="end"><a href="#quiz"><span class="pg">QZ</span><span class="tt"><b>巻末 腕試し5問</b><small>本試験と同じ形式で、解説つき</small></span></a></li><li class="end"><a href="#memo"><span class="pg">MC</span><span class="tt"><b>切り取り暗記カード／奥付</b><small>直前の見直し用に12枚</small></span></a></li></ol>
+  <div class="two">
+    <div style="display:grid;gap:12px;align-content:start">
+      <span class="sub-h">カードの読み方</span>
+      <ol class="howto">
+        <li><div><b>問いを読んで、答えを予想する</b><span>カードの最初の一行は試験の聞き方。大きな一文がその答えです。</span></div></li>
+        <li><div><b>図で形をつかむ</b><span>図版番号の横の一文が、その図の結論です。</span></div></li>
+        <li><div><b>押さえどころ3行と「ここが出る！」</b><span>付箋の設問は、答えを思い出してから「答え」を押します。</span></div></li>
+      </ol>
+    </div>
+    <div style="display:grid;gap:12px;align-content:start">
+      <span class="sub-h">シリーズの姉妹ページ</span>
+      <div class="sister"><a class="hot" href="https://claude.ai/artifact/DBGvdDGp9bbroqttuzmVqZ" target="_blank" rel="noopener"><b>MS-102 逆引きドリル</b><span>全巻の「ここが出る！」を、間違えたものから繰り返す。</span></a><a href="https://claude.ai/artifact/16xzViiC6KQoFzSYZeesw6" target="_blank" rel="noopener"><b>MS-102 控えめの法則</b><span>全章に効く3つの合言葉。最初の1枚に。</span></a><a href="https://claude.ai/artifact/KDPE54u1mEf7dMf21PuYJp" target="_blank" rel="noopener"><b>MS-102 総合テキスト</b><span>このシリーズの底本。細かい条件を確かめたいときに。</span></a><a href="https://claude.ai/artifact/Nzpf1jbjYVadj4nKQbn9CM" target="_blank" rel="noopener"><b>M365 ロール百貨店</b><span>誰が何をできるか、ロールの整理に。</span></a></div>
+    </div>
+  </div>
+</section>
+<article class="card" id="c01" aria-labelledby="c01-q">
+<div class="card-h"><span class="no">CARD <b>01</b> / 10</span><span class="topic">テナントとドメイン</span></div>
+<h2 class="q" id="c01-q">テナントを作ったあと、変えられないものは？</h2>
+<p class="catch">器の形は、<em>最初に決まる</em>。</p>
+<p class="lead">テナントを作ると、裏側に Microsoft Entra ID のディレクトリが1つ作られます。両者は1対1で切り離せません。いくつかの項目は作成時に決まって後から変えられず、「変えたい」と言われたら答えは新しいテナントへの移行です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-1</span><span>テナントの入れ子。ライセンスはいちばん外側から配る</span></div>
+    <div class="chain">
+      <span class="hot">テナント ＝ Entra ID ディレクトリ<small>1対1。分離も統合もできない</small></span><i>→</i>
+      <span>サブスクリプション<small>複数持てる（E3 ×200、E5 ×50 など）</small></span><i>→</i>
+      <span>ライセンス<small>ユーザーに割り当てる</small></span>
+    </div>
+  </figure>
+  <div class="figs cols">
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図1-2</span><span>あとから変えられる？</span></div>
+      <ul class="ox">
+        <li class="x"><span><b>初期ドメイン</b><small>xxx.onmicrosoft.com。変更も削除もできない</small></span></li>
+        <li class="x"><span><b>国／地域</b><small>データの保存場所。変えるなら新テナントへ移行</small></span></li>
+        <li class="x"><span><b>テナント ID</b><small>GUID。条件付きアクセスやアプリ登録で参照される</small></span></li>
+        <li class="o"><span><b>組織名（表示名）</b><small>設定 → 組織設定 → 組織プロファイル</small></span></li>
+        <li class="o"><span><b>既定のドメイン</b><small>変えても既存ユーザーの UPN は変わらない</small></span></li>
+      </ul>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図1-3</span><span>テナントとドメインの数</span></div>
+      <ul class="ox">
+        <li class="o"><span><b>1テナントに複数ドメイン</b><small>最大 5,000（すべてフェデレーションなら 2,500）。会社名と無関係でもよい</small></span></li>
+        <li class="x"><span><b>1ドメインを複数テナントで</b><small>同時に検証できるのは1テナントだけ。先に元のテナントから削除する</small></span></li>
+        <li class="o"><span><b>ルートとサブドメインを別テナントで</b><small>contoso.com は A、sales.contoso.com は B で検証できる</small></span></li>
+      </ul>
+    </figure>
+  </div>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-4</span><span>カスタム ドメインの追加は、証明と設定の2段構え</span></div>
+    <ol class="flow tight">
+      <li><b>ドメインを追加する</b><small>管理センター → 設定 → ドメイン → ドメインの追加</small></li>
+      <li><b>所有権を証明する</b><small>DNS に TXT（MS=ms…）または MX を追加して「確認」。これだけではメールは届かない</small></li>
+      <li class="goal"><b>用途に応じた DNS レコードを設定する</b><small>MX（メール配送）／TXT の SPF／CNAME の autodiscover・enterpriseregistration・enterpriseenrollment／Teams 用の SRV・CNAME</small></li>
+    </ol>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>ドメインを削除できないときは、そのドメインを使う<span class="mk">ユーザーの UPN・グループのメール アドレス・アプリの応答 URL・プロキシ アドレス</span>を別ドメインに付け替える。</li>
+  <li>SPF は TXT レコード<span class="mk">1つに1行</span>でまとめ、<code>v=spf1</code> を必ず先頭に置く。複数あると正しく機能しない。</li>
+  <li>認証を Entra ID が行うのが<span class="mk">マネージド</span>（クラウド専用・PHS・PTA）、AD FS などに任せるのが<span class="mk">フェデレーション</span>。種類は <code>Get-MgDomain</code> の AuthenticationType で確認する。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>テナントの国／地域や初期ドメインの名前を変えたい</summary><p class="a">変更できない。新しいテナントを作って移行する</p></details>
+  <details class="qi"><summary>カスタム ドメインを削除しようとしたら失敗した。まず何をする？</summary><p class="a">そのドメインを UPN やプロキシ アドレスに使っているユーザー・グループの参照を別ドメインに付け替える</p></details>
+  <details class="qi"><summary>SPF が正しく機能しない。よくある原因は</summary><p class="a">SPF の TXT レコードが複数ある・分割されている。1行にまとめ、v=spf1 を先頭に置く</p></details>
+  <details class="qi"><summary>TXT で所有権を確認したのに、そのドメイン宛てのメールが届かない</summary><p class="a">検証とサービス用の DNS 構成は別。MX レコードを設定する</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#contents">目次</a><a class="next" href="#c02">次のカード →</a></nav>
+</article>
+<article class="card" id="c02" aria-labelledby="c02-q">
+<div class="card-h"><span class="no">CARD <b>02</b> / 10</span><span class="topic">組織設定と更新チャネル</span></div>
+<h2 class="q" id="c02-q">新機能を、情報システム部門だけ先に試すには？</h2>
+<p class="catch">先に試すのは、<em>選んだ人だけ</em>。</p>
+<p class="lead">管理センターの「設定 → 組織設定」には、テナント全体に効く設定が3つのタブに分かれて入っています。新機能を先行して受け取るリリース設定や、Microsoft 365 Apps の更新チャネルもここから決めます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-1</span><span>組織設定の3つのタブ</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">タブ</span><span class="h">サービス</span><ul><li>インストール オプション（更新チャネル）</li><li>レポート（ユーザー名の匿名化）</li><li>カレンダー共有・Bookings・Forms</li></ul></div>
+      <div class="tile"><span class="p">タブ</span><span class="h">セキュリティとプライバシー</span><ul><li>パスワードの有効期限</li><li>共有（ゲストの追加を許可するか）</li><li>カスタマー ロックボックス</li></ul></div>
+      <div class="tile hot"><span class="p">タブ</span><span class="h">組織プロファイル</span><ul><li>組織情報・カスタム テーマ</li><li><b>リリース設定</b></li><li>データの保存場所</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-2</span><span>リリース設定は3択。パイロットは3つ目</span></div>
+    <div class="lanes">
+      <div class="lane"><b>標準リリース<small>既定</small></b><div class="chain"><span>一般提供のタイミングで、全員に届く</span></div></div>
+      <div class="lane"><b>すべてのユーザーに対象指定</b><div class="chain"><span>テナント全員が先行して受け取る</span></div></div>
+      <div class="lane pick"><b>選択したユーザーに対象指定<small>パイロット向け</small></b><div class="chain"><span class="hot">指定したユーザーだけが先行<small>グループではなくユーザーを選ぶ</small></span></div></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-3</span><span>Microsoft 365 Apps の更新チャネル（帯は更新の頻度）</span></div>
+    <ol class="bars">
+      <li style="--w:100%"><span class="bar"></span><span class="lab"><b>現在のチャネル</b><span>既定。準備でき次第、月に複数回</span></span></li>
+      <li class="rec" style="--w:45%"><span class="bar"></span><span class="lab"><b>月次エンタープライズ チャネル</b><span>月1回・第2火曜。更新日を予測したい組織に</span></span></li>
+      <li style="--w:14%"><span class="bar"></span><span class="lab"><b>半期エンタープライズ チャネル</b><span>年2回（1月・7月）。検証負荷を抑えたい組織に</span></span></li>
+    </ol>
+    <figcaption>本番より先に試すプレビュー チャネルもある。チャネルはユーザーごとではなく、グループ ポリシー・Intune・config.office.com で配る。</figcaption>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>クラウド ユーザーのパスワードは<span class="mk">既定で無期限</span>。有効期限の設定はクラウドのユーザーにだけ効き、同期ユーザーはオンプレミスのポリシーが支配する。</li>
+  <li>使用状況レポートのユーザー名を実名で見たいときは、<span class="mk">設定 → 組織設定 → サービス → レポート</span>で匿名化をオフにする（全体管理者）。</li>
+  <li>更新の適用状況やクラッシュ率は<span class="mk">Microsoft 365 Apps の正常性</span>で見る。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>情報システム部門のメンバーだけ、新機能を一般提供より先に使えるようにしたい</summary><p class="a">リリース設定で「選択したユーザーに対象指定リリース」を選び、ユーザーを指定する</p></details>
+  <details class="qi"><summary>Office アプリの更新を、月1回の決まった日にまとめたい</summary><p class="a">月次エンタープライズ チャネル</p></details>
+  <details class="qi"><summary>Office アプリの更新の適用状況とクラッシュ状況を確認したい</summary><p class="a">Microsoft 365 Apps の正常性</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c01">← CARD 01</a><a href="#contents">目次</a><a class="next" href="#c03">次のカード →</a></nav>
+</article>
+<article class="card" id="c03" aria-labelledby="c03-q">
+<div class="card-h"><span class="no">CARD <b>03</b> / 10</span><span class="topic">サービス正常性と利用状況の監視</span></div>
+<h2 class="q" id="c03-q">障害の「今」と、変更の「予告」はどこで見る？</h2>
+<p class="catch">今は<em>サービス正常性</em>、<br>これからは<em>メッセージ センター</em>。</p>
+<p class="lead">「Teams につながらない」と言われたら、まずサービス正常性を見ます。来月から何が変わるかはメッセージ センターに投稿されます。支社ごとの通信品質はネットワーク接続の分析情報で、使われ方は使用状況レポートと導入スコアで確かめます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-1</span><span>知りたいことと、見る場所</span></div>
+    <div class="map">
+      <div class="row"><span class="want">今まさに起きている障害・劣化</span><span class="arr"></span><span class="tool hot">サービス正常性<small>インシデントとアドバイザリ。メール通知も設定できる</small></span></div>
+      <div class="row"><span class="want">これから起きる変更、廃止の予定</span><span class="arr"></span><span class="tool">メッセージ センター<small>Planner と連携して担当を割り当てられる</small></span></div>
+      <div class="row"><span class="want">テナントにサインインできないときの状況</span><span class="arr"></span><span class="tool">公開のステータス ページ<small>テナント固有の情報は出ない</small></span></div>
+      <div class="row"><span class="want">Azure の VM やストレージの障害</span><span class="arr"></span><span class="tool">Azure portal の Service Health<small>[Monitor] → [Service Health]。M365 とは別画面</small></span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-2</span><span>支社の通信は、近くで外に出す</span></div>
+    <div class="route">
+      <div class="ln2 bad"><span>支社 → VPN → 本社のプロキシ → Microsoft 365<br><small>バックホール。遠回りで遅くなる。TLS の中断も起きやすい</small></span><span class="res">×</span></div>
+      <div class="ln2 good"><span>支社 → 近くのインターネット出口 → Microsoft 365<br><small>ローカル ブレイクアウト。Microsoft の接続の原則</small></span><span class="res">○</span></div>
+    </div>
+    <figcaption>拠点ごとの品質は「正常性 → ネットワーク接続」で比べる。拠点は egress IP やサブネットを登録して識別させる。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-3</span><span>「使われているか」を測る2系統</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>使用状況レポート</b><small>レポート → 使用状況</small></div><ul><li>Exchange・SharePoint・OneDrive・Teams のアクティブ数</li><li>7／30／90／180 日単位、CSV で出力</li></ul></div>
+      <div class="hot"><div class="hd"><b>導入スコア</b><small>レポート → 導入スコア</small></div><ul><li>人と組織／テクノロジの2つの観点、他社と比較</li><li>見られるのは全体管理者・レポート閲覧者・グローバル閲覧者</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>サービス正常性だけを見せたい担当者には、全体管理者ではなく<span class="mk">サービス サポート管理者</span>かグローバル閲覧者。</li>
+  <li>個別の端末から測りたいときは<span class="mk">ネットワーク接続テスト ツール</span>（connectivity.office.com）。</li>
+  <li>外出先で正常性を確認するなら Microsoft 365 Admin モバイル アプリ。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>ユーザーからの報告を待たずに、障害を知りたい</summary><p class="a">サービス正常性のメール通知を構成する</p></details>
+  <details class="qi"><summary>ヘルプデスク担当者に、サービス正常性だけを見せたい</summary><p class="a">サービス サポート管理者（またはグローバル閲覧者）</p></details>
+  <details class="qi"><summary>Entra Connect サーバーを動かす Azure VM の障害情報を確認したい</summary><p class="a">Azure portal の [Monitor] → [Service Health]</p></details>
+  <details class="qi"><summary>特定の支社だけ Teams の品質が悪い。どう対処する方向か</summary><p class="a">VPN や本社プロキシを経由させず、支社の近くでインターネットに出す（ローカル ブレイクアウト）</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c02">← CARD 02</a><a href="#contents">目次</a><a class="next" href="#c04">次のカード →</a></nav>
+</article>
+<article class="card" id="c04" aria-labelledby="c04-q">
+<div class="card-h"><span class="no">CARD <b>04</b> / 10</span><span class="topic">Microsoft 365 Backup</span></div>
+<h2 class="q" id="c04-q">ランサムウェアで暗号化された数千のサイトを、短時間で戻すには？</h2>
+<p class="catch">戻すなら<em>バックアップ</em>、<br>消させないなら<em>保持</em>。</p>
+<p class="lead">Microsoft 365 Backup は、SharePoint・OneDrive・Exchange のデータを Microsoft のサービス境界の中でバックアップし、指定した時点へまとめて戻すサービスです。ユーザー ライセンスではなく、保護するデータ量に応じた従量課金で動きます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-1</span><span>目的が違う2つの仕組み</span></div>
+    <div class="vs2">
+      <div class="hot"><div class="hd"><b>Microsoft 365 Backup</b><small>元に戻すため</small></div><ul><li>SharePoint サイト・OneDrive・Exchange メールボックス</li><li>時点を指定して、大規模に高速で復元</li><li>従量課金（Azure サブスクリプションに紐付け）</li></ul></div>
+      <div><div class="hd"><b>Purview の保持ポリシー</b><small>消させない／期限で消すため</small></div><ul><li>コンプライアンス上の保存義務に対応</li><li>削除されたアイテムを保持ホールド ライブラリへ退避</li><li>暗号化された内容を元に戻す機能ではない</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-2</span><span>使い始めるまでの手順</span></div>
+    <ol class="flow tight">
+      <li><b>従量課金を構成する</b><small>設定 → 組織設定 → 従量課金サービスの構成。Azure サブスクリプションとリソース グループを紐付ける</small></li>
+      <li><b>バックアップ ポリシーを作る</b><small>対象と保持期間を決める（既定は1年）</small></li>
+      <li class="goal"><b>必要なときに、時点を指定して復元</b><small>元の場所か、別の場所へ戻す</small></li>
+    </ol>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">E5 を買えば使えるわけではない</span>。前提は従量課金の構成。</li>
+  <li>バックアップは<span class="mk">サービス境界の外に出ない</span>。外部ストレージへのエクスポートではない。</li>
+  <li>版の履歴から1件ずつ戻す方法は、数千サイト規模では「短時間で」の要件を満たさない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>ランサムウェアで暗号化された数千サイトを、短時間で被害前に戻したい</summary><p class="a">Microsoft 365 Backup</p></details>
+  <details class="qi"><summary>Microsoft 365 Backup を有効にする前提は</summary><p class="a">従量課金の構成（Azure サブスクリプションとの紐付け）</p></details>
+  <details class="qi"><summary>法的な要件で、決められた期間は削除させたくない</summary><p class="a">Purview の保持ポリシー（Backup ではない）</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c03">← CARD 03</a><a href="#contents">目次</a><a class="next" href="#c05">次のカード →</a></nav>
+</article>
+<article class="card" id="c05" aria-labelledby="c05-q">
+<div class="card-h"><span class="no">CARD <b>05</b> / 10</span><span class="topic">ユーザーと退職者の処理</span></div>
+<h2 class="q" id="c05-q">退職者のサインインは止めた。ライセンスを外す前にやることは？</h2>
+<p class="catch">ライセンス解放と削除は、<em>いちばん最後</em>。</p>
+<p class="lead">ユーザーは管理センター、Entra 管理センター、PowerShell、ディレクトリ同期、B2B 招待で作れます。ライセンスを配る前提は「使用場所」の設定です。退職者の処理には Microsoft が推奨する順番があり、データへの道筋を先に確保します。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-1</span><span>退職者の処理は、この順番で</span></div>
+    <ol class="flow tight">
+      <li><b>サインインをブロック</b><small>Entra 管理センターでサインインのブロックを有効に</small></li>
+      <li><b>サインイン セッションを取り消す</b><small>発行済みのトークンが生きているため、既存の接続を切る</small></li>
+      <li><b>メールボックスの内容を保全</b><small>必要なら訴訟ホールド</small></li>
+      <li><b>モバイル デバイスをワイプ</b><small>スマートフォン・タブレットから組織データを消す</small></li>
+      <li><b>転送するか、共有メールボックスに変換</b><small><code>Set-Mailbox -Type Shared</code>。50GB 以下ならライセンス不要で残せる</small></li>
+      <li><b>OneDrive とメールを後任者に引き継ぐ</b><small>ライセンスを外す前にアクセス権を付与</small></li>
+      <li class="goal"><b>ライセンスを解放</b><small>他のユーザーへ再割り当てするか外す</small></li>
+      <li class="goal"><b>アカウントを削除</b><small>削除後30日間は「削除済みのユーザー」から復元できる</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-2</span><span>社外の人の載せ方は2通り</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>メール連絡先</b><small>ユーザー → 連絡先</small></div><ul><li>アドレス帳（GAL）に載せるだけ</li><li>サインインできない。ライセンス不要</li></ul></div>
+      <div class="hot"><div class="hd"><b>ゲスト ユーザー（B2B）</b><small>招待して作る</small></div><ul><li>サインインして Teams や SharePoint に参加できる</li><li>UPN は <code>user_contoso.com#EXT#@…</code> の形</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">使用場所（Usage location）</span>が未設定だと、ライセンスの割り当ては失敗する。</li>
+  <li>削除したユーザーは<span class="mk">30日間</span>復元できる。過ぎると完全に削除される。</li>
+  <li>同期されたユーザーの属性は、クラウド側ではなく<span class="mk">オンプレミス AD 側</span>で変える（VOL.02 で詳しく）。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>退職者のサインインを止めた。ライセンスを解放する前の最善の対応は</summary><p class="a">メールボックスを共有メールボックスに変換し、OneDrive のデータを後任者が見られるようにしてから解放する</p></details>
+  <details class="qi"><summary>外部の取引先をアドレス帳に載せたいが、アクセスは不要</summary><p class="a">メール連絡先</p></details>
+  <details class="qi"><summary>外部の協力会社の人を Teams に招待したい</summary><p class="a">ゲスト ユーザー（B2B）</p></details>
+  <details class="qi"><summary>ユーザーは有効でライセンスの空きも十分なのに、割り当てが失敗する</summary><p class="a">使用場所（Usage location）を確認する</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c04">← CARD 04</a><a href="#contents">目次</a><a class="next" href="#c06">次のカード →</a></nav>
+</article>
+<article class="card" id="c06" aria-labelledby="c06-q">
+<div class="card-h"><span class="no">CARD <b>06</b> / 10</span><span class="topic">グループと共有メールボックス</span></div>
+<h2 class="q" id="c06-q">その目的に合うグループはどれ？</h2>
+<p class="catch">グループは、<em>用途で選ぶ</em>。</p>
+<p class="lead">グループは種類が多く頻出です。共同作業の箱、権限とライセンスを配る相手、一斉メールの宛先、共有の受信箱。何のために使うかで選べば迷いません。配布グループを Microsoft 365 グループにアップグレードできるかどうかは、不可の条件で消していくのが速い解き方です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-1</span><span>用途で選ぶ4つの入れ物</span></div>
+    <div class="tiles" style="--n:2">
+      <div class="tile hot"><span class="p">共同作業の箱</span><span class="h">Microsoft 365 グループ</span><span class="d">メールボックス・SharePoint サイト・Planner が付いてくる。Teams のチームの実体</span></div>
+      <div class="tile"><span class="p">権限とライセンスを配る</span><span class="h">セキュリティ グループ</span><span class="d">条件付きアクセスの対象、グループ ベース ライセンス（P1）</span></div>
+      <div class="tile"><span class="p">一斉メールだけ</span><span class="h">配布グループ</span><span class="d">SharePoint も Teams も付かない。条件付きで M365 グループへアップグレード可</span></div>
+      <div class="tile"><span class="p">受信箱を共有</span><span class="h">共有メールボックス</span><span class="d">info@ などを複数人で。50GB までライセンス不要</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-2</span><span>アップグレードできる配布グループはどれ？</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>名前</th><th>説明</th><th>メンバー</th><th>所有者</th><th>判定</th></tr></thead>
+        <tbody>
+          <tr><td>All_Staff</td><td>動的グループ</td><td>1,500</td><td>1</td><td class="x">×</td></tr>
+          <tr><td>IT_Support</td><td>メール対応セキュリティ グループ</td><td>50</td><td>0</td><td class="x">×</td></tr>
+          <tr><td>Finance_Accounting</td><td>別の配布グループにネスト</td><td>50</td><td>0</td><td class="x">×</td></tr>
+          <tr class="pick"><td>All_Leaders</td><td>クラウド管理の配布グループ</td><td>50</td><td>50</td><td class="o">○</td></tr>
+          <tr class="pick"><td>All_IT</td><td>クラウド管理の配布グループ</td><td>150</td><td>1</td><td class="o">○</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>メンバーが多いことは不可の理由にならない。所有者50人も上限100人以内なので可。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-3</span><span>不可の条件（これに当たったら消す）</span></div>
+    <div class="chips"><span class="odd">オンプレミスで管理</span><span class="odd">ネストしている</span><span class="odd">所有者が100人を超える</span><span class="odd">所有者がいない</span><span>メンバーがいない</span><span>メール連絡先やグループがメンバーにいる</span><span class="odd">動的配布グループ</span><span class="odd">メール対応セキュリティ グループ</span><span>会議室リスト</span><span>共有メールボックスの転送先</span><span>エイリアスに特殊文字</span></div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>動的メンバーシップ・グループの有効期限ポリシー・名前付けポリシーは<span class="mk">Entra ID P1</span>。期限切れで消えたグループは30日間復元できる。</li>
+  <li>アップグレードは、メールボックスを持つ<span class="mk">Exchange 管理者が要求を送り、所有者が承認</span>する。所有者が自分ではできない。メール アドレスは変わらない。</li>
+  <li>条件を満たしているのに失敗するなら、<span class="mk">Microsoft 365 グループ向けのカスタム メール アドレス ポリシー</span>を疑う。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>ライセンスを自動で配りたい</summary><p class="a">セキュリティ グループとグループ ベース ライセンス（Entra ID P1）</p></details>
+  <details class="qi"><summary>部署の異動に合わせて、メンバーを自動で入れ替えたい</summary><p class="a">動的グループ（Entra ID P1）</p></details>
+  <details class="qi"><summary>放置されたチームを自動で片付けたい</summary><p class="a">Microsoft 365 グループの有効期限ポリシー</p></details>
+  <details class="qi"><summary>配布グループの所有者に、自分でアップグレードさせたい</summary><p class="a">できない。管理者が EAC から要求を送り、所有者が承認する</p></details>
+  <details class="qi"><summary>社外に送ったメールが届かないと言われた。最初の一手は</summary><p class="a">メッセージ追跡（message trace）で、どこで止まっているかを確認する</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c05">← CARD 05</a><a href="#contents">目次</a><a class="next" href="#c07">次のカード →</a></nav>
+</article>
+<article class="card" id="c07" aria-labelledby="c07-q">
+<div class="card-h"><span class="no">CARD <b>07</b> / 10</span><span class="topic">ライセンス管理</span></div>
+<h2 class="q" id="c07-q">ライセンスの割り当てが失敗する。何を疑う？</h2>
+<p class="catch">まず<em>使用場所</em>を疑う。</p>
+<p class="lead">ライセンスは直接割り当てか、グループ ベース ライセンスで配ります。グループにライセンスを付けると、メンバーに自動で継承され、外れると自動で剥がれます。規模が大きいほど有利ですが、固有のつまずきが4つあります。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-1</span><span>グループ ベース ライセンスが失敗する4つのパターン</span></div>
+    <div class="tiles" style="--n:2">
+      <div class="tile hot"><span class="p">使用場所が未設定</span><span class="h">Usage location を設定</span><span class="d">テナントの既定の使用場所を決めておくと予防できる</span></div>
+      <div class="tile"><span class="p">ライセンスが足りない</span><span class="h">追加購入か、不要な割り当てを解除</span><span class="d">サブスクリプションの空き数を確認</span></div>
+      <div class="tile"><span class="p">サービス プランの競合</span><span class="h">片方のサービス プランを無効化</span><span class="d">Exchange Online を含む製品を2つ付けた場合など</span></div>
+      <div class="tile"><span class="p">前提のサービス プランがない</span><span class="h">基盤の製品を先に割り当てる</span><span class="d">アドオンだけを付けようとした場合など</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-2</span><span>グループから継承したライセンスは、ユーザー側で外せない</span></div>
+    <div class="chain">
+      <span>グループに E3 を割り当て</span><i>→</i>
+      <span class="soft">メンバーに継承<small>ユーザーの画面ではグレーアウト</small></span><i>→</i>
+      <span class="hot">外したいときは<small>グループから外す／グループ側でサービス プランを制御／別のグループに分ける</small></span>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>グループ ベース ライセンスには<span class="mk">Entra ID P1 以上</span>が必要。E3・E5・Business Premium に含まれる。</li>
+  <li>「特定のユーザーだけ Exchange を外したい」も、ユーザー側ではなく<span class="mk">グループ側</span>で制御する。</li>
+  <li>保有ライセンスと空き数は <code>Get-MgSubscribedSku</code> で確認できる。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>グループ ベース ライセンスで「サービス プランの競合」エラーが出た</summary><p class="a">同じサービス プランを含む製品が2つ付いている。片方で該当のサービス プランを無効化する</p></details>
+  <details class="qi"><summary>グループから継承したライセンスの一部を、特定のユーザーだけ外したい</summary><p class="a">ユーザー側では外せない。グループ側でサービス プランを制御するか、別グループに分ける</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c06">← CARD 06</a><a href="#contents">目次</a><a class="next" href="#c08">次のカード →</a></nav>
+</article>
+<article class="card" id="c08" aria-labelledby="c08-q">
+<div class="card-h"><span class="no">CARD <b>08</b> / 10</span><span class="topic">一括管理と PowerShell</span></div>
+<h2 class="q" id="c08-q">スクリプトで大量のユーザーを更新したい。いま使えるモジュールは？</h2>
+<p class="catch">MSOnline と AzureAD は、<em>もう使えない</em>。</p>
+<p class="lead">大量のユーザーを扱うなら PowerShell です。古い2つのモジュールは 2025年に廃止され、選択肢に出てきたら誤りとして扱われます。Graph のアクセス許可は「リソース.操作.範囲」の形で読みます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-1</span><span>モジュールの現役と引退</span></div>
+    <ul class="ox">
+      <li class="x"><span><b>MSOnline</b>（<code>Connect-MsolService</code>）<small>2025年に廃止</small></span></li>
+      <li class="x"><span><b>AzureAD</b>（<code>Connect-AzureAD</code>）<small>Azure AD Graph の終了で廃止</small></span></li>
+      <li class="o"><span><b>Microsoft Graph PowerShell</b>（<code>Connect-MgGraph</code>）<small>ユーザー・グループ・ライセンス・ロール全般</small></span></li>
+      <li class="o"><span><b>Microsoft Entra PowerShell</b>（<code>Connect-Entra</code>）<small>Entra 管理に特化。旧 AzureAD から移りやすい</small></span></li>
+      <li class="o"><span><b>ExchangeOnlineManagement</b>（<code>Connect-ExchangeOnline</code>／<code>Connect-IPPSSession</code>）<small>Exchange と、セキュリティ・コンプライアンス</small></span></li>
+    </ul>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-2</span><span>Graph のスコープは狭い順に選ぶ（ライセンス一覧を読むだけなら）</span></div>
+    <ol class="bars">
+      <li class="rec" style="--w:22%"><span class="bar"></span><span class="lab"><b>LicenseAssignment.Read.All<span class="tag">最小</span></b><span><code>Get-MgSubscribedSku</code> の公式の最小権限</span></span></li>
+      <li style="--w:42%"><span class="bar"></span><span class="lab"><b>Organization.Read.All</b><span>組織情報。選択肢に最小がなければこれ</span></span></li>
+      <li style="--w:72%"><span class="bar"></span><span class="lab"><b>Directory.Read.All</b><span>Entra のオブジェクトをほぼすべて読める</span></span></li>
+      <li style="--w:100%"><span class="bar"></span><span class="lab"><b>Directory.ReadWrite.All</b><span>書き換え可。影響はディレクトリの外にも及ぶ</span></span></li>
+    </ol>
+    <figcaption>Directory は Entra ID のディレクトリのこと。SharePoint・OneDrive は Sites.*／Files.* の別系統。</figcaption>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>一括作成・変更の正解候補は、<span class="mk">Graph PowerShell（または Entra PowerShell）</span>と<span class="mk">管理センターの CSV 一括追加</span>。</li>
+  <li><code>Connect-MsolService</code> や <code>Connect-AzureAD</code> を含む選択肢は<span class="mk">廃止済みで誤り</span>。</li>
+  <li>CSV から作るときも、使用場所（<code>-UsageLocation</code>）を忘れない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>スクリプトで大量のユーザー属性を更新したい。サポートされている方法は（2つ）</summary><p class="a">Microsoft Graph PowerShell（Connect-MgGraph）と Microsoft Entra PowerShell（Connect-Entra）</p></details>
+  <details class="qi"><summary>サブスクリプションの一覧を読むだけ。最小のスコープは</summary><p class="a">LicenseAssignment.Read.All（なければ並んだ中で最も狭いもの）</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c07">← CARD 07</a><a href="#contents">目次</a><a class="next" href="#c09">次のカード →</a></nav>
+</article>
+<article class="card" id="c09" aria-labelledby="c09-q">
+<div class="card-h"><span class="no">CARD <b>09</b> / 10</span><span class="topic">ロールとロールグループ</span></div>
+<h2 class="q" id="c09-q">パスワードを戻せるのは誰？ 最小特権ならどのロール？</h2>
+<p class="catch">答えは、<em>いちばん狭いロール</em>。</p>
+<p class="lead">設問の多くは「最小特権の原則に従うと、どのロールか」です。全体管理者が正解になることはまれです。Entra のロールと、Purview や Exchange のロールグループは別系統で、Entra から Purview へは権限が流れ込みますが、逆は流れません。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-1</span><span>パスワードを戻せるロール（狭い順）</span></div>
+    <ol class="bars">
+      <li style="--w:16%"><span class="bar"></span><span class="lab"><b>パスワード管理者</b><span>一般ユーザーと一部の限定ロール。PW リセット専用の最小権限</span></span></li>
+      <li style="--w:30%"><span class="bar"></span><span class="lab"><b>ヘルプデスク管理者</b><span>一般ユーザーと他のヘルプデスク管理者など</span></span></li>
+      <li style="--w:48%"><span class="bar"></span><span class="lab"><b>認証管理者</b><span>パスワードに加えて MFA などの認証方法も</span></span></li>
+      <li style="--w:64%"><span class="bar"></span><span class="lab"><b>ユーザー管理者</b><span>一般ユーザーと一部の限定管理者。ユーザー管理全般</span></span></li>
+      <li class="rec" style="--w:86%"><span class="bar"></span><span class="lab"><b>特権認証管理者<span class="tag">管理者も</span></b><span>全員。管理者のパスワードと認証方法も戻せる</span></span></li>
+      <li style="--w:100%"><span class="bar"></span><span class="lab"><b>全体管理者</b><span>全員</span></span></li>
+    </ol>
+    <figcaption>サービス サポート管理者は名前が紛らわしいが、正常性の閲覧とサポート依頼だけ。パスワードの権限はない。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-2</span><span>Entra → Purview は一方通行</span></div>
+    <div class="route">
+      <div class="ln2 good"><span>Entra のコンプライアンス管理者・セキュリティ管理者・全体管理者<br><small>→ Purview の同名のロールグループ（全体管理者は組織管理）にも効く</small></span><span class="res">○</span></div>
+      <div class="ln2 bad"><span>Purview のロールグループに追加<br><small>→ Entra のロールは付かない。Purview ポータルの中だけで効く</small></span><span class="res">×</span></div>
+    </div>
+    <figcaption>両方にあると Entra 側が優先され、管理単位による絞り込みが効かなくなる。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-3</span><span>eDiscovery のマネージャーと管理者</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>eDiscovery マネージャー</b><small>ロールグループのマネージャー欄</small></div><ul><li>自分が作成したケースだけ</li><li>メール有効セキュリティ グループで追加できる</li></ul></div>
+      <div class="hot"><div class="hd"><b>eDiscovery 管理者</b><small>同じロールグループの管理者欄</small></div><ul><li>組織内のすべてのケース</li><li><code>Add-eDiscoveryCaseAdmin</code> で指定できるのは個人だけ</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>全体管理者のパスワードや MFA を戻せるのは<span class="mk">特権認証管理者と全体管理者自身</span>だけ。</li>
+  <li>「部署のデータだけに限って」コンプライアンス権限を渡すなら、Entra ロールではなく<span class="mk">Purview のロールグループ</span>（必要なら管理単位でスコープ）。</li>
+  <li>検索結果のメールを一括削除する Search And Purge は、既定で<span class="mk">組織管理</span>ロールグループにしかない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>一般ユーザーのパスワードを、最小権限でリセットさせたい</summary><p class="a">パスワード管理者</p></details>
+  <details class="qi"><summary>パスワードに加えて MFA の再登録もさせたい</summary><p class="a">認証管理者</p></details>
+  <details class="qi"><summary>全体管理者の MFA をリセットできるのは誰</summary><p class="a">特権認証管理者（と全体管理者自身）</p></details>
+  <details class="qi"><summary>サービス サポート管理者は、パスワードをリセットできる？</summary><p class="a">できない。正常性の閲覧とサポート依頼の起票だけ</p></details>
+  <details class="qi"><summary>Purview で、検索に一致したメールを一括削除する権限を持つ既定のロールグループは</summary><p class="a">組織管理（Organization Management）</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c08">← CARD 08</a><a href="#contents">目次</a><a class="next" href="#c10">次のカード →</a></nav>
+</article>
+<article class="card" id="c10" aria-labelledby="c10-q">
+<div class="card-h"><span class="no">CARD <b>10</b> / 10</span><span class="topic">管理単位と PIM</span></div>
+<h2 class="q" id="c10-q">権限の「範囲」を絞る？ 「時間」を絞る？</h2>
+<p class="catch">範囲は<em>管理単位</em>、時間は <em>PIM</em>。</p>
+<p class="lead">管理単位は、ディレクトリの一部を切り出してロールの効く範囲を絞る仕組みです。PIM は特権ロールを常時持たせず、必要なときだけ時限で有効にする仕組みです。必要なライセンスは、管理単位が P1、PIM が P2 です。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-1</span><span>管理単位にグループを入れても、メンバーは入らない</span></div>
+    <div class="route">
+      <div class="ln2 good"><span>AU1 スコープの管理者 → AU1 に入れたグループ G1<br><small>名前やメンバーシップは管理できる</small></span><span class="res">○</span></div>
+      <div class="ln2 bad"><span>AU1 スコープのパスワード管理者 → G1 のメンバー User1 のパスワード<br><small>メンバーは AU1 の範囲に入っていない</small></span><span class="res">×</span></div>
+      <div class="ln2 good"><span>User1 を AU1 に直接追加（または動的メンバーシップ ルール）<br><small>これでパスワードを戻せる</small></span><span class="res">○</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-2</span><span>PIM：持たせておかず、必要なときだけ借りる</span></div>
+    <ol class="flow tight">
+      <li><b>適格（Eligible）で割り当て</b><small>権限は付いていない。「使える資格」だけ持つ</small></li>
+      <li><b>申請してアクティブ化</b><small>MFA・理由・チケット番号・承認・最大時間をロールごとに設定</small></li>
+      <li><b>時限でアクティブ</b><small>例：8時間だけ有効</small></li>
+      <li class="goal"><b>期限切れで自動的に外れる</b><small>アクセス レビューで割り当てを定期的に棚卸し</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-3</span><span>管理単位を任せる人に、P1 は入っている？</span></div>
+    <ul class="ox">
+      <li class="o"><span><b>Microsoft 365 E3／E5、EMS E3／E5、Business Premium</b><small>P1 を含む。追加は不要</small></span></li>
+      <li class="x"><span><b>Exchange Online P1、SharePoint Online P2、Intune 単体</b><small>P1 を含まない。「Intune があるから P1 もある」はひっかけ</small></span></li>
+    </ul>
+    <figcaption>P1 が要るのは管理単位スコープで管理を任される管理者1人ごと。メンバー側は Free でよい。</figcaption>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">制限付き管理単位</span>にすると、スコープされた管理者以外はテナント全体のユーザー管理者でも変更できない。役員アカウントの保護に使う。</li>
+  <li>管理単位は Entra 管理センターで作る。作成には<span class="mk">特権ロール管理者</span>以上が必要。</li>
+  <li>「支社ごとに管理者を分けたい」なら管理単位、「支社ごとにライセンスを配りたい」なら<span class="mk">動的グループ</span>。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>大阪支社のヘルプデスクに、大阪支社のユーザーのパスワードだけを戻させたい</summary><p class="a">大阪支社のユーザーを含む管理単位を作り、そこにスコープしてヘルプデスク管理者を割り当てる</p></details>
+  <details class="qi"><summary>AU1 にグループ G1 を追加し、User2 に AU1 スコープのパスワード管理者を付けた。G1 のメンバーの PW は戻せる？</summary><p class="a">戻せない。メンバーを AU1 に直接追加する必要がある</p></details>
+  <details class="qi"><summary>特権ロールを常時持たせず、承認と MFA を求め、8時間で外したい</summary><p class="a">PIM（Microsoft Entra ID P2）</p></details>
+  <details class="qi"><summary>役員のアカウントを、テナント全体のユーザー管理者からも守りたい</summary><p class="a">制限付き管理単位</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c09">← CARD 09</a><a href="#contents">目次</a><a class="next" href="#quiz">腕試しへ →</a></nav>
+</article>
+<section class="sheet" id="quiz" aria-labelledby="h-quiz">
+  <div class="quiz-h"><div class="kicker"><span class="part">巻末</span><span>腕試し5問</span></div><span class="score" aria-live="polite">正解 <b id="score">0</b> / 5</span></div>
+  <h2 class="sheet-h" id="h-quiz">選んだ瞬間に、答え合わせ。</h2>
+  <div class="qz" data-answer="C">
+  <p class="qq"><b>Q1</b>大阪支社のヘルプデスク担当者に、大阪支社のユーザーのパスワードだけをリセットさせたい。最小特権の原則に従う構成は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>担当者に全体管理者ロールを割り当てる</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>大阪支社のユーザーを含む動的セキュリティ グループを作り、そのグループにヘルプデスク管理者を割り当てる</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>大阪支社のユーザーを含む管理単位を作り、そこにスコープしてヘルプデスク管理者を割り当てる</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>大阪支社のユーザーを含む Microsoft 365 グループを作り、担当者を所有者にする</span></button>
+  </div>
+  <p class="why" hidden><b>正解は C。</b>ロールの効く範囲を絞る仕組みが管理単位。B のグループは「操作される対象」を限定する仕組みではなく、スコープはテナント全体のまま。D の所有権ではパスワードは戻せない。→ CARD 10</p>
+</div>
+<div class="qz" data-answer="B">
+  <p class="qq"><b>Q2</b>ユーザーにライセンスを割り当てようとしたら失敗した。ユーザーは有効で、サブスクリプションの空きも十分。最初に確認するのは？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>ユーザーの UPN サフィックス</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>ユーザーの使用場所（Usage location）</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>ユーザーが所属するセキュリティ グループ</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>テナントの国／地域</span></button>
+  </div>
+  <p class="why" hidden><b>正解は B。</b>使用場所はライセンス割り当ての必須属性。国によって提供できないサービスがあるため、未設定では付与できない。→ CARD 05・07</p>
+</div>
+<div class="qz" data-answer="D">
+  <p class="qq"><b>Q3</b>情報システム部門のメンバーだけが、一般提供より先に Microsoft 365 の新機能を使えるようにしたい。どう構成する？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>リリース設定で「すべてのユーザーに対象指定リリース」を選ぶ</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>Microsoft 365 Apps の更新チャネルを半期エンタープライズに変える</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>対象のユーザーを Microsoft 365 グループに追加する</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>リリース設定で「選択したユーザーに対象指定リリース」を選び、ユーザーを指定する</span></button>
+  </div>
+  <p class="why" hidden><b>正解は D。</b>A は全社が先行してしまう。B はアプリの更新の話で、半期チャネルはむしろ遅くなる。C のグループ所属はリリース設定に影響しない。→ CARD 02</p>
+</div>
+<div class="qz" data-answer="A">
+  <p class="qq"><b>Q4</b>特権ロールを常時持たせず、使うときに承認と MFA を求め、8時間で自動的に外れるようにしたい。必要なものは？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>Privileged Identity Management と Microsoft Entra ID P2</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>条件付きアクセス ポリシーと Microsoft Entra ID P1</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>管理単位と Microsoft Entra ID P1</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>セキュリティ既定値群</span></button>
+  </div>
+  <p class="why" hidden><b>正解は A。</b>適格割り当て・時限のアクティブ化・承認・MFA は PIM の中核で、P2 が必要。条件付きアクセスや管理単位では割り当てそのものを時限化できない。→ CARD 10</p>
+</div>
+<div class="qz" data-answer="B">
+  <p class="qq"><b>Q5</b>管理単位 AU1 にグループ G1（メンバー：User1）を追加し、User2 に AU1 スコープでパスワード管理者を割り当てた。正しい記述は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>User2 は User1 のパスワードをリセットできる</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>G1 自体は範囲内だが、User1 のパスワードはリセットできない</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>User2 はテナントのすべての一般ユーザーのパスワードをリセットできる</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>User2 は User1 を含むすべてのグループのメンバーのパスワードをリセットできる</span></button>
+  </div>
+  <p class="why" hidden><b>正解は B。</b>管理単位にグループを入れても、範囲に入るのはグループのオブジェクトだけ。User1 を対象にするなら AU1 に直接追加する。→ CARD 10 図10-1</p>
+</div>
+</section>
+<section class="sheet" id="memo" aria-labelledby="h-memo">
+  <div class="kicker"><span class="part">付録</span><span>切り取り暗記カード</span></div>
+  <h2 class="sheet-h" id="h-memo">直前の10分は、この12枚だけ。</h2>
+  <p class="cut">キリトリ</p>
+  <div class="cards"><div><small>CARD 01</small>国／地域と初期ドメインは変えられない。変えるなら新テナント</div>
+<div><small>CARD 01</small>SPF は1行にまとめ、v=spf1 を先頭に</div>
+<div><small>CARD 02</small>情シスだけ先行は「選択したユーザーに対象指定リリース」</div>
+<div><small>CARD 03</small>今はサービス正常性、これからはメッセージ センター</div>
+<div><small>CARD 04</small>大規模に戻すなら Backup。前提は従量課金の構成</div>
+<div><small>CARD 05</small>退職者は共有メールボックス化と引き継ぎの後でライセンス解放</div>
+<div><small>CARD 05</small>ライセンス割り当ての前提は使用場所</div>
+<div><small>CARD 06</small>配布グループのアップグレードは不可の条件で消す</div>
+<div><small>CARD 07</small>グループから継承したライセンスは個別に外せない</div>
+<div><small>CARD 08</small>MSOnline と AzureAD は廃止。Graph か Entra PowerShell</div>
+<div><small>CARD 09</small>全体管理者の MFA を戻せるのは特権認証管理者</div>
+<div><small>CARD 10</small>範囲は管理単位（P1）、時間は PIM（P2）</div></div>
+  <p class="cut">キリトリ</p>
+  <div class="sister"><a class="hot" href="https://claude.ai/artifact/DBGvdDGp9bbroqttuzmVqZ" target="_blank" rel="noopener"><b>この先は逆引きドリルで</b><span>全巻の「ここが出る！」を、間違えたものから繰り返し出題します。</span></a></div>
+  <span class="sub-h">シリーズ構成</span>
+  <ul class="series"><li class="on"><span><b>VOL.01</b><span>テナント</span><small>配点 25–30% ／ 本号</small></span></li><li><a href="https://claude.ai/artifact/PY28R5A28mo3CHNcqnFQEe" target="_blank" rel="noopener"><b>VOL.02</b><span>Entra ID</span><small>配点 25–30%</small></a></li><li><a href="https://claude.ai/artifact/NENPSAdHgUY5bcLptgAMZm" target="_blank" rel="noopener"><b>VOL.03</b><span>Defender XDR</span><small>配点 30–35%</small></a></li><li><a href="https://claude.ai/artifact/T1MvTVzR7PjiyFHrTzmZC6" target="_blank" rel="noopener"><b>VOL.04</b><span>Purview</span><small>配点 10–15%</small></a></li></ul>
+  <div class="okuduke">
+    <span class="ttl">MS-102 図解ムック VOL.01 特集 テナント運用 まるごと図解</span>
+    <dl>
+      <dt>発行</dt><dd>2026年10月</dd>
+      <dt>準拠</dt><dd>Microsoft 公式スキル測定（2026年4月28日版）</dd>
+      <dt>底本</dt><dd>MS-102 総合テキスト 第1章</dd>
+      <dt>ご注意</dt><dd>製品名・画面・ライセンス要件は変わることがあります。受験前に Microsoft Learn の学習ガイドで最新の情報を確認してください。MS-102 は 2026年11月30日に廃止予定です。</dd>
+    </dl>
+  </div>
+  <div class="sister">
+    <a href="#top"><b>表紙へ戻る</b><span>目次から別のカードへ</span></a>
+    <a href="https://learn.microsoft.com/ja-jp/credentials/certifications/exams/ms-102/" target="_blank" rel="noopener"><b>試験ページ（Microsoft Learn）</b><span>試験概要と廃止予定日の確認</span></a>
+  </div>
+</section>
+</main>
+<script>
+(function(){
+  // 腕試し：選んだ瞬間に採点して解説を出す
+  var right = 0;
+  var scoreEl = document.getElementById('score');
+  Array.prototype.forEach.call(document.querySelectorAll('.qz'), function(q){
+    var ans = q.getAttribute('data-answer');
+    var why = q.querySelector('.why');
+    Array.prototype.forEach.call(q.querySelectorAll('.opt'), function(b){
+      b.addEventListener('click', function(){
+        if (q.classList.contains('done')) return;
+        q.classList.add('done');
+        Array.prototype.forEach.call(q.querySelectorAll('.opt'), function(o){
+          if (o.getAttribute('data-k') === ans) o.classList.add('right');
+          o.setAttribute('aria-disabled', 'true');
+        });
+        if (b.getAttribute('data-k') === ans) { right++; if (scoreEl) scoreEl.textContent = String(right); }
+        else { b.classList.add('wrong'); }
+        if (why) why.hidden = false;
+      });
+    });
+  });
+
+  // 上部バー：いま読んでいるカードの番号を光らせる
+  var chips = {};
+  Array.prototype.forEach.call(document.querySelectorAll('.tb-chips a'), function(a){
+    chips[a.getAttribute('href').slice(1)] = a;
+  });
+  var current = null;
+  function mark(id){
+    if (id === current) return;
+    if (current && chips[current]) chips[current].classList.remove('here');
+    current = id;
+    if (id && chips[id]) {
+      chips[id].classList.add('here');
+      var bar = chips[id].parentNode, r = chips[id].getBoundingClientRect(), b = bar.getBoundingClientRect();
+      if (r.left < b.left || r.right > b.right) bar.scrollLeft += (r.left - b.left) - b.width / 2 + r.width / 2;
+    }
+  }
+  var targets = Array.prototype.slice.call(document.querySelectorAll('.card, #quiz, #memo'));
+  function onScroll(){
+    var best = null;
+    for (var i = 0; i < targets.length; i++) {
+      if (targets[i].getBoundingClientRect().top <= 120) best = targets[i].id; else break;
+    }
+    mark(best);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>

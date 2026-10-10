@@ -1,0 +1,1303 @@
+<title>MS-102 図解ムック Purview編</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@400;500;700;900&family=Shippori+Mincho+B1:wght@600;800&family=Yusei+Magic&family=Barlow+Condensed:wght@600;800&display=swap">
+<style>
+/* Layout: 2色刷りのムック誌面を「1テーマ1カード」に組み直す。表紙→目次→カード（問い→一言の答え→図→押さえどころ→ここが出る）を縦に積み、上部に細いカード番号バー。 */
+:root{
+  --desk:#DADEE5;
+  --paper:#FFFFFF;
+  --paper-2:#F2F3F6;
+  --ink:#16181D;
+  --ink-2:#4B505C;
+  --line:#D4D7DE;
+  --spot:#D94A14;
+  --alt:#1C5BD0;
+  --on-spot:#FFFFFF;
+  --ok:#1D7A45;
+  --ng:#C2321E;
+  --marker:#FFE14D;
+  --note:#FFF2B3;
+
+  --gothic:"M PLUS 1","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  --mincho:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --hand:"Yusei Magic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --num:"Barlow Condensed","Arial Narrow","M PLUS 1",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#0B0D11;
+    --paper:#181B22;
+    --paper-2:#21252E;
+    --ink:#ECEEF3;
+    --ink-2:#A8AEBC;
+    --line:#323745;
+    --spot:#FF8248;
+    --alt:#82A8FF;
+    --on-spot:#15171C;
+    --ok:#6FD39A;
+    --ng:#FF8A7A;
+    --marker:#5C4C0C;
+    --note:#38321A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#0B0D11;
+  --paper:#181B22;
+  --paper-2:#21252E;
+  --ink:#ECEEF3;
+  --ink-2:#A8AEBC;
+  --line:#323745;
+  --spot:#FF8248;
+  --alt:#82A8FF;
+  --on-spot:#15171C;
+  --ok:#6FD39A;
+  --ng:#FF8A7A;
+  --marker:#5C4C0C;
+  --note:#38321A;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 56px)}
+body{
+  margin:0;
+  background:var(--desk);
+  color:var(--ink);
+  font-family:var(--gothic);
+  font-size:15.5px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;
+  word-break:auto-phrase;
+  line-break:strict;
+}
+h1,h2,h3,h4,p{margin:0}
+h1,h2,h3{text-wrap:balance}
+a{color:inherit}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--alt);outline-offset:3px}
+code{font-family:var(--mono);font-size:.86em}
+
+/* ================= 上部バー ================= */
+.topbar{
+  position:sticky;
+  top:env(safe-area-inset-top,0px);
+  z-index:20;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px clamp(12px,3vw,24px);
+  background:var(--ink);
+  color:var(--paper);
+  font-size:.8rem;
+  font-weight:700;
+}
+.tb-home{flex:none;text-decoration:none;white-space:nowrap;letter-spacing:.04em}
+.tb-home b{font-family:var(--num);font-weight:800;font-size:1rem;margin-right:6px;color:var(--spot)}
+.tb-chips{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0;margin-left:auto}
+.tb-chips::-webkit-scrollbar{display:none}
+.tb-chips a{
+  flex:none;
+  min-width:2.1rem;
+  padding:2px 7px;
+  text-align:center;
+  text-decoration:none;
+  font-family:var(--num);
+  font-weight:800;
+  font-size:.95rem;
+  border:1.5px solid color-mix(in srgb,var(--paper) 35%,transparent);
+}
+.tb-chips a.txt{font-family:var(--gothic);font-size:.74rem;font-weight:900;padding-top:4px}
+.tb-chips a:hover{border-color:var(--paper)}
+.tb-chips a.here{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+
+.book{
+  max-width:940px;
+  margin:0 auto;
+  padding-inline:clamp(16px,3vw,28px);
+  padding-block:24px 80px;
+  display:grid;
+  gap:clamp(20px,3.4vw,32px);
+}
+
+/* ================= 表紙 ================= */
+.cover{
+  position:relative;
+  overflow:hidden;
+  background:var(--spot);
+  color:var(--on-spot);
+  padding:clamp(22px,4vw,44px);
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
+  gap:24px 32px;
+  box-shadow:0 18px 40px -24px color-mix(in srgb,var(--ink) 55%,transparent);
+}
+.mast{display:grid;gap:14px;align-content:start;min-width:0}
+.issue{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;font-weight:700;font-size:.8rem;letter-spacing:.14em}
+.issue b{font-family:var(--num);font-weight:800;font-size:1.5rem;letter-spacing:.04em}
+.logo{display:grid;gap:2px}
+.logo .en{font-family:var(--num);font-weight:800;font-size:clamp(4rem,11vw,7.6rem);line-height:.8;letter-spacing:-.02em}
+.logo .ja{font-weight:900;font-size:clamp(1.8rem,4.6vw,3rem);line-height:1.05;letter-spacing:.04em}
+.feature{display:grid;gap:10px;margin-top:4px}
+.feature .kick{justify-self:start;padding:2px 12px;background:var(--on-spot);color:var(--spot);font-weight:900;font-size:.9rem;letter-spacing:.1em}
+.feature h1{font-weight:900;font-size:clamp(2rem,5.4vw,3.4rem);line-height:1.1;letter-spacing:-.01em}
+.clines{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:9px}
+.clines li span{
+  background:var(--paper);
+  color:var(--ink);
+  padding:3px 10px;
+  font-weight:900;
+  font-size:clamp(.9rem,1.7vw,1.02rem);
+  line-height:2.05;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
+.clines li.main span{font-size:clamp(1.2rem,2.6vw,1.6rem);line-height:1.75}
+.clines li em{font-style:normal;color:var(--spot)}
+.cover-art{position:relative;display:grid;place-items:center;min-width:0}
+.cover-art svg{width:100%;max-width:440px;height:auto;display:block}
+.cover-art .ring{fill:none;stroke:var(--on-spot);stroke-width:2;stroke-dasharray:6 7}
+.cover-art .sat{fill:var(--paper);stroke:var(--ink);stroke-width:2.5}
+.cover-art .core{fill:var(--ink)}
+.cover-art .ln{fill:none;stroke:var(--on-spot);stroke-width:2.5}
+.cover-art .ah{fill:var(--on-spot)}
+.cover-art .p{font-family:var(--gothic);font-size:14px;font-weight:700;fill:var(--ink-2)}
+.cover-art .w{font-family:var(--gothic);font-size:22px;font-weight:900;fill:var(--ink)}
+.cover-art .w2{font-family:var(--gothic);font-size:19px;font-weight:900;fill:var(--ink)}
+.cover-art .c1{font-family:var(--gothic);font-size:19px;font-weight:700;fill:var(--paper)}
+.cover-art .c2{font-family:var(--num);font-size:46px;font-weight:800;fill:var(--paper)}
+.cover-art .os{font-family:var(--gothic);font-size:14px;font-weight:900;fill:var(--on-spot)}
+.badge{
+  position:absolute;
+  top:0;right:0;
+  width:100px;
+  aspect-ratio:1;
+  max-width:100%;
+  border-radius:50%;
+  background:var(--marker);
+  color:var(--ink);
+  display:grid;
+  place-content:center;
+  text-align:center;
+  font-weight:900;
+  line-height:1.15;
+  transform:rotate(10deg);
+  box-shadow:0 0 0 3px var(--spot),0 0 0 5px var(--marker);
+}
+.badge b{display:block;font-size:1.45rem}
+.badge small{display:block;font-size:.7rem;font-weight:700}
+.cover-foot{
+  grid-column:1/-1;
+  border-top:2px solid var(--on-spot);
+  padding-top:12px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:10px 24px;
+  font-size:.8rem;
+  font-weight:700;
+}
+.vols{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.vols li > *{display:block;padding:1px 10px;border:1.5px solid var(--on-spot);text-decoration:none}
+.vols li a:hover{background:color-mix(in srgb,var(--on-spot) 18%,transparent)}
+.vols li.on > *{background:var(--on-spot);color:var(--spot)}
+
+/* ================= 紙面（目次・巻末） ================= */
+.sheet{
+  background:var(--paper);
+  padding:clamp(22px,4vw,40px);
+  display:grid;
+  gap:20px;
+  box-shadow:0 18px 40px -26px color-mix(in srgb,var(--ink) 45%,transparent);
+}
+.kicker{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-weight:900;font-size:.82rem;letter-spacing:.12em}
+.kicker .part{background:var(--spot);color:var(--on-spot);padding:0 10px;font-family:var(--num);font-weight:800;font-size:1.05rem;letter-spacing:.06em}
+.sheet-h{font-weight:900;font-size:clamp(1.5rem,3vw,2rem);line-height:1.3}
+.toc-h{font-family:var(--num);font-weight:800;font-size:clamp(2.8rem,7vw,4rem);line-height:.9;letter-spacing:.02em}
+.toc-h small{display:block;font-family:var(--gothic);font-size:.85rem;font-weight:900;letter-spacing:.12em;color:var(--spot);margin-top:8px}
+.toc{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}
+.toc li{border-bottom:1px solid var(--line);min-width:0}
+.toc a{display:grid;grid-template-columns:2.6rem minmax(0,1fr);gap:10px;align-items:baseline;padding:9px 0;text-decoration:none}
+.toc a:hover .tt b{color:var(--spot)}
+.toc .pg{font-family:var(--num);font-weight:800;font-size:1.5rem;line-height:1;color:var(--spot)}
+.toc .tt b{display:block;font-weight:900;font-size:.95rem;line-height:1.45}
+.toc .tt small{display:block;font-size:.78rem;line-height:1.5;color:var(--ink-2)}
+.toc .end .pg{color:var(--ink)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.howto{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:ht}
+.howto li{counter-increment:ht;display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:12px;align-items:start}
+.howto li::before{content:counter(ht);display:grid;place-items:center;height:2.2rem;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.3rem}
+.howto b{display:block;font-weight:900;font-size:.95rem;line-height:1.45}
+.howto span{font-size:.82rem;line-height:1.6;color:var(--ink-2)}
+.sister{display:grid;gap:8px}
+.sister a{display:grid;gap:0;padding:9px 14px;border:2px solid var(--ink);text-decoration:none}
+.sister a:hover{background:var(--paper-2)}
+.sister a.hot{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.sister a b{font-weight:900;font-size:.95rem}
+.sister a span{font-size:.78rem;opacity:.85}
+.sub-h{font-weight:900;font-size:.82rem;letter-spacing:.12em}
+
+/* ================= カード ================= */
+.card{
+  position:relative;
+  background:var(--paper);
+  padding:clamp(22px,4vw,40px) clamp(20px,4vw,40px) 28px;
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+  min-width:0;
+  border-top:6px solid var(--spot);
+  box-shadow:0 18px 40px -26px color-mix(in srgb,var(--ink) 45%,transparent);
+}
+.card-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 14px}
+.card-h .no{font-weight:900;font-size:.78rem;letter-spacing:.14em;color:var(--ink-2)}
+.card-h .no b{font-family:var(--num);font-weight:800;font-size:1.7rem;letter-spacing:.02em;color:var(--spot);margin-right:2px}
+.card-h .topic{padding:1px 10px;background:var(--paper-2);font-weight:900;font-size:.78rem;letter-spacing:.06em}
+.card .q{font-weight:900;font-size:clamp(1.15rem,2.4vw,1.4rem);line-height:1.5;color:var(--ink-2)}
+.card .q::before{content:"Q";display:inline-block;margin-right:10px;padding:0 8px;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.1em;line-height:1.3}
+.card .catch{font-weight:900;font-size:clamp(1.85rem,4.2vw,2.6rem);line-height:1.25;letter-spacing:-.01em;margin-top:-10px}
+.card .catch em{font-style:normal;color:var(--spot)}
+.lead{font-family:var(--mincho);font-weight:600;font-size:1.02rem;line-height:2;max-width:46rem}
+.mk{background:linear-gradient(transparent 58%,var(--marker) 58%);font-weight:700}
+.figs{display:grid;gap:26px}
+.figs.cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 22px;align-items:start}
+.card-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--line);font-size:.82rem;font-weight:900}
+.card-nav a{text-decoration:none;padding:4px 10px;border:1.5px solid var(--line)}
+.card-nav a:hover{border-color:var(--ink)}
+.card-nav .next{margin-left:auto;background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+/* 押さえどころ */
+.osae{position:relative;border:2px solid var(--ink);padding:24px 18px 16px;margin-top:6px}
+.osae > .t{position:absolute;top:-.9em;left:14px;background:var(--paper);padding:0 8px;font-weight:900;font-size:.92rem;letter-spacing:.1em}
+.osae ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.93rem;line-height:1.75}
+.osae li{position:relative;padding-left:1.25em}
+.osae li::before{content:"";position:absolute;left:0;top:.62em;width:.55em;height:.55em;background:var(--spot)}
+
+/* ここが出る（タップで答え） */
+.qa{
+  background:var(--note);
+  padding:14px 18px 16px;
+  display:grid;
+  gap:8px;
+  box-shadow:0 10px 18px -14px color-mix(in srgb,var(--ink) 60%,transparent);
+}
+.qa > .t{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px}
+.qa > .t b{font-family:var(--hand);font-weight:400;font-size:1.3rem;line-height:1.3;color:var(--spot)}
+.qa > .t span{font-size:.74rem;font-weight:700;color:var(--ink-2)}
+.qi{border-top:1px dashed color-mix(in srgb,var(--ink) 30%,transparent)}
+.qi summary{
+  list-style:none;
+  cursor:pointer;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:start;
+  padding:8px 0;
+  font-size:.9rem;
+  line-height:1.6;
+}
+.qi summary::-webkit-details-marker{display:none}
+.qi summary::after{
+  content:"答え";
+  padding:0 8px;
+  border:1.5px solid var(--ink);
+  font-size:.72rem;
+  font-weight:900;
+  line-height:1.7;
+  white-space:nowrap;
+}
+.qi[open] summary::after{content:"閉じる";background:var(--ink);color:var(--paper)}
+.qi .a{margin:0 0 10px;font-weight:700;font-size:.95rem;line-height:1.6}
+.qi .a::before{content:"→ ";color:var(--spot);font-weight:900}
+
+/* 図版 */
+.fig{margin:0;display:grid;gap:12px;min-width:0}
+.fig-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font-weight:900;font-size:1.02rem;line-height:1.45}
+.fig-h .no{font-family:var(--num);font-weight:800;font-size:1.1rem;color:var(--spot);letter-spacing:.04em}
+.fig figcaption{font-size:.8rem;line-height:1.65;color:var(--ink-2)}
+.hand{font-family:var(--hand);color:var(--spot);font-weight:400}
+.svgbox{overflow-x:auto}
+.svgbox svg{display:block;width:100%;height:auto;min-width:340px;max-width:620px;margin:0 auto}
+.svgbox .nd{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+.svgbox .nd.hot{fill:var(--spot);stroke:var(--spot)}
+.svgbox .nd.soft{fill:var(--paper-2);stroke:var(--line)}
+.svgbox .ln{fill:none;stroke:var(--ink-2);stroke-width:2}
+.svgbox .ln.hot{stroke:var(--spot)}
+.svgbox .ln.dash{stroke-dasharray:6 5}
+.svgbox .ah{fill:var(--ink-2)}
+.svgbox .ahs{fill:var(--spot)}
+.svgbox .tx{font-family:var(--gothic);font-size:13px;font-weight:900;fill:var(--ink)}
+.svgbox .ts{font-family:var(--gothic);font-size:11.5px;font-weight:500;fill:var(--ink-2)}
+.svgbox .tw{font-family:var(--gothic);font-size:13px;font-weight:900;fill:var(--on-spot)}
+.svgbox .tws{font-family:var(--gothic);font-size:11.5px;font-weight:500;fill:var(--on-spot)}
+.svgbox .tsp{font-family:var(--gothic);font-size:12px;font-weight:900;fill:var(--spot)}
+.svgbox .mid{font-family:var(--hand);font-size:15px;fill:var(--spot)}
+
+/* コラム */
+.column{background:var(--paper-2);border-top:5px solid var(--ink);padding:14px 18px 18px;display:grid;gap:8px}
+.column .t{display:flex;align-items:baseline;gap:10px;font-weight:900;font-size:1.02rem}
+.column .t b{font-family:var(--num);font-weight:800;font-size:.95rem;letter-spacing:.14em;color:var(--spot)}
+.column p{font-size:.9rem;line-height:1.8}
+
+/* ================= 図版の部品 ================= */
+/* やりたいこと → 道具 */
+.map{display:grid;gap:8px}
+.map .row{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,.9fr);align-items:stretch;gap:6px}
+.map .want{padding:8px 12px;background:var(--paper-2);font-size:.88rem;line-height:1.55;display:flex;align-items:center}
+.map .arr{position:relative}
+.map .arr::before{content:"";position:absolute;left:2px;right:8px;top:50%;height:2px;background:var(--spot)}
+.map .arr::after{content:"";position:absolute;right:0;top:50%;margin-top:-6px;border-left:9px solid var(--spot);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.map .tool{padding:8px 12px;border:2px solid var(--ink);font-weight:900;font-size:.92rem;line-height:1.45;display:flex;flex-direction:column;justify-content:center}
+.map .tool small{font-weight:500;font-size:.76rem;color:var(--ink-2)}
+.map .tool.hot{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.map .tool.hot small{color:var(--on-spot)}
+
+/* 手順（縦・番号つき） */
+.flow{list-style:none;margin:0;padding:0;display:grid;gap:22px;counter-reset:st}
+.flow li{position:relative;border:2px solid var(--ink);padding:10px 14px 10px 54px;display:grid;gap:2px;counter-increment:st}
+.flow li::before{
+  content:counter(st);
+  position:absolute;left:0;top:0;bottom:0;
+  width:40px;
+  display:grid;place-items:center;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--num);font-weight:800;font-size:1.4rem;
+}
+.flow li + li::after{
+  content:"";
+  position:absolute;
+  left:50%;top:-20px;
+  margin-left:-8px;
+  border-top:12px solid var(--spot);
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+}
+.flow b{font-weight:900;font-size:.98rem;line-height:1.45}
+.flow small{font-size:.8rem;color:var(--ink-2);line-height:1.55}
+.flow li.goal{border-color:var(--spot)}
+.flow li.goal::before{background:var(--spot);color:var(--on-spot)}
+.flow.tight{gap:16px}
+.flow.tight li + li::after{top:-15px;border-top-width:9px}
+
+/* 横に流れるチェーン */
+.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px}
+.chain > span{padding:6px 10px;border:2px solid var(--ink);font-size:.84rem;font-weight:700;line-height:1.45;display:flex;flex-direction:column;justify-content:center}
+.chain > span small{font-weight:500;font-size:.74rem;color:var(--ink-2)}
+.chain > span.hot{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.chain > span.hot small{color:var(--on-spot)}
+.chain > span.soft{border-style:dashed;border-color:var(--ink-2)}
+.chain > i{align-self:center;font-style:normal;font-weight:900;color:var(--spot)}
+
+/* レーン（横3本の比較） */
+.lanes{display:grid;gap:10px}
+.lane{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:12px;align-items:center;padding:10px 12px;background:var(--paper-2)}
+.lane > b{font-weight:900;font-size:.92rem;line-height:1.4}
+.lane > b small{display:block;font-weight:700;font-size:.72rem;color:var(--spot)}
+.lane .chain > span{background:var(--paper)}
+.lane .chain > span.hot{background:var(--spot)}
+.lane.pick{outline:3px solid var(--spot);outline-offset:-3px}
+
+/* 2〜4枚のタイル */
+.tiles{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:10px}
+.tile{border:2px solid var(--ink);padding:10px 14px 12px;display:grid;gap:3px;align-content:start;min-width:0}
+.tile .p{font-size:.76rem;font-weight:700;color:var(--ink-2)}
+.tile .h{font-weight:900;font-size:1.12rem;line-height:1.4}
+.tile .h small{font-size:.66em;font-weight:700;margin-left:3px;white-space:nowrap}
+.tile .d{font-size:.8rem;line-height:1.6;color:var(--ink-2)}
+.tile ul{margin:2px 0 0;padding-left:1.1em;font-size:.8rem;line-height:1.6}
+.tile.hot{border-color:var(--spot);background:color-mix(in srgb,var(--spot) 9%,var(--paper))}
+.tile.hot .h{color:var(--spot)}
+.tile.solid{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.tile.solid .p,.tile.solid .d{color:color-mix(in srgb,var(--paper) 75%,var(--ink))}
+.tile.dash{border-style:dashed;border-color:var(--ink-2)}
+
+/* 2者比較（見出し帯つき） */
+.vs2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.vs2 > div{border:2px solid var(--ink);display:grid;grid-template-rows:auto 1fr;min-width:0}
+.vs2 .hd{padding:8px 12px;background:var(--ink);color:var(--paper);display:grid}
+.vs2 .hd b{font-weight:900;font-size:1.02rem;line-height:1.4}
+.vs2 .hd small{font-size:.74rem;opacity:.85}
+.vs2 > div.hot{border-color:var(--spot)}
+.vs2 > div.hot .hd{background:var(--spot);color:var(--on-spot)}
+.vs2 ul{list-style:none;margin:0;padding:10px 12px 12px;display:grid;gap:6px;align-content:start;font-size:.84rem;line-height:1.55}
+.vs2 li{position:relative;padding-left:.95em}
+.vs2 li::before{content:"";position:absolute;left:0;top:.62em;width:.42em;height:.42em;background:var(--spot)}
+.vs2 .fix{margin:0 12px 12px;padding:6px 10px;background:var(--paper-2);font-weight:900;font-size:.88rem;line-height:1.5}
+.vs2 .fix::before{content:"対処 → ";color:var(--spot)}
+
+/* ○× リスト */
+.ox{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ox li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:10px;align-items:start;padding:7px 10px;background:var(--paper-2);font-size:.86rem;line-height:1.55}
+.ox li::before{display:grid;place-items:center;height:1.6rem;font-weight:900;font-size:1rem}
+.ox li.o::before{content:"○";color:var(--ok);border:2px solid var(--ok)}
+.ox li.x::before{content:"×";color:var(--ng);border:2px solid var(--ng)}
+.ox li.t::before{content:"△";color:var(--ink-2);border:2px solid var(--ink-2)}
+.ox li b{font-weight:900}
+.ox li small{display:block;font-size:.76rem;color:var(--ink-2)}
+
+/* 帯の長さで比べる（段階） */
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.bars li{display:grid;gap:3px}
+.bars .bar{height:12px;width:var(--w);background:color-mix(in srgb,var(--ink) 22%,var(--paper))}
+.bars li.rec .bar{background:var(--spot)}
+.bars .lab{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;font-size:.86rem;line-height:1.45}
+.bars .lab b{font-weight:900}
+.bars .lab span{font-size:.78rem;color:var(--ink-2)}
+.bars .tag{margin-left:6px;padding:0 6px;background:var(--spot);color:var(--on-spot);font-size:.72rem;font-weight:900}
+
+/* 順位（幅が縮む） */
+.podium{list-style:none;margin:0;padding:0;display:grid;gap:5px;counter-reset:pd}
+.podium li{
+  counter-increment:pd;
+  width:calc(100% - var(--i) * 8%);
+  display:flex;align-items:center;gap:10px;
+  padding:6px 12px;
+  background:color-mix(in srgb,var(--spot) calc(36% - var(--i) * 6%),var(--paper));
+  font-size:.86rem;font-weight:700;line-height:1.45;
+}
+.podium li::before{content:counter(pd);font-family:var(--num);font-weight:800;font-size:1.25rem;min-width:1em}
+.podium li:first-child{background:var(--spot);color:var(--on-spot)}
+.podium li small{font-weight:500;font-size:.74rem;opacity:.85}
+
+/* 数字の帯 */
+.numstrip{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+.numstrip div{padding:10px 12px;display:grid;gap:2px;min-width:0}
+.numstrip div + div{border-left:1px solid var(--line)}
+.numstrip b{font-family:var(--num);font-weight:800;font-size:2.4rem;line-height:1;color:var(--spot);font-variant-numeric:tabular-nums}
+.numstrip b small{font-family:var(--gothic);font-size:.38em;font-weight:900;color:var(--ink);margin-left:2px}
+.numstrip span{font-size:.78rem;line-height:1.5;color:var(--ink-2)}
+
+/* ×の選択肢 */
+.ng{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.ng li{padding:3px 10px;border:1.5px dashed var(--ink-2);color:var(--ink-2);font-size:.84rem;text-decoration:line-through;text-decoration-color:var(--ng);text-decoration-thickness:2px}
+
+/* 小さな表 */
+.tblbox{overflow-x:auto}
+.mini{width:100%;border-collapse:collapse;font-size:.82rem;line-height:1.5;min-width:400px}
+.mini th,.mini td{padding:7px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.mini thead th{border-bottom:2px solid var(--ink);font-size:.74rem;letter-spacing:.06em;color:var(--ink-2);white-space:nowrap}
+.mini td b{color:var(--spot)}
+.mini td.o,.mini td.x{text-align:center;font-weight:900;font-size:1rem}
+.mini td.o{color:var(--ok)}
+.mini td.x{color:var(--ng)}
+.mini tr.pick td{background:color-mix(in srgb,var(--spot) 10%,var(--paper))}
+
+/* 単語チップ */
+.chips{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+.chips span,.chips code{padding:1px 8px;background:var(--paper-2);border:1px solid var(--line);font-size:.78rem;line-height:1.7;overflow-wrap:anywhere}
+.chips .odd{border-color:var(--spot);color:var(--spot)}
+
+/* --- 個別の図（主に VOL.03） --- */
+.funnel{display:grid;gap:8px}
+.al{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 12px;border:1.5px dashed var(--ink-2);font-size:.86rem;line-height:1.5}
+.al i{font-style:normal;font-family:var(--num);font-weight:800;font-size:.95rem;color:var(--spot);white-space:nowrap}
+.down{justify-self:center;width:0;height:0;border-top:16px solid var(--spot);border-left:14px solid transparent;border-right:14px solid transparent}
+.inc{background:var(--ink);color:var(--paper);padding:10px 14px;display:grid;gap:2px}
+.inc b{font-weight:900;font-size:1.15rem}
+.inc small{font-size:.8rem;opacity:.85}
+.ac{border:2px solid var(--ink)}
+.ac-h{background:var(--ink);color:var(--paper);padding:6px 12px;font-weight:900;font-size:.92rem}
+.ac-b{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.ac-b div{padding:10px 12px;display:grid;gap:2px;font-size:.84rem;line-height:1.55}
+.ac-b div + div{border-left:2px solid var(--ink);background:color-mix(in srgb,var(--spot) 10%,var(--paper))}
+.ac-b b{font-weight:900;font-size:.95rem}
+.ranked{list-style:none;margin:0;padding:0;display:grid;gap:6px;counter-reset:rk}
+.ranked li{counter-increment:rk;display:grid;grid-template-columns:3.2rem minmax(0,1fr) auto;align-items:center;gap:10px;padding:6px 10px;background:var(--paper-2);font-size:.86rem}
+.ranked li::before{content:"ランク" counter(rk);font-size:.72rem;font-weight:900;color:var(--ink-2)}
+.ranked li.hit{background:var(--spot);color:var(--on-spot)}
+.ranked li.hit::before{color:var(--on-spot)}
+.ranked em{font-style:normal;font-size:.76rem;font-weight:700}
+.surname{display:grid;gap:8px}
+.sn{display:grid;grid-template-columns:8.6rem minmax(0,1fr);gap:4px 12px;align-items:start;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.sn:last-child{border-bottom:0;padding-bottom:0}
+.sn .pre{font-family:var(--mono);font-weight:700;font-size:.95rem;line-height:1.5}
+.sn .pre small{display:block;font-family:var(--gothic);font-size:.72rem;font-weight:700;color:var(--spot)}
+.gauges{display:grid;gap:10px}
+.gauge{display:grid;grid-template-columns:3.4rem minmax(0,1fr);gap:12px;align-items:center}
+.gauge .dir{height:3.4rem;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:2.2rem;line-height:1}
+.gauge.low .dir{background:var(--spot);color:var(--on-spot)}
+.gauge b{display:block;font-weight:900;font-size:.98rem;line-height:1.45}
+.gauge span{font-size:.8rem;line-height:1.5;color:var(--ink-2)}
+.gauge.low b em{font-style:normal;color:var(--spot)}
+.bldg{display:grid;gap:0;border:3px solid var(--ink);border-top:0}
+.roof{height:0;border-bottom:22px solid var(--ink);border-left:30px solid transparent;border-right:30px solid transparent;margin:0 -3px}
+.floor{display:grid;grid-template-columns:3rem minmax(0,1fr);border-top:3px solid var(--ink)}
+.floor .fl{display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.5rem}
+.floor .fb{padding:10px 12px 12px;display:grid;gap:6px;min-width:0}
+.floor .fn{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px}
+.floor .fn b{font-weight:900;font-size:.98rem;line-height:1.4}
+.floor .fn span{padding:0 8px;font-size:.72rem;font-weight:900;border:1.5px solid var(--ink)}
+.floor.f3{background:color-mix(in srgb,var(--spot) 22%,var(--paper))}
+.floor.f3 .fn span{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.floor.f2{background:color-mix(in srgb,var(--spot) 9%,var(--paper))}
+.floor.f1{background:var(--paper)}
+.rooms{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.rooms li{padding:2px 8px;background:var(--paper);border:1.5px solid var(--ink);font-size:.78rem;font-weight:700;line-height:1.5}
+.rooms.seq{counter-reset:rm}
+.rooms.seq li{counter-increment:rm}
+.rooms.seq li::before{content:counter(rm);display:inline-block;min-width:1.2em;margin-right:5px;padding:0 3px;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;text-align:center}
+.rooms.also li{border-style:dashed}
+.street{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;background:var(--ink);color:var(--paper);font-size:.78rem;font-weight:700}
+.heat{display:grid;grid-template-columns:minmax(6.5rem,1.3fr) repeat(3,minmax(0,1fr));gap:3px;font-size:.82rem;line-height:1.35}
+.heat > div{padding:7px 8px;min-width:0;display:flex;align-items:center}
+.heat .h{font-weight:900;justify-content:center;background:var(--ink);color:var(--paper)}
+.heat .h.blank{background:none}
+.heat .k{font-weight:700;background:var(--paper-2)}
+.heat .j{justify-content:center;background:color-mix(in srgb,var(--alt) 14%,var(--paper));font-weight:700}
+.heat .qq{justify-content:center;background:var(--spot);color:var(--on-spot);font-weight:900}
+.heat .n{justify-content:center;font-family:var(--num);font-weight:800;font-size:1.15rem;background:var(--paper-2)}
+.heat .trap{outline:3px solid var(--marker);outline-offset:-3px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.76rem;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:4px;vertical-align:-1px}
+.legend .lj{background:color-mix(in srgb,var(--alt) 14%,var(--paper));border:1px solid var(--line)}
+.legend .lq{background:var(--spot)}
+.fork{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fork > div{border:2px solid var(--ink);display:grid;grid-template-rows:auto 1fr;min-width:0}
+.fork .if{padding:8px 12px;background:var(--paper-2);font-size:.84rem;line-height:1.55}
+.fork .if b{display:block;font-size:.72rem;letter-spacing:.1em;color:var(--ink-2)}
+.fork .then{padding:10px 12px;display:grid;gap:4px;align-content:start}
+.fork .then b{font-weight:900;font-size:.98rem;line-height:1.45}
+.fork .then small{font-size:.78rem;line-height:1.55;color:var(--ink-2)}
+.fork .then .x{color:var(--ng);font-weight:700}
+.streak{display:grid;gap:10px}
+.st-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
+.marks{display:flex;gap:4px}
+.marks span{width:34px;height:34px;display:grid;place-items:center;font-weight:900;font-size:1rem;border:2px solid var(--ink)}
+.marks .x{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.marks .o{background:var(--paper)}
+.st-row p{font-size:.86rem;line-height:1.55}
+.st-row p b{font-weight:900}
+.onb{display:grid;gap:6px}
+.onb .row{display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:10px;align-items:start;padding:8px 10px;background:var(--paper-2)}
+.onb .os{font-weight:900;font-size:.88rem;line-height:1.45}
+.onb .how{display:flex;flex-wrap:wrap;gap:5px}
+.onb .how span{padding:1px 8px;background:var(--paper);border:1.5px solid var(--ink);font-size:.78rem;font-weight:700;line-height:1.6}
+.onb .how span.key{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.onb .how span.key small{font-weight:500}
+.route{display:grid;gap:8px}
+.route .ln2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 12px;border:2px solid var(--ink);font-size:.86rem;line-height:1.5}
+.route .ln2 .res{font-family:var(--num);font-weight:800;font-size:1.3rem;padding:0 10px}
+.route .ln2.bad{border-style:dashed;color:var(--ink-2)}
+.route .ln2.bad .res{color:var(--ng)}
+.route .ln2.good{background:color-mix(in srgb,var(--spot) 10%,var(--paper));border-color:var(--spot)}
+.route .ln2.good .res{background:var(--spot);color:var(--on-spot)}
+.lic{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;align-items:end}
+.lic li{display:grid;align-content:start;gap:4px;padding:8px 8px 10px;min-height:calc(4.6rem + var(--h) * 1.6rem);background:color-mix(in srgb,var(--spot) calc(var(--h) * 9%),var(--paper));border-top:4px solid var(--ink);font-size:.76rem;line-height:1.45;min-width:0}
+.lic li b{font-weight:900;font-size:.82rem}
+.lic li span{font-weight:700}
+.lic li.top{background:var(--spot);color:var(--on-spot);border-top-color:var(--spot)}
+
+/* ================= 腕試し ================= */
+.quiz-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.score{font-weight:900;font-size:.92rem}
+.score b{font-family:var(--num);font-weight:800;font-size:1.6rem;color:var(--spot);margin:0 2px}
+.qz{display:grid;gap:10px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.qz:last-child{border-bottom:0;padding-bottom:0}
+.qz .qq{font-weight:700;font-size:.95rem;line-height:1.7}
+.qz .qq b{font-family:var(--num);font-weight:800;font-size:1.15rem;color:var(--spot);margin-right:6px}
+.opts{display:grid;gap:6px}
+.opt{
+  display:grid;grid-template-columns:1.8rem minmax(0,1fr);gap:8px;align-items:start;
+  width:100%;
+  padding:7px 10px;
+  border:1.5px solid var(--line);
+  background:var(--paper);
+  color:var(--ink);
+  font:inherit;font-size:.86rem;line-height:1.55;
+  text-align:left;
+  cursor:pointer;
+}
+.opt:hover{border-color:var(--ink)}
+.opt i{font-style:normal;font-family:var(--num);font-weight:800;font-size:1.05rem;line-height:1.35}
+.qz.done .opt{cursor:default}
+.qz.done .opt:hover{border-color:var(--line)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--paper))}
+.opt.wrong{border-color:var(--ng);background:color-mix(in srgb,var(--ng) 12%,var(--paper))}
+.why{padding:10px 12px;background:var(--note);font-size:.84rem;line-height:1.7}
+.why b{font-weight:900}
+
+/* ================= 暗記カード・奥付 ================= */
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:2px dashed var(--ink-2)}
+.cards div{padding:10px 12px;font-size:.84rem;font-weight:700;line-height:1.55;border-bottom:2px dashed var(--ink-2);min-width:0}
+.cards div:nth-child(odd){border-right:2px dashed var(--ink-2)}
+.cards div:nth-last-child(-n+2){border-bottom:0}
+.cards div small{display:block;font-size:.7rem;font-weight:900;letter-spacing:.08em;color:var(--spot)}
+.cut{display:flex;align-items:center;gap:10px;font-size:.72rem;font-weight:700;letter-spacing:.2em;color:var(--ink-2)}
+.cut::before,.cut::after{content:"";flex:1;border-top:2px dashed var(--ink-2)}
+.series{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.series li > *{border:2px solid var(--ink);padding:10px 12px;display:grid;gap:2px;height:100%;text-decoration:none}
+.series li a:hover{background:var(--paper-2)}
+.series b{font-family:var(--num);font-weight:800;font-size:1.05rem;letter-spacing:.06em}
+.series span{font-weight:900;font-size:.95rem}
+.series small{font-size:.76rem;color:var(--ink-2)}
+.series li.on > *{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.series li.on small{color:var(--on-spot)}
+.okuduke{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:12px 0;display:grid;gap:4px;font-size:.8rem;line-height:1.7}
+.okuduke dl{margin:0;display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:2px 10px}
+.okuduke dt{font-weight:900}
+.okuduke dd{margin:0;color:var(--ink-2)}
+.okuduke .ttl{font-weight:900;font-size:.95rem}
+
+/* ================= responsive ================= */
+@media (max-width:760px){
+  .cover{grid-template-columns:1fr}
+  .cover-art{order:-1}
+  .badge{width:84px}
+  .two,.figs.cols{grid-template-columns:1fr}
+  .toc{grid-template-columns:1fr}
+  .series{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lic{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lic li{min-height:0}
+  .tiles{--n:2 !important}
+}
+@media (max-width:520px){
+  .tiles,.vs2,.fork,.cards,.ac-b{grid-template-columns:1fr}
+  .tiles{--n:1 !important}
+  .cards div:nth-child(odd){border-right:0}
+  .cards div:nth-last-child(2){border-bottom:2px dashed var(--ink-2)}
+  .ac-b div + div{border-left:0;border-top:2px solid var(--ink)}
+  .map .row{grid-template-columns:1fr}
+  .map .arr{height:14px}
+  .map .arr::before{left:50%;right:auto;top:0;bottom:4px;width:2px;height:auto}
+  .map .arr::after{left:50%;right:auto;top:auto;bottom:0;margin:0 0 0 -6px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--spot);border-bottom:0}
+  .sn,.onb .row,.lane{grid-template-columns:1fr;gap:4px}
+  .numstrip{grid-template-columns:1fr}
+  .numstrip div + div{border-left:0;border-top:1px solid var(--line)}
+  .podium li{width:100%}
+  .heat{font-size:.74rem}
+  .heat > div{padding:6px 5px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+}
+
+:root{--spot:#8A3AA8;--alt:#0B7A66}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--spot:#D9A0F2;--alt:#4FD1B5}}
+:root[data-theme="dark"]{--spot:#D9A0F2;--alt:#4FD1B5}
+</style>
+<nav class="topbar" aria-label="カード一覧"><a class="tb-home" href="#top"><b>VOL.04</b>Purview</a><div class="tb-chips"><a href="#c01" aria-label="カード01">01</a><a href="#c02" aria-label="カード02">02</a><a href="#c03" aria-label="カード03">03</a><a href="#c04" aria-label="カード04">04</a><a href="#c05" aria-label="カード05">05</a><a href="#c06" aria-label="カード06">06</a><a href="#c07" aria-label="カード07">07</a><a href="#c08" aria-label="カード08">08</a><a href="#c09" aria-label="カード09">09</a><a href="#c10" aria-label="カード10">10</a><a class="txt" href="#quiz">腕試し</a><a class="txt" href="#memo">暗記</a></div></nav>
+<main class="book">
+<header class="cover" id="top">
+  <div class="mast">
+    <div class="issue"><b>VOL.04</b><span>2026 AUTUMN</span><span>試験対策シリーズ</span></div>
+    <div class="logo"><span class="en">MS-102</span><span class="ja">図解ムック</span></div>
+    <div class="feature"><span class="kick">特集</span><h1>Purview<br>まるごと図解</h1></div>
+    <ul class="clines"><li class="main"><span>配点 <em>10–15%</em>、紛らわしい用語を<em>図で仕分ける</em></span></li><li><span>分類できないものは、守れない</span></li><li><span>保持の4原則は順番で覚える</span></li><li><span>30日と93日を混ぜない</span></li><li><span>操作の記録か、言葉の監視か</span></li><li><span>巻末 腕試し5問＋切り取り暗記カード</span></li></ul>
+  </div>
+  <div class="cover-art"><svg viewBox="0 0 520 520" role="img" aria-label="Purview の4ステップ。分類する、ラベルを付ける、守る・残す、監視する">
+  <circle class="ring" cx="260" cy="260" r="175"/>
+  <circle class="core" cx="260" cy="260" r="84"/>
+  <text class="c1" x="260" y="246" text-anchor="middle">Microsoft</text>
+  <text class="c2" x="260" y="292" text-anchor="middle">Purview</text>
+  <circle class="sat" cx="260" cy="85" r="74"/>
+  <text class="p" x="260" y="70" text-anchor="middle">① SIT・EDM など</text>
+  <text class="w" x="260" y="104" text-anchor="middle">分類する</text>
+  <circle class="sat" cx="435" cy="260" r="74"/>
+  <text class="p" x="435" y="246" text-anchor="middle">② 秘密度・保持</text>
+  <text class="w" x="435" y="280" text-anchor="middle">ラベル</text>
+  <circle class="sat" cx="260" cy="435" r="74"/>
+  <text class="p" x="260" y="420" text-anchor="middle">③ DLP・保持</text>
+  <text class="w2" x="260" y="452" text-anchor="middle">守る／残す</text>
+  <circle class="sat" cx="85" cy="260" r="74"/>
+  <text class="p" x="85" y="246" text-anchor="middle">④ エクスプローラー</text>
+  <text class="w" x="85" y="280" text-anchor="middle">監視する</text>
+</svg>
+    <div class="badge" aria-label="保存版"><b>保存版</b><small>図版 27点</small></div>
+  </div>
+  <div class="cover-foot">
+    <ul class="vols" aria-label="シリーズ"><li><a href="https://claude.ai/artifact/5BnRho7DVbhMcB87kNR1Gs" target="_blank" rel="noopener">VOL.01 テナント</a></li><li><a href="https://claude.ai/artifact/PY28R5A28mo3CHNcqnFQEe" target="_blank" rel="noopener">VOL.02 Entra ID</a></li><li><a href="https://claude.ai/artifact/NENPSAdHgUY5bcLptgAMZm" target="_blank" rel="noopener">VOL.03 Defender XDR</a></li><li class="on"><span>VOL.04 Purview</span></li></ul>
+    <span>公式スキル測定 2026.04.28 版準拠 ／ 試験は 2026.11.30 廃止予定</span>
+  </div>
+</header>
+<section class="sheet" id="contents" aria-labelledby="h-toc">
+  <h2 class="toc-h" id="h-toc">CONTENTS<small>特集 Purview まるごと図解 ／ 第4章・配点 10–15%</small></h2>
+  <ol class="toc"><li><a href="#c01"><span class="pg">01</span><span class="tt"><b>Purview の仕事は、どこから始まる？</b><small>分類できないものは、守れない。</small></span></a></li><li><a href="#c02"><span class="pg">02</span><span class="tt"><b>その情報、どの方法で見つける？</b><small>書式は SIT、性質は分類子、 実データは EDM。</small></span></a></li><li><a href="#c03"><span class="pg">03</span><span class="tt"><b>ラベルを作ったのに、Word に表示されない。なぜ？</b><small>作っただけでは、誰にも見えない。</small></span></a></li><li><a href="#c04"><span class="pg">04</span><span class="tt"><b>保持ポリシーと保持ラベルが重なったら、どうなる？</b><small>ポリシーは箱、ラベルは中身。</small></span></a></li><li><a href="#c05"><span class="pg">05</span><span class="tt"><b>誰にも変えさせない。期限が来たら確認してから消す。どうする？</b><small>ポリシーを固めるならロック、 アイテムを固めるなら規制のレコード。</small></span></a></li><li><a href="#c06"><span class="pg">06</span><span class="tt"><b>ラベル付きのファイルは何件？ 先週ラベルを外したのは誰？</b><small>状態はコンテンツ、 出来事はアクティビティ。</small></span></a></li><li><a href="#c07"><span class="pg">07</span><span class="tt"><b>ラベルが付いたメールを、誰にも送らせないには？</b><small>場所を決めて、条件とアクションを組む。</small></span></a></li><li><a href="#c08"><span class="pg">08</span><span class="tt"><b>USB メモリへのコピーを止めるには？</b><small>端末を止めるなら、先にオンボード。</small></span></a></li><li><a href="#c09"><span class="pg">09</span><span class="tt"><b>退職予定者の持ち出しを見つけるには？</b><small>退職日を起点に採点する。</small></span></a></li><li><a href="#c10"><span class="pg">10</span><span class="tt"><b>操作を調べたい？ やり取りを見張りたい？</b><small>操作の記録は監査、 言葉の監視はコミュニケーション コンプライアンス。</small></span></a></li><li class="end"><a href="#quiz"><span class="pg">QZ</span><span class="tt"><b>巻末 腕試し5問</b><small>本試験と同じ形式で、解説つき</small></span></a></li><li class="end"><a href="#memo"><span class="pg">MC</span><span class="tt"><b>切り取り暗記カード／奥付</b><small>直前の見直し用に12枚</small></span></a></li></ol>
+  <div class="two">
+    <div style="display:grid;gap:12px;align-content:start">
+      <span class="sub-h">カードの読み方</span>
+      <ol class="howto">
+        <li><div><b>問いを読んで、答えを予想する</b><span>カードの最初の一行は試験の聞き方。大きな一文がその答えです。</span></div></li>
+        <li><div><b>図で形をつかむ</b><span>図版番号の横の一文が、その図の結論です。</span></div></li>
+        <li><div><b>押さえどころ3行と「ここが出る！」</b><span>付箋の設問は、答えを思い出してから「答え」を押します。</span></div></li>
+      </ol>
+    </div>
+    <div style="display:grid;gap:12px;align-content:start">
+      <span class="sub-h">シリーズの姉妹ページ</span>
+      <div class="sister"><a class="hot" href="https://claude.ai/artifact/DBGvdDGp9bbroqttuzmVqZ" target="_blank" rel="noopener"><b>MS-102 逆引きドリル</b><span>全巻の「ここが出る！」を、間違えたものから繰り返す。</span></a><a href="https://claude.ai/artifact/16xzViiC6KQoFzSYZeesw6" target="_blank" rel="noopener"><b>MS-102 控えめの法則</b><span>全章に効く3つの合言葉。最初の1枚に。</span></a><a href="https://claude.ai/artifact/KDPE54u1mEf7dMf21PuYJp" target="_blank" rel="noopener"><b>MS-102 総合テキスト</b><span>このシリーズの底本。細かい条件を確かめたいときに。</span></a><a href="https://claude.ai/artifact/Nzpf1jbjYVadj4nKQbn9CM" target="_blank" rel="noopener"><b>M365 ロール百貨店</b><span>誰が何をできるか、ロールの整理に。</span></a></div>
+    </div>
+  </div>
+</section>
+<article class="card" id="c01" aria-labelledby="c01-q">
+<div class="card-h"><span class="no">CARD <b>01</b> / 10</span><span class="topic">Purview の全体像</span></div>
+<h2 class="q" id="c01-q">Purview の仕事は、どこから始まる？</h2>
+<p class="catch">分類できないものは、<em>守れない</em>。</p>
+<p class="lead">MS-102 で問われる Purview の範囲は、情報保護・データ ライフサイクル管理・DLP の3つです。出発点はどれも「そのデータが何かを機械が判別できること」、つまり分類です。権限は Entra のロールではなく、Purview のロールグループで管理します。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-1</span><span>Purview の基本の流れ</span></div>
+    <ol class="flow tight">
+      <li><b>分類する</b><small>機密情報の種類（SIT）・トレーニング可能な分類子・EDM。「これはマイナンバーだ」</small></li>
+      <li><b>ラベルを付ける</b><small>秘密度ラベルと保持ラベル。手動・自動・既定で</small></li>
+      <li><b>守る／残す／消す</b><small>暗号化や DLP で持ち出しを止める。保持と廃棄でライフサイクルを管理する</small></li>
+      <li class="goal"><b>監視して調整する</b><small>コンテンツ／アクティビティ エクスプローラー、DLP アラート。結果を分類とポリシーに戻す</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図1-2</span><span>E3 で足りるもの、E5 が要るもの</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>E3 で使える</b><small>コア機能</small></div><ul><li>手動の秘密度ラベル・既定ラベル・必須ラベル</li><li>Exchange・SharePoint・OneDrive の DLP</li><li>ラベルを条件にした DLP ルール</li><li>基本的な保持ポリシーと手動の保持ラベル</li><li>Audit（Standard）</li></ul></div>
+      <div class="hot"><div class="hd"><b>E5（または E5 Compliance）</b><small>自動化と高度な機能</small></div><ul><li>自動ラベル付け、トレーニング可能な分類子、EDM</li><li>Teams チャットの DLP、エンドポイント DLP</li><li>保持ラベルの自動適用、アダプティブ スコープ、廃棄レビュー</li><li>Audit（Premium）、インサイダー リスク管理、コミュニケーション コンプライアンス</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>管理するポータルは<span class="mk">purview.microsoft.com</span>。</li>
+  <li>権限は<span class="mk">ロールグループ</span>（コンプライアンス管理者、コンプライアンス データ管理者、情報保護、eDiscovery マネージャーなど）。</li>
+  <li>「自動で付けたい」と書かれていたら <span class="mk">E5</span> を疑う。手動なら E3 の範囲。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>ユーザーが手動で付けた「高度機密」ラベルを条件に、Exchange の DLP で送信を止めたい。E5 が必要？</summary><p class="a">不要。E3 の範囲で実現できる</p></details>
+  <details class="qi"><summary>条件に一致した文書に、秘密度ラベルを自動で付けたい。必要なライセンスは</summary><p class="a">E5 相当（または E5 Compliance などのアドオン）</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#contents">目次</a><a class="next" href="#c02">次のカード →</a></nav>
+</article>
+<article class="card" id="c02" aria-labelledby="c02-q">
+<div class="card-h"><span class="no">CARD <b>02</b> / 10</span><span class="topic">機密情報の種類と分類子</span></div>
+<h2 class="q" id="c02-q">その情報、どの方法で見つける？</h2>
+<p class="catch">書式は <em>SIT</em>、性質は<em>分類子</em>、<br>実データは <em>EDM</em>。</p>
+<p class="lead">見つけたい情報の性質で、使う分類の方法が決まります。番号のように書式が決まっているなら SIT、契約書のように書式では表せない文書の性質なら分類子、自社が持っている実データとの完全一致なら EDM です。この3択は繰り返し出ます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-1</span><span>3つの分類の方法</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">書式が決まった情報</span><span class="h">機密情報の種類（SIT）</span><span class="d">番号・ID・口座番号。正規表現・キーワード・確認関数で判定</span></div>
+      <div class="tile"><span class="p">書式で表せない文書の性質</span><span class="h">トレーニング可能な分類子</span><span class="d">契約書・履歴書・ソース コード・ハラスメント。機械学習で判定</span></div>
+      <div class="tile hot"><span class="p">自社が持つ実データ</span><span class="h">完全一致データ（EDM）</span><span class="d">顧客番号の一覧などをハッシュ化して登録。誤検知が極めて少ない</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図2-2</span><span>カスタム SIT の部品</span></div>
+    <div class="chain">
+      <span class="hot">プライマリ パターン<small>正規表現・キーワード・辞書・関数</small></span><i>＋</i>
+      <span>サポート要素<small>近くに「社員番号」の語がある、など</small></span><i>＋</i>
+      <span>文字の近接性<small>何文字以内にあるか</small></span><i>＋</i>
+      <span>信頼度<small>低・中・高</small></span>
+    </div>
+    <div class="numstrip">
+      <div><b>65</b><span>信頼度 低。見逃しは少なく、誤検知は多い</span></div>
+      <div><b>75</b><span>信頼度 中</span></div>
+      <div><b>85</b><span>信頼度 高。誤検知は減り、見逃しは増える</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>形式が同じなら他社の番号も拾ってしまうのが<span class="mk">正規表現の SIT の限界</span>。自社のデータだけなら EDM。</li>
+  <li>決まった様式のフォームを見分けるなら<span class="mk">ドキュメント指紋</span>。</li>
+  <li>トレーニング可能な分類子と EDM は E5 側の機能。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>自社の顧客 ID の一覧と完全に一致する値だけを検出したい（他社の似た番号は除く）</summary><p class="a">完全一致データ（EDM）</p></details>
+  <details class="qi"><summary>契約書らしい文書を自動で見つけたい</summary><p class="a">トレーニング可能な分類子</p></details>
+  <details class="qi"><summary>特定の書式の番号を検出したい</summary><p class="a">カスタムの機密情報の種類（正規表現）</p></details>
+  <details class="qi"><summary>決まった様式の申請書を見分けたい</summary><p class="a">ドキュメント指紋</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c01">← CARD 01</a><a href="#contents">目次</a><a class="next" href="#c03">次のカード →</a></nav>
+</article>
+<article class="card" id="c03" aria-labelledby="c03-q">
+<div class="card-h"><span class="no">CARD <b>03</b> / 10</span><span class="topic">秘密度ラベル</span></div>
+<h2 class="q" id="c03-q">ラベルを作ったのに、Word に表示されない。なぜ？</h2>
+<p class="catch">作っただけでは、<em>誰にも見えない</em>。</p>
+<p class="lead">秘密度ラベルは、ファイルやメールに「どのくらい機密か」を刻み、同時に保護をかける仕組みです。ラベルはメタデータとして持ち歩かれるので、組織の外に出ても暗号化が効き続けます。作ったラベルは、ラベル ポリシーで発行して初めて使えます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-1</span><span>ラベルが使えるようになるまで</span></div>
+    <ol class="flow tight">
+      <li><b>ラベルを作る</b><small>暗号化・マーキング・グループとサイトの保護・自動ラベル付けを設定</small></li>
+      <li class="goal"><b>ラベル ポリシーで発行する</b><small>対象・既定のラベル・ラベル付けの必須化・格下げ時の理由の入力</small></li>
+      <li><b>ユーザーの Office に表示される</b><small>反映まで最大で数時間〜数日</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-2</span><span>ラベルでかけられる4つの保護</span></div>
+    <div class="tiles" style="--n:2">
+      <div class="tile"><span class="h">暗号化</span><span class="d">誰が何をできるか。ユーザー定義、有効期限、オフライン アクセスの日数</span></div>
+      <div class="tile"><span class="h">コンテンツ マーキング</span><span class="d">ヘッダー・フッター・透かし。Outlook のメールでは表示されない</span></div>
+      <div class="tile hot"><span class="h">グループとサイトの保護</span><span class="d">Teams・SharePoint のプライバシー、外部共有、非管理デバイス。Microsoft 365 グループのみ</span></div>
+      <div class="tile"><span class="h">自動ラベル付け</span><span class="d">条件に一致したら推奨・自動適用。クライアント側とサービス側。E5</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図3-3</span><span>「発行できる」と「サイトを守れる」は別の話</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>対象</th><th>ラベル ポリシーの発行先</th><th>グループとサイトの保護</th></tr></thead>
+        <tbody>
+          <tr class="pick"><td>Microsoft 365 グループ</td><td class="o">○</td><td class="o">○</td></tr>
+          <tr><td>配布グループ</td><td class="o">○</td><td class="x">×</td></tr>
+          <tr><td>メール有効セキュリティ グループ</td><td class="o">○</td><td class="x">×</td></tr>
+          <tr><td>メールを持たないセキュリティ グループ</td><td class="x">×</td><td class="x">×</td></tr>
+          <tr><td>動的配布グループ</td><td class="x">×</td><td class="x">×</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>ラベルは一覧の<span class="mk">下にあるものほど優先度が高い</span>。1つのアイテムに付けられる秘密度ラベルは1つだけ。</li>
+  <li><span class="mk">秘密度ラベルだけでは送信を止められない</span>。止めるのは DLP ポリシーかメール フロー ルール。</li>
+  <li>アプリごとにマーキングの文言を変えたいときは <code>${If.App...}</code> 変数を使う。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>秘密度ラベルを作ったが、ユーザーの Word や Outlook に表示されない。最初に確認するのは</summary><p class="a">ラベル ポリシーでそのユーザーに発行されているか</p></details>
+  <details class="qi"><summary>秘密度ラベルのカスタム ヘッダーが表示されないアプリは</summary><p class="a">Outlook（メールにヘッダー・フッター・透かしのマーキングは付かない）</p></details>
+  <details class="qi"><summary>「グループとサイトの保護」を設定できるグループは</summary><p class="a">Microsoft 365 グループだけ</p></details>
+  <details class="qi"><summary>マイナンバーを含むメールを、外部に送れないようにしたい</summary><p class="a">DLP ポリシー（またはメール フロー ルール）。ラベルだけでは止められない</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c02">← CARD 02</a><a href="#contents">目次</a><a class="next" href="#c04">次のカード →</a></nav>
+</article>
+<article class="card" id="c04" aria-labelledby="c04-q">
+<div class="card-h"><span class="no">CARD <b>04</b> / 10</span><span class="topic">保持ポリシーと保持ラベル</span></div>
+<h2 class="q" id="c04-q">保持ポリシーと保持ラベルが重なったら、どうなる？</h2>
+<p class="catch">ポリシーは<em>箱</em>、ラベルは<em>中身</em>。</p>
+<p class="lead">データ ライフサイクル管理の中核です。「一定期間は消させない」「期限が来たら消す」という2つの要求を同じ仕組みで扱います。保持ポリシーは入れ物全体に、保持ラベルはアイテム1件ずつに効きます。複数の設定が当たったときは保持の4原則で決まります。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-1</span><span>効く単位の違い</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>保持ポリシー</b><small>入れ物に対して</small></div><ul><li>メールボックス・サイト・OneDrive・Teams チャネル全体</li><li>中身に一律で効き、外に出ると効かない</li><li>静的スコープかアダプティブ スコープ</li><li>保持ロックが使える</li></ul></div>
+      <div class="hot"><div class="hd"><b>保持ラベル</b><small>アイテム1件ずつ</small></div><ul><li>手動・自動・既定で付ける</li><li>アイテムが移動しても付いていく</li><li>イベント ベースの保持、レコード宣言、廃棄レビュー</li><li>1アイテムに付けられるのは1つ</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-2</span><span>保持の4原則。上から順に判定する</span></div>
+    <ol class="flow tight">
+      <li><b>保持が、削除に勝つ</b><small>保持の対象なら、削除の設定があっても期間中は消えない</small></li>
+      <li><b>長い保持が勝つ</b><small>5年と10年が当たっていれば10年</small></li>
+      <li><b>削除は、明示的な設定が勝つ</b><small>保持ラベル ＞ 保持ポリシー。対象を絞ったポリシー ＞ 組織全体</small></li>
+      <li class="goal"><b>最後は、短い削除期間が勝つ</b><small>ここまでで決まらなければ、いちばん早い削除期限</small></li>
+    </ol>
+    <figcaption><span class="hand">残す → 長く → 名指し → 早く消す</span> と唱えて覚える。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図4-3</span><span>保持中のアイテムが置かれる場所</span></div>
+    <div class="map">
+      <div class="row"><span class="want">SharePoint・OneDrive</span><span class="arr"></span><span class="tool">保持ホールド ライブラリ<small>サイトの容量を消費する</small></span></div>
+      <div class="row"><span class="want">Exchange のメール</span><span class="arr"></span><span class="tool">回復可能なアイテム フォルダー</span></div>
+      <div class="row"><span class="want">Teams のチャット・チャネル メッセージ</span><span class="arr"></span><span class="tool">SubstrateHolds<small>回復可能なアイテムの中。ユーザーには見えない</small></span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li><span class="mk">アダプティブ スコープ</span>は属性のクエリ（部署＝経理など）で対象を決め、日次で評価して異動に追随する。静的スコープは手動で更新。</li>
+  <li>保持の設定が反映されるまで<span class="mk">最大7日程度</span>かかることがある。</li>
+  <li>保持ポリシーの目的は、ライフサイクルの自動管理とデータ侵害リスクの低減。「すべてを無期限に残す」ことではない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>組織全体で10年保持、経理部向けに5年後削除、保持ラベルで3年後削除。このメールは</summary><p class="a">10年間保持され、その後に削除される</p></details>
+  <details class="qi"><summary>退職日を起点に7年間保持したい</summary><p class="a">保持ラベルのイベント ベースの保持</p></details>
+  <details class="qi"><summary>保持の対象を、部署の異動に自動で追随させたい</summary><p class="a">アダプティブ スコープ</p></details>
+  <details class="qi"><summary>保持中の Teams チャットのデータはどこにある？</summary><p class="a">Exchange の回復可能なアイテム内の SubstrateHolds フォルダー</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c03">← CARD 03</a><a href="#contents">目次</a><a class="next" href="#c05">次のカード →</a></nav>
+</article>
+<article class="card" id="c05" aria-labelledby="c05-q">
+<div class="card-h"><span class="no">CARD <b>05</b> / 10</span><span class="topic">保持ロック・レコード・廃棄レビュー</span></div>
+<h2 class="q" id="c05-q">誰にも変えさせない。期限が来たら確認してから消す。どうする？</h2>
+<p class="catch">ポリシーを固めるなら<em>ロック</em>、<br>アイテムを固めるなら<em>規制のレコード</em>。</p>
+<p class="lead">規制の厳しい業界では「管理者でも緩められない」設定が求められます。ポリシーそのものを固定するのが保持ロック、個々のアイテムを不変にするのがレコードです。期限が来たデータを担当者の承認後に消すのが廃棄レビューです。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-1</span><span>何を固めるかで選ぶ</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">ポリシーを固定</span><span class="h">保持ロック</span><span class="d">無効化・削除・範囲の縮小・期間の短縮ができなくなる（拡大と延長は可）。全体管理者も解除不可。アダプティブ スコープと併用不可</span></div>
+      <div class="tile"><span class="p">アイテムを不変に</span><span class="h">レコード</span><span class="d">編集・名前の変更ができない。十分な権限があれば指定を解除できる</span></div>
+      <div class="tile hot"><span class="p">アイテムを完全に不変に</span><span class="h">規制のレコード</span><span class="d">全体管理者を含めて、誰も解除も変更もできない</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-2</span><span>廃棄レビューの流れ</span></div>
+    <ol class="flow tight">
+      <li><b>保持ラベルで「期間終了時に廃棄レビュー」を選ぶ</b><small>保持ポリシーにはこの設定がない</small></li>
+      <li><b>期間が終わると、レビュー担当者に通知</b><small>最大5段階、1段階あたり最大10人</small></li>
+      <li class="goal"><b>レコード管理 → 廃棄 のページで選ぶ</b><small>廃棄を承認／ラベルを付け替え／保持を延長／レビュー担当者を追加</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図5-3</span><span>混ぜやすい数字</span></div>
+    <div class="numstrip" style="--n:4">
+      <div><b>30<small>日</small></b><span>保持ポリシーを無効化・削除した後の猶予</span></div>
+      <div><b>93<small>日</small></b><span>SharePoint のごみ箱。猶予とは別の仕組み</span></div>
+      <div><b>15<small>日</small></b><span>最終段階で廃棄を承認してから完全削除まで</span></div>
+      <div><b>7<small>日</small></b><span>保持の設定が反映されるまでの目安（最大）</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>廃棄のページを使うには<span class="mk">廃棄管理ロール</span>が必要。既定で含むのはレコード管理ロールグループで、<span class="mk">全体管理者には既定で付かない</span>。</li>
+  <li>レビュー担当者が中身まで見るには、別途 Content Explorer Content Viewer が必要。</li>
+  <li>猶予期間がないのは、ポリシーを更新して<span class="mk">サイトを除外した</span>場合。保持ホールド ライブラリからの復元はサイト管理者の作業。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>保持ポリシーを、管理者でも緩められないようにしたい</summary><p class="a">保持ロック</p></details>
+  <details class="qi"><summary>規制上の要件で、アイテムを誰も変更・削除できないようにしたい</summary><p class="a">保持ラベルで「規制のレコード」として宣言する</p></details>
+  <details class="qi"><summary>SharePoint の保持ポリシーを誤って無効にした。データはどうなる？</summary><p class="a">30日の猶予期間がある。その間に再び有効にすれば、データを失わずに保持が再開される</p></details>
+  <details class="qi"><summary>全体管理者で Purview の「廃棄」ページを開けない</summary><p class="a">廃棄管理ロールがない。レコード管理ロールグループなどに追加する</p></details>
+  <details class="qi"><summary>保持ロックをかけたうえで、対象を部署の属性で動的に決めたい</summary><p class="a">保持ロックはアダプティブ スコープと併用できない。静的スコープにする</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c04">← CARD 04</a><a href="#contents">目次</a><a class="next" href="#c06">次のカード →</a></nav>
+</article>
+<article class="card" id="c06" aria-labelledby="c06-q">
+<div class="card-h"><span class="no">CARD <b>06</b> / 10</span><span class="topic">ラベル使用状況の監視</span></div>
+<h2 class="q" id="c06-q">ラベル付きのファイルは何件？ 先週ラベルを外したのは誰？</h2>
+<p class="catch">状態は<em>コンテンツ</em>、<br>出来事は<em>アクティビティ</em>。</p>
+<p class="lead">ラベルの使われ方は3つの画面で見ます。今どこに何があるかを見るのがコンテンツ エクスプローラー、何が起きたかを追うのがアクティビティ エクスプローラー、浸透度合いの推移をまとめるのがラベル レポートです。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-1</span><span>2つのエクスプローラー</span></div>
+    <div class="vs2">
+      <div><div class="hd"><b>コンテンツ エクスプローラー</b><small>今どこに何があるか</small></div><ul><li>ラベル・SIT ごとに、SharePoint や Exchange のどこにあるかを掘り下げる</li><li>閲覧には専用のロール（一覧表示者／コンテンツ表示者）が必要</li></ul></div>
+      <div class="hot"><div class="hd"><b>アクティビティ エクスプローラー</b><small>何が起きたか（既定30日分）</small></div><ul><li>ラベルの適用・変更・削除、DLP の一致、コピーや印刷</li><li>「誰がラベルを格下げしたか」はここ</li></ul></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図6-2</span><span>知りたいことと、見る画面</span></div>
+    <div class="map">
+      <div class="row"><span class="want">機密ラベルが付いたファイルが、どのサイトに何件あるか</span><span class="arr"></span><span class="tool">コンテンツ エクスプローラー</span></div>
+      <div class="row"><span class="want">先週ラベルを格下げしたのは誰で、いつか</span><span class="arr"></span><span class="tool hot">アクティビティ エクスプローラー</span></div>
+      <div class="row"><span class="want">ラベルの浸透度合いを経営層に報告したい</span><span class="arr"></span><span class="tool">ラベル レポート</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>コンテンツ エクスプローラーは<span class="mk">状態のスナップショット</span>で、履歴は分からない。</li>
+  <li>DLP の一致イベントも<span class="mk">アクティビティ エクスプローラー</span>で横断的に確認できる。</li>
+  <li>DLP アラートはポリシー一致の通知。ラベルの格下げそのものは対象外。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>先週、機密ラベルの付いた文書のラベルを誰かが格下げした。誰がいつ行ったか調べたい</summary><p class="a">アクティビティ エクスプローラー</p></details>
+  <details class="qi"><summary>「高度機密」ラベルの付いたファイルが、どこに何件あるかを知りたい</summary><p class="a">コンテンツ エクスプローラー</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c05">← CARD 05</a><a href="#contents">目次</a><a class="next" href="#c07">次のカード →</a></nav>
+</article>
+<article class="card" id="c07" aria-labelledby="c07-q">
+<div class="card-h"><span class="no">CARD <b>07</b> / 10</span><span class="topic">データ損失防止（DLP）</span></div>
+<h2 class="q" id="c07-q">ラベルが付いたメールを、誰にも送らせないには？</h2>
+<p class="catch">場所を決めて、<em>条件とアクション</em>を組む。</p>
+<p class="lead">DLP は、機密情報が不適切な相手や場所へ移るのを止める仕組みです。構造は「ポリシー → ルール（条件・例外・アクション）」の入れ子。いきなりブロックすると業務が止まるので、シミュレーション モードから始めます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-1</span><span>DLP ポリシーの組み立て</span></div>
+    <div class="tiles" style="--n:3">
+      <div class="tile"><span class="p">どこで</span><span class="h">場所</span><ul><li>Exchange・SharePoint・OneDrive</li><li>Teams チャット／チャネル</li><li>デバイス・オンプレミス</li><li>Fabric・Power BI・Copilot</li></ul></div>
+      <div class="tile"><span class="p">何が</span><span class="h">ルールの条件</span><ul><li>SIT・秘密度ラベル・保持ラベル・分類子</li><li>共有相手（社内／社外）・件数</li><li>例外（特定の受信者・ドメイン）</li></ul></div>
+      <div class="tile hot"><span class="p">どうする</span><span class="h">アクション</span><ul><li>アクセスの制限・ブロック</li><li>ポリシー ヒント・通知・上書きの許可</li><li>インシデント レポート、端末の制御</li></ul></div>
+    </div>
+    <figcaption>複数のルールに一致したら、最も厳しいアクションが適用される。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-2</span><span>展開は3段階で</span></div>
+    <ol class="flow tight">
+      <li><b>シミュレーション モード（ポリシー ヒントなし）</b><small>監査だけ。ユーザーには何も出ない</small></li>
+      <li><b>シミュレーション モード（ポリシー ヒントあり）</b><small>通知は出るが、ブロックは上書き可能に緩和される</small></li>
+      <li class="goal"><b>オンにする</b><small>設定どおりに強制する</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図7-3</span><span>「すべての受信者への送信をブロック」になるアクションは？</span></div>
+    <div class="route">
+      <div class="ln2 good"><span>Microsoft 365 の場所でアクセスを制限するか、コンテンツを暗号化する<br><small>「全員をブロック」を選び、上書きの許可はオフにする</small></span><span class="res">○</span></div>
+      <div class="ln2 bad"><span>ホスト型検疫に配信<br><small>保留にすぎず、管理者が解放すれば届く</small></span><span class="res">×</span></div>
+      <div class="ln2 bad"><span>ヘッダーを設定／特定のユーザーにリダイレクト<br><small>目印を付けるだけ、宛先を差し替えるだけ</small></span><span class="res">×</span></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>手動ラベル＋Exchange の DLP でブロックする構成は<span class="mk">E3 で実現できる</span>。</li>
+  <li><span class="mk">Teams チャットの DLP は E5</span>。Teams で共有したファイルの実体は SharePoint・OneDrive なので、そちらは E3 の DLP で守れる。</li>
+  <li>同じアクションでも、SharePoint では「ファイルへのアクセスをブロック」、Exchange では「メールの送信をブロック」の意味になる。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>新しい DLP ポリシーの影響を、業務を止めずに把握したい</summary><p class="a">シミュレーション モード（ポリシー ヒントなし）で始める</p></details>
+  <details class="qi"><summary>「高度機密」ラベルが付いたメールを、すべての受信者に送らせない</summary><p class="a">アクション「アクセスを制限するか、コンテンツを暗号化する」で全員をブロック（上書きはオフ）</p></details>
+  <details class="qi"><summary>ユーザーが正当な理由で送信できるようにしたい</summary><p class="a">アクションで上書きの許可を有効にする</p></details>
+  <details class="qi"><summary>秘密度ラベルが付いた文書の外部共有だけを止めたい</summary><p class="a">DLP ルールの条件に秘密度ラベルを指定する</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c06">← CARD 06</a><a href="#contents">目次</a><a class="next" href="#c08">次のカード →</a></nav>
+</article>
+<article class="card" id="c08" aria-labelledby="c08-q">
+<div class="card-h"><span class="no">CARD <b>08</b> / 10</span><span class="topic">エンドポイント DLP</span></div>
+<h2 class="q" id="c08-q">USB メモリへのコピーを止めるには？</h2>
+<p class="catch">端末を止めるなら、<em>先にオンボード</em>。</p>
+<p class="lead">エンドポイント DLP は、Windows と macOS の上での操作を監視・制御します。前提はデバイスを Purview にオンボードすることと、E5 相当のライセンスです。Defender for Endpoint にオンボード済みの端末なら、スイッチ1つで使えます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-1</span><span>PC のオンボードが要るのは2つだけ</span></div>
+    <div class="tblbox">
+      <table class="mini">
+        <thead><tr><th>機能</th><th>PC のオンボード</th></tr></thead>
+        <tbody>
+          <tr><td>秘密度ラベル（Office での手動ラベル付けなど）</td><td>不要</td></tr>
+          <tr><td>DLP（Exchange・SharePoint・OneDrive）</td><td>不要</td></tr>
+          <tr><td>保持ポリシー、eDiscovery、監査</td><td>不要</td></tr>
+          <tr class="pick"><td>エンドポイント DLP</td><td><b>必要</b></td></tr>
+          <tr class="pick"><td>インサイダー リスク管理（端末の活動を使う場合）</td><td><b>必要</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-2</span><span>オンボードの2つの道</span></div>
+    <div class="lanes">
+      <div class="lane pick"><b>MDE にオンボード済み</b><div class="chain"><span>Purview → 設定 → デバイスのオンボード</span><i>→</i><span class="hot">「オンボードを有効にする」をオンにするだけ<small>MDE の端末が全台、自動で並ぶ</small></span></div></div>
+      <div class="lane"><b>MDE がない</b><div class="chain"><span>オンボード パッケージをダウンロード</span><i>→</i><span>配布<small>ローカル スクリプト（10台程度の検証）・GPO・ConfigMgr・Intune・VDI</small></span></div></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図8-3</span><span>端末で見張れる操作</span></div>
+    <div class="chips"><span class="odd">USB へのコピー</span><span>印刷</span><span>クラウドへのアップロード</span><span>クリップボード</span><span>Bluetooth 転送</span><span>未承認アプリでの操作</span></div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>Purview に直接オンボードしても、端末で動くのは<span class="mk">MDE と同じセンサー</span>。</li>
+  <li>他社のウイルス対策製品を使っていても動くが、<span class="mk">Defender ウイルス対策のリアルタイム保護</span>は有効にしておく。</li>
+  <li>MDE の端末を一部だけ Purview に出す方法はない。オンにすると全台が並ぶ。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>USB メモリへのコピーを禁止したい</summary><p class="a">エンドポイント DLP（デバイスのオンボードと E5 が前提）</p></details>
+  <details class="qi"><summary>MDE にオンボード済みの端末を、Purview のエンドポイント DLP で使いたい</summary><p class="a">Purview の設定でデバイスのオンボードを有効にするだけ</p></details>
+  <details class="qi"><summary>Office で秘密度ラベルを手動で付けるのに、PC のオンボードは必要？</summary><p class="a">不要</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c07">← CARD 07</a><a href="#contents">目次</a><a class="next" href="#c09">次のカード →</a></nav>
+</article>
+<article class="card" id="c09" aria-labelledby="c09-q">
+<div class="card-h"><span class="no">CARD <b>09</b> / 10</span><span class="topic">インサイダー リスク管理</span></div>
+<h2 class="q" id="c09-q">退職予定者の持ち出しを見つけるには？</h2>
+<p class="catch"><em>退職日</em>を起点に採点する。</p>
+<p class="lead">インサイダー リスク管理は、内部の関係者によるデータ漏えいや不正のリスクを検出する機能です。外からの攻撃を見る Defender for Identity や Entra ID Protection とは、守る対象がまったく違います。E5 か、E3 にアドオンを足して使います。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-1</span><span>「退職するユーザーによるデータの窃盗」の流れ</span></div>
+    <ol class="flow tight">
+      <li><b>テンプレートを選ぶ</b><small>データの窃盗・データ漏えい・利益相反・セキュリティ違反など</small></li>
+      <li class="goal"><b>起点（トリガー）を決める</b><small>HR コネクタで退職届や最終雇用日を取り込む／Entra ID でのアカウント削除</small></li>
+      <li><b>退職日からリスクを採点</b><small>一括ダウンロード、不審な外部共有など</small></li>
+      <li><b>アラートを確認してトリアージ</b><small>重大度は低・中・高をシステムが自動計算</small></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-2</span><span>重大度は放っておくと上がる</span></div>
+    <ol class="bars">
+      <li style="--w:33%"><span class="bar"></span><span class="lab"><b>低</b><span>リスク活動の種類・頻度・履歴から自動で計算</span></span></li>
+      <li style="--w:66%"><span class="bar"></span><span class="lab"><b>中</b><span>手動で変えることはできない</span></span></li>
+      <li class="rec" style="--w:100%"><span class="bar"></span><span class="lab"><b>高<span class="tag">放置すると</span></b><span>トリアージせず活動が積み重なると、自動で引き上がることがある</span></span></li>
+    </ol>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図9-3</span><span>使えるライセンス</span></div>
+    <ul class="ox">
+      <li class="o"><span><b>Microsoft 365 E5／A5／G5</b></span></li>
+      <li class="o"><span><b>Microsoft 365 E3 ＋ E5 Compliance アドオン</b></span></li>
+      <li class="o"><span><b>Microsoft 365 E3 ＋ E5 Insider Risk Management アドオン</b><small>IRM だけの安価な選択肢</small></span></li>
+      <li class="x"><span><b>Microsoft 365 E3 単体</b></span></li>
+    </ul>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>ライセンスは管理者だけでなく、<span class="mk">監視対象のユーザー全員</span>に必要。実務では退職予定者などに対象を絞る。</li>
+  <li>HR コネクタは公式には「任意」だが、<span class="mk">退職が決まった時点から</span>の持ち出しを見たいならこれが答え。</li>
+  <li>一部の指標は従量課金の有効化が必要で、フォレンジック証拠は別途容量課金。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>退職予定者の、退職前の持ち出しを検知したい。人事システムの退職日を使いたい</summary><p class="a">HR コネクタをトリガーに「退職するユーザーによるデータの窃盗」テンプレートを使う</p></details>
+  <details class="qi"><summary>インサイダー リスクのアラートをトリアージせず放置すると、重大度は</summary><p class="a">変わらないのではなく、上がることがある</p></details>
+  <details class="qi"><summary>E3 の組織で、IRM だけを安く使いたい</summary><p class="a">E5 Insider Risk Management アドオン</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c08">← CARD 08</a><a href="#contents">目次</a><a class="next" href="#c10">次のカード →</a></nav>
+</article>
+<article class="card" id="c10" aria-labelledby="c10-q">
+<div class="card-h"><span class="no">CARD <b>10</b> / 10</span><span class="topic">監査とコミュニケーション コンプライアンス</span></div>
+<h2 class="q" id="c10-q">操作を調べたい？ やり取りを見張りたい？</h2>
+<p class="catch">操作の記録は<em>監査</em>、<br>言葉の監視は<em>コミュニケーション コンプライアンス</em>。</p>
+<p class="lead">「誰が・いつ・何をしたか」は Purview 監査の統合監査ログで横断的に調べます。社内のやり取りにハラスメントや不適切な共有がないかを見張るのはコミュニケーション コンプライアンスです。DLP・秘密度ラベル・メール フロー ルールと並んで出題されます。</p>
+<div class="figs">
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-1</span><span>4つの選択肢の切り分け</span></div>
+    <div class="map">
+      <div class="row"><span class="want">機密情報が外部に流出するのを防ぐ</span><span class="arr"></span><span class="tool">DLP</span></div>
+      <div class="row"><span class="want">社内のやり取りの不適切な表現を検出してレビュー</span><span class="arr"></span><span class="tool hot">コミュニケーション コンプライアンス<small>E5</small></span></div>
+      <div class="row"><span class="want">特定の件名のメールを、部署間で機械的に止める</span><span class="arr"></span><span class="tool">メール フロー ルール</span></div>
+      <div class="row"><span class="want">ファイルを分類して暗号化する</span><span class="arr"></span><span class="tool">秘密度ラベル<small>単体では送信を止めない</small></span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-2</span><span>ログの保持期間</span></div>
+    <div class="numstrip">
+      <div><b>180<small>日</small></b><span>Purview 監査（Standard）。E3</span></div>
+      <div><b>1<small>年</small></b><span>Purview 監査（Premium）。E5。アドオンで最長10年</span></div>
+      <div><b>30<small>日</small></b><span>Entra ID のサインイン ログ</span></div>
+    </div>
+  </figure>
+  <figure class="fig">
+    <div class="fig-h"><span class="no">図10-3</span><span>統合監査ログに入るもの、入らないもの</span></div>
+    <div class="vs2">
+      <div class="hot"><div class="hd"><b>入る</b><small>統合監査ログ</small></div><ul><li>Entra ID のサインイン（UserLoggedIn）と変更</li><li>Exchange のメールボックス監査</li><li>SharePoint・OneDrive のファイル操作、Teams</li><li>DLP の一致、ラベルの適用、eDiscovery</li></ul></div>
+      <div><div class="hd"><b>入らない</b><small>別の場所で見る</small></div><ul><li>Intune の監査ログ → Intune 管理センター</li><li>MDE の端末イベント → 高度なハンティング</li><li>条件付きアクセスの評価結果 → Entra のサインイン ログ</li></ul></div>
+    </div>
+  </figure>
+</div>
+<div class="osae"><span class="t">押さえどころ</span><ul>
+  <li>特定ユーザーのサインインやアプリ利用の調査は<span class="mk">Purview 監査</span>。Defender for Cloud Apps は SaaS の利用の可視化と制御の製品。</li>
+  <li>Standard と Premium の差は<span class="mk">保持期間と API の帯域</span>。MailItemsAccessed などの重要イベントは Standard でも記録される。</li>
+  <li>メッセージ追跡は配送状況の確認で、ブロックの手段ではない。</li>
+</ul></div>
+<div class="qa"><div class="t"><b>ここが出る！</b><span>答えを思い出してから押す</span></div>
+  <details class="qi"><summary>9か月前に監査を有効にした E3 テナント。14日前・30日前・60日前のサインインを Purview 監査で確認できる？</summary><p class="a">すべて確認できる（Standard は180日）</p></details>
+  <details class="qi"><summary>社内のやり取りに不適切な表現がないか監視したい</summary><p class="a">コミュニケーション コンプライアンス</p></details>
+  <details class="qi"><summary>特定の件名キーワードを含むメールを、特定の部署間でやり取りできないようにしたい</summary><p class="a">Exchange のメール フロー ルール（トランスポート ルール）</p></details>
+  <details class="qi"><summary>特定のユーザーのサインインやアプリの利用状況を調べたい</summary><p class="a">Purview 監査（統合監査ログ）</p></details>
+</div>
+<nav class="card-nav" aria-label="カードの移動"><a href="#c09">← CARD 09</a><a href="#contents">目次</a><a class="next" href="#quiz">腕試しへ →</a></nav>
+</article>
+<section class="sheet" id="quiz" aria-labelledby="h-quiz">
+  <div class="quiz-h"><div class="kicker"><span class="part">巻末</span><span>腕試し5問</span></div><span class="score" aria-live="polite">正解 <b id="score">0</b> / 5</span></div>
+  <h2 class="sheet-h" id="h-quiz">選んだ瞬間に、答え合わせ。</h2>
+  <div class="qz" data-answer="C">
+  <p class="qq"><b>Q1</b>あるメールに、組織全体の保持ポリシー（10年保持）、経理部向けの保持ポリシー（5年後に削除）、保持ラベル（3年後に削除）が適用されている。このメールはどうなる？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>3年後に削除される</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>5年後に削除される</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>10年間保持され、その後に削除される</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>永久に保持される</span></button>
+  </div>
+  <p class="why" hidden><b>正解は C。</b>原則1「保持が削除に勝つ」と原則2「長い保持が勝つ」で、まず10年は消えない。削除の設定は保持期間が終わってから効く。A・B は第1原則を無視している。→ CARD 04</p>
+</div>
+<div class="qz" data-answer="D">
+  <p class="qq"><b>Q2</b>自社が持つ20万件の顧客 ID の一覧と完全に一致する値だけを検出したい。他社の似た形式の番号は検出したくない。使う機能は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>カスタムの機密情報の種類（正規表現）</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>トレーニング可能な分類子</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>ドキュメント指紋</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>完全一致データ（EDM）</span></button>
+  </div>
+  <p class="why" hidden><b>正解は D。</b>EDM は自社の実データをハッシュ化して登録し、完全に一致する場合だけ検出する。A は形式が同じなら他社の番号も拾う。→ CARD 02</p>
+</div>
+<div class="qz" data-answer="A">
+  <p class="qq"><b>Q3</b>秘密度ラベルを作ったが、ユーザーの Word や Outlook に表示されない。最初に確認することは？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>ラベル ポリシーでそのユーザーに発行されているか</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>ラベルに暗号化が設定されているか</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>ユーザーに Microsoft 365 E5 が割り当てられているか</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>自動ラベル付けポリシーが有効か</span></button>
+  </div>
+  <p class="why" hidden><b>正解は A。</b>ラベルはラベル ポリシーで発行して初めて表示される。手動のラベル付けは E3 の範囲なので C は最初に疑う点ではない。→ CARD 03</p>
+</div>
+<div class="qz" data-answer="B">
+  <p class="qq"><b>Q4</b>SharePoint サイトに適用していた保持ポリシーを、誤って無効にしてしまった。正しい記述は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>保持ホールド ライブラリのファイルは直ちに削除される</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>30日間の猶予期間があり、その間に再び有効にすればデータを失わずに保持が再開される</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>93日間の猶予期間があり、その間はユーザーが自分で復元できる</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>サイトを除外した場合と同じく、猶予期間はない</span></button>
+  </div>
+  <p class="why" hidden><b>正解は B。</b>無効化・削除のときは30日の猶予がある。93日は SharePoint のごみ箱の話。猶予がないのは、ポリシーを更新してサイトを除外した場合。→ CARD 05</p>
+</div>
+<div class="qz" data-answer="C">
+  <p class="qq"><b>Q5</b>保持期間が終わった契約書を、法務担当者の承認を経てから削除したい。全体管理者で Purview の「廃棄」ページを開こうとしたが、開けなかった。正しい説明は？</p>
+  <div class="opts">
+    <button class="opt" type="button" data-k="A"><i>A</i><span>廃棄レビューは保持ポリシーで構成するため、ポリシーを作り直す必要がある</span></button>
+    <button class="opt" type="button" data-k="B"><i>B</i><span>廃棄のページは eDiscovery 管理者だけが開ける</span></button>
+    <button class="opt" type="button" data-k="C"><i>C</i><span>全体管理者には既定で廃棄管理ロールがないため、レコード管理ロールグループなどへの追加が必要</span></button>
+    <button class="opt" type="button" data-k="D"><i>D</i><span>Content Explorer Content Viewer ロールグループさえあればよい</span></button>
+  </div>
+  <p class="why" hidden><b>正解は C。</b>廃棄のページには廃棄管理ロールが必要で、既定で含むのはレコード管理ロールグループ。廃棄レビューは保持ラベルでしか構成できないので A は誤り。→ CARD 05</p>
+</div>
+</section>
+<section class="sheet" id="memo" aria-labelledby="h-memo">
+  <div class="kicker"><span class="part">付録</span><span>切り取り暗記カード</span></div>
+  <h2 class="sheet-h" id="h-memo">直前の10分は、この12枚だけ。</h2>
+  <p class="cut">キリトリ</p>
+  <div class="cards"><div><small>CARD 01</small>分類 → ラベル → 守る／残す → 監視。分類できないものは守れない</div>
+<div><small>CARD 02</small>書式は SIT、性質は分類子、自社の実データは EDM</div>
+<div><small>CARD 03</small>ラベルはポリシーで発行するまで見えない</div>
+<div><small>CARD 03</small>グループとサイトの保護は Microsoft 365 グループだけ</div>
+<div><small>CARD 04</small>保持の4原則：残す → 長く → 名指し → 早く消す</div>
+<div><small>CARD 04</small>ポリシーは箱、ラベルは中身</div>
+<div><small>CARD 05</small>保持ロックとアダプティブ スコープは併用できない</div>
+<div><small>CARD 05</small>猶予は30日、93日はごみ箱</div>
+<div><small>CARD 05</small>廃棄レビューは保持ラベル専用。全体管理者に廃棄管理ロールはない</div>
+<div><small>CARD 07</small>DLP はシミュレーション（ヒントなし）から</div>
+<div><small>CARD 08</small>エンドポイント DLP はオンボードと E5</div>
+<div><small>CARD 10</small>監査は E3 で180日、サインイン ログは30日</div></div>
+  <p class="cut">キリトリ</p>
+  <div class="sister"><a class="hot" href="https://claude.ai/artifact/DBGvdDGp9bbroqttuzmVqZ" target="_blank" rel="noopener"><b>この先は逆引きドリルで</b><span>全巻の「ここが出る！」を、間違えたものから繰り返し出題します。</span></a></div>
+  <span class="sub-h">シリーズ構成</span>
+  <ul class="series"><li><a href="https://claude.ai/artifact/5BnRho7DVbhMcB87kNR1Gs" target="_blank" rel="noopener"><b>VOL.01</b><span>テナント</span><small>配点 25–30%</small></a></li><li><a href="https://claude.ai/artifact/PY28R5A28mo3CHNcqnFQEe" target="_blank" rel="noopener"><b>VOL.02</b><span>Entra ID</span><small>配点 25–30%</small></a></li><li><a href="https://claude.ai/artifact/NENPSAdHgUY5bcLptgAMZm" target="_blank" rel="noopener"><b>VOL.03</b><span>Defender XDR</span><small>配点 30–35%</small></a></li><li class="on"><span><b>VOL.04</b><span>Purview</span><small>配点 10–15% ／ 本号</small></span></li></ul>
+  <div class="okuduke">
+    <span class="ttl">MS-102 図解ムック VOL.04 特集 Purview まるごと図解</span>
+    <dl>
+      <dt>発行</dt><dd>2026年10月</dd>
+      <dt>準拠</dt><dd>Microsoft 公式スキル測定（2026年4月28日版）</dd>
+      <dt>底本</dt><dd>MS-102 総合テキスト 第4章</dd>
+      <dt>ご注意</dt><dd>製品名・画面・ライセンス要件は変わることがあります。受験前に Microsoft Learn の学習ガイドで最新の情報を確認してください。MS-102 は 2026年11月30日に廃止予定です。</dd>
+    </dl>
+  </div>
+  <div class="sister">
+    <a href="#top"><b>表紙へ戻る</b><span>目次から別のカードへ</span></a>
+    <a href="https://learn.microsoft.com/ja-jp/credentials/certifications/exams/ms-102/" target="_blank" rel="noopener"><b>試験ページ（Microsoft Learn）</b><span>試験概要と廃止予定日の確認</span></a>
+  </div>
+</section>
+</main>
+<script>
+(function(){
+  // 腕試し：選んだ瞬間に採点して解説を出す
+  var right = 0;
+  var scoreEl = document.getElementById('score');
+  Array.prototype.forEach.call(document.querySelectorAll('.qz'), function(q){
+    var ans = q.getAttribute('data-answer');
+    var why = q.querySelector('.why');
+    Array.prototype.forEach.call(q.querySelectorAll('.opt'), function(b){
+      b.addEventListener('click', function(){
+        if (q.classList.contains('done')) return;
+        q.classList.add('done');
+        Array.prototype.forEach.call(q.querySelectorAll('.opt'), function(o){
+          if (o.getAttribute('data-k') === ans) o.classList.add('right');
+          o.setAttribute('aria-disabled', 'true');
+        });
+        if (b.getAttribute('data-k') === ans) { right++; if (scoreEl) scoreEl.textContent = String(right); }
+        else { b.classList.add('wrong'); }
+        if (why) why.hidden = false;
+      });
+    });
+  });
+
+  // 上部バー：いま読んでいるカードの番号を光らせる
+  var chips = {};
+  Array.prototype.forEach.call(document.querySelectorAll('.tb-chips a'), function(a){
+    chips[a.getAttribute('href').slice(1)] = a;
+  });
+  var current = null;
+  function mark(id){
+    if (id === current) return;
+    if (current && chips[current]) chips[current].classList.remove('here');
+    current = id;
+    if (id && chips[id]) {
+      chips[id].classList.add('here');
+      var bar = chips[id].parentNode, r = chips[id].getBoundingClientRect(), b = bar.getBoundingClientRect();
+      if (r.left < b.left || r.right > b.right) bar.scrollLeft += (r.left - b.left) - b.width / 2 + r.width / 2;
+    }
+  }
+  var targets = Array.prototype.slice.call(document.querySelectorAll('.card, #quiz, #memo'));
+  function onScroll(){
+    var best = null;
+    for (var i = 0; i < targets.length; i++) {
+      if (targets[i].getBoundingClientRect().top <= 120) best = targets[i].id; else break;
+    }
+    mark(best);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
