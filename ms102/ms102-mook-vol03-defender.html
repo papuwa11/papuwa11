@@ -1,0 +1,1471 @@
+<title>MS-102 図解ムック Defender編</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@400;500;700;900&family=Shippori+Mincho+B1:wght@600;800&family=Yusei+Magic&family=Barlow+Condensed:wght@600;800&display=swap">
+<style>
+/* Layout: 2色刷りのムック誌面。見開き（左＝記事、右＝図版）を机の上に縦に並べ、柱・ノンブル・ツメ・図版番号・付箋で誌面らしさを出す。スマホでは1ページずつ縦積み。 */
+:root{
+  --desk:#DADEE5;
+  --paper:#FFFFFF;
+  --paper-2:#F2F3F6;
+  --ink:#16181D;
+  --ink-2:#4B505C;
+  --line:#D4D7DE;
+  --spot:#D94A14;
+  --on-spot:#FFFFFF;
+  --blue:#1C5BD0;
+  --marker:#FFE14D;
+  --note:#FFF2B3;
+
+  --gothic:"M PLUS 1","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  --mincho:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --hand:"Yusei Magic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --num:"Barlow Condensed","Arial Narrow","M PLUS 1",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#0B0D11;
+    --paper:#181B22;
+    --paper-2:#21252E;
+    --ink:#ECEEF3;
+    --ink-2:#A8AEBC;
+    --line:#323745;
+    --spot:#FF8248;
+    --on-spot:#15171C;
+    --blue:#82A8FF;
+    --marker:#5C4C0C;
+    --note:#38321A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#0B0D11;
+  --paper:#181B22;
+  --paper-2:#21252E;
+  --ink:#ECEEF3;
+  --ink-2:#A8AEBC;
+  --line:#323745;
+  --spot:#FF8248;
+  --on-spot:#15171C;
+  --blue:#82A8FF;
+  --marker:#5C4C0C;
+  --note:#38321A;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--desk);
+  color:var(--ink);
+  font-family:var(--gothic);
+  font-size:15.5px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;
+  word-break:auto-phrase;
+  line-break:strict;
+}
+h1,h2,h3,h4,p{margin:0}
+h1,h2,h3{text-wrap:balance}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+code{font-family:var(--mono);font-size:.86em}
+
+.book{
+  max-width:1240px;
+  margin:0 auto;
+  padding-inline:clamp(16px,3vw,32px);
+  padding-block:28px 80px;
+  display:grid;
+  gap:clamp(24px,4vw,44px);
+}
+
+/* ================= 表紙 ================= */
+.cover{
+  position:relative;
+  overflow:hidden;
+  background:var(--spot);
+  color:var(--on-spot);
+  padding:clamp(22px,4vw,48px);
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+  gap:24px 36px;
+  box-shadow:0 18px 40px -24px color-mix(in srgb,var(--ink) 55%,transparent);
+}
+.mast{display:grid;gap:14px;align-content:start;min-width:0}
+.issue{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;font-weight:700;font-size:.8rem;letter-spacing:.14em}
+.issue b{font-family:var(--num);font-weight:800;font-size:1.5rem;letter-spacing:.04em}
+.logo{display:grid;gap:2px}
+.logo .en{font-family:var(--num);font-weight:800;font-size:clamp(4.4rem,12vw,9rem);line-height:.8;letter-spacing:-.02em}
+.logo .ja{font-weight:900;font-size:clamp(1.9rem,5vw,3.4rem);line-height:1.05;letter-spacing:.04em}
+.feature{display:grid;gap:10px;margin-top:6px}
+.feature .kick{justify-self:start;padding:2px 12px;background:var(--on-spot);color:var(--spot);font-weight:900;font-size:.9rem;letter-spacing:.1em}
+.feature h1{font-weight:900;font-size:clamp(2.2rem,6vw,4rem);line-height:1.08;letter-spacing:-.01em}
+.clines{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:9px}
+.clines li span{
+  background:var(--paper);
+  color:var(--ink);
+  padding:3px 10px;
+  font-weight:900;
+  font-size:clamp(.92rem,1.7vw,1.06rem);
+  line-height:2.05;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
+.clines li.main span{font-size:clamp(1.25rem,2.8vw,1.75rem);line-height:1.75}
+.clines li em{font-style:normal;color:var(--spot)}
+.cover-art{position:relative;display:grid;place-items:center;min-width:0}
+.hub{width:100%;max-width:470px;height:auto;display:block}
+.hub .ring{fill:none;stroke:var(--on-spot);stroke-width:2;stroke-dasharray:6 7}
+.hub .sat{fill:var(--paper);stroke:var(--ink);stroke-width:2.5}
+.hub .core{fill:var(--ink)}
+.hub .p{font-family:var(--gothic);font-size:14px;font-weight:700;fill:var(--ink-2)}
+.hub .w{font-family:var(--gothic);font-size:22px;font-weight:900;fill:var(--ink)}
+.hub .w2{font-family:var(--gothic);font-size:19px;font-weight:900;fill:var(--ink)}
+.hub .c1{font-family:var(--gothic);font-size:19px;font-weight:700;fill:var(--paper)}
+.hub .c2{font-family:var(--num);font-size:46px;font-weight:800;fill:var(--paper)}
+.badge{
+  position:absolute;
+  top:0;right:0;
+  width:104px;
+  aspect-ratio:1;
+  max-width:100%;
+  border-radius:50%;
+  background:var(--marker);
+  color:var(--ink);
+  display:grid;
+  place-content:center;
+  text-align:center;
+  font-weight:900;
+  line-height:1.15;
+  transform:rotate(10deg);
+  box-shadow:0 0 0 3px var(--spot),0 0 0 5px var(--marker);
+}
+.badge b{display:block;font-size:1.5rem}
+.badge small{display:block;font-size:.7rem;font-weight:700}
+.cover-foot{
+  grid-column:1/-1;
+  border-top:2px solid var(--on-spot);
+  padding-top:12px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:10px 24px;
+  font-size:.8rem;
+  font-weight:700;
+}
+.vols{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.vols li{padding:1px 10px;border:1.5px solid var(--on-spot)}
+.vols li.on{background:var(--on-spot);color:var(--spot)}
+
+/* ================= 見開き ================= */
+.spread{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  background:var(--paper);
+  box-shadow:0 18px 40px -24px color-mix(in srgb,var(--ink) 45%,transparent);
+  scroll-margin-top:16px;
+}
+.spread::before{
+  content:"";
+  position:absolute;
+  top:0;bottom:0;left:50%;
+  width:56px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--ink) 8%,transparent) 50%,transparent);
+  pointer-events:none;
+}
+.page{
+  position:relative;
+  padding:50px clamp(22px,3.4vw,48px) 64px;
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+  min-width:0;
+}
+.page.r{padding-right:calc(clamp(22px,3.4vw,48px) + 26px)}
+.hashira{position:absolute;top:18px;font-size:.68rem;font-weight:700;letter-spacing:.14em;color:var(--ink-2)}
+.page.l .hashira{left:clamp(22px,3.4vw,48px)}
+.page.r .hashira{right:calc(clamp(22px,3.4vw,48px) + 26px)}
+.nombre{position:absolute;bottom:18px;font-family:var(--num);font-weight:800;font-size:1.05rem;letter-spacing:.04em}
+.page.l .nombre{left:clamp(22px,3.4vw,48px)}
+.page.r .nombre{right:calc(clamp(22px,3.4vw,48px) + 26px)}
+.tsume{
+  position:absolute;
+  right:0;
+  top:calc(54px + var(--k) * 42px);
+  writing-mode:vertical-rl;
+  background:var(--spot);
+  color:var(--on-spot);
+  font-weight:900;
+  font-size:.72rem;
+  letter-spacing:.14em;
+  padding:12px 5px;
+}
+.tsume.end{background:var(--ink);color:var(--paper)}
+
+.kicker{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-weight:900;font-size:.82rem;letter-spacing:.12em}
+.kicker .part{background:var(--spot);color:var(--on-spot);padding:0 10px;font-family:var(--num);font-weight:800;font-size:1.05rem;letter-spacing:.06em}
+.catch{font-weight:900;font-size:clamp(1.85rem,3.3vw,2.6rem);line-height:1.25;letter-spacing:-.01em}
+.catch em{font-style:normal;color:var(--spot)}
+.lead{font-family:var(--mincho);font-weight:600;font-size:1.02rem;line-height:2}
+.mk{background:linear-gradient(transparent 58%,var(--marker) 58%);font-weight:700}
+
+/* 押さえどころ */
+.osae{position:relative;border:2px solid var(--ink);padding:24px 18px 16px;margin-top:6px}
+.osae > .t{position:absolute;top:-.9em;left:14px;background:var(--paper);padding:0 8px;font-weight:900;font-size:.92rem;letter-spacing:.1em}
+.osae ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.93rem;line-height:1.75}
+.osae li{position:relative;padding-left:1.25em}
+.osae li::before{content:"";position:absolute;left:0;top:.62em;width:.55em;height:.55em;background:var(--spot)}
+
+/* ここが出る（付箋） */
+.deru{
+  background:var(--note);
+  padding:14px 18px 18px;
+  display:grid;
+  gap:10px;
+  transform:rotate(-.6deg);
+  box-shadow:0 10px 18px -14px color-mix(in srgb,var(--ink) 60%,transparent);
+}
+.deru .t{font-family:var(--hand);font-size:1.3rem;line-height:1.3;color:var(--spot)}
+.deru dl{margin:0;display:grid;gap:10px}
+.deru dt{font-size:.86rem;line-height:1.6;color:var(--ink-2)}
+.deru dd{margin:0;font-weight:700;font-size:.95rem;line-height:1.6}
+.deru dd::before{content:"→ ";color:var(--spot);font-weight:900}
+
+/* 図版 */
+.fig{margin:0;display:grid;gap:12px;min-width:0}
+.fig-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font-weight:900;font-size:1.02rem;line-height:1.45}
+.fig-h .no{font-family:var(--num);font-weight:800;font-size:1.1rem;color:var(--spot);letter-spacing:.04em}
+.fig figcaption{font-size:.8rem;line-height:1.65;color:var(--ink-2)}
+.hand{font-family:var(--hand);color:var(--spot);font-weight:400}
+.svgbox{overflow-x:auto}
+.svgbox svg{display:block;width:100%;height:auto;min-width:340px;margin:0 auto}
+
+/* コラム */
+.column{background:var(--paper-2);border-top:5px solid var(--ink);padding:14px 18px 18px;display:grid;gap:8px}
+.column .t{display:flex;align-items:baseline;gap:10px;font-weight:900;font-size:1.02rem}
+.column .t b{font-family:var(--num);font-weight:800;font-size:.95rem;letter-spacing:.14em;color:var(--spot)}
+.column p{font-size:.9rem;line-height:1.8}
+
+/* 共通：やりたいこと → 道具 */
+.map{display:grid;gap:8px}
+.map .row{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,.9fr);align-items:stretch;gap:6px}
+.map .want{padding:8px 12px;background:var(--paper-2);font-size:.88rem;line-height:1.55;display:flex;align-items:center}
+.map .arr{position:relative}
+.map .arr::before{content:"";position:absolute;left:2px;right:8px;top:50%;height:2px;background:var(--spot)}
+.map .arr::after{content:"";position:absolute;right:0;top:50%;margin-top:-6px;border-left:9px solid var(--spot);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.map .tool{padding:8px 12px;border:2px solid var(--ink);font-weight:900;font-size:.92rem;line-height:1.45;display:flex;flex-direction:column;justify-content:center}
+.map .tool small{font-weight:500;font-size:.76rem;color:var(--ink-2)}
+.map .tool.hot{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.map .tool.hot small{color:var(--on-spot)}
+
+/* 共通：手順（縦） */
+.flow{list-style:none;margin:0;padding:0;display:grid;gap:22px;counter-reset:st}
+.flow li{position:relative;border:2px solid var(--ink);padding:10px 14px 10px 54px;display:grid;gap:2px;counter-increment:st}
+.flow li::before{
+  content:counter(st);
+  position:absolute;left:0;top:0;bottom:0;
+  width:40px;
+  display:grid;place-items:center;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--num);font-weight:800;font-size:1.4rem;
+}
+.flow li + li::after{
+  content:"";
+  position:absolute;
+  left:50%;top:-20px;
+  margin-left:-8px;
+  border-top:12px solid var(--spot);
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+}
+.flow b{font-weight:900;font-size:.98rem;line-height:1.45}
+.flow small{font-size:.8rem;color:var(--ink-2);line-height:1.55}
+.flow li.goal{border-color:var(--spot)}
+.flow li.goal::before{background:var(--spot);color:var(--on-spot)}
+
+/* 共通：数字の帯 */
+.numstrip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+.numstrip div{padding:10px 12px;display:grid;gap:2px;min-width:0}
+.numstrip div + div{border-left:1px solid var(--line)}
+.numstrip b{font-family:var(--num);font-weight:800;font-size:2.4rem;line-height:1;color:var(--spot);font-variant-numeric:tabular-nums}
+.numstrip b small{font-family:var(--gothic);font-size:.38em;font-weight:900;color:var(--ink);margin-left:2px}
+.numstrip span{font-size:.78rem;line-height:1.5;color:var(--ink-2)}
+
+/* ×の選択肢 */
+.ng{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.ng li{padding:3px 10px;border:1.5px dashed var(--ink-2);color:var(--ink-2);font-size:.84rem;text-decoration:line-through;text-decoration-color:var(--spot);text-decoration-thickness:2px}
+
+/* ---------- PART 01 ---------- */
+.duty{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.duty div{border:2px solid var(--ink);padding:10px 14px 12px;display:grid;gap:2px;align-content:start;min-width:0}
+.duty .p{font-size:.78rem;font-weight:700;color:var(--ink-2)}
+.duty .who{font-weight:900;font-size:1.3rem;line-height:1.35}
+.duty .who small{font-size:.62em;font-weight:700;margin-left:2px;white-space:nowrap}
+.duty .what{font-size:.78rem;line-height:1.55;color:var(--ink-2)}
+.funnel{display:grid;gap:8px}
+.al{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 12px;border:1.5px dashed var(--ink-2);font-size:.86rem;line-height:1.5}
+.al i{font-style:normal;font-family:var(--num);font-weight:800;font-size:.95rem;color:var(--spot);white-space:nowrap}
+.down{justify-self:center;width:0;height:0;border-top:16px solid var(--spot);border-left:14px solid transparent;border-right:14px solid transparent}
+.inc{background:var(--ink);color:var(--paper);padding:10px 14px;display:grid;gap:2px}
+.inc b{font-weight:900;font-size:1.15rem}
+.inc small{font-size:.8rem;opacity:.85}
+
+/* ---------- PART 02 ---------- */
+.auto{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.auto li{display:grid;gap:3px}
+.auto .bar{height:12px;width:var(--w);background:color-mix(in srgb,var(--ink) 22%,var(--paper))}
+.auto li.rec .bar{background:var(--spot)}
+.auto .lab{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;font-size:.86rem;line-height:1.45}
+.auto .lab b{font-weight:900}
+.auto .lab span{font-size:.78rem;color:var(--ink-2)}
+.auto .rec .lab b::after{content:"推奨";margin-left:8px;padding:0 6px;background:var(--spot);color:var(--on-spot);font-size:.72rem}
+.ac{border:2px solid var(--ink)}
+.ac-h{background:var(--ink);color:var(--paper);padding:6px 12px;font-weight:900;font-size:.92rem}
+.ac-b{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.ac-b div{padding:10px 12px;display:grid;gap:2px;font-size:.84rem;line-height:1.55}
+.ac-b div + div{border-left:2px solid var(--ink);background:color-mix(in srgb,var(--spot) 10%,var(--paper))}
+.ac-b b{font-weight:900;font-size:.95rem}
+.ranked{list-style:none;margin:0;padding:0;display:grid;gap:6px;counter-reset:rk}
+.ranked li{counter-increment:rk;display:grid;grid-template-columns:3.2rem minmax(0,1fr) auto;align-items:center;gap:10px;padding:6px 10px;background:var(--paper-2);font-size:.86rem}
+.ranked li::before{content:"ランク" counter(rk);font-size:.72rem;font-weight:900;color:var(--ink-2)}
+.ranked li.hit{background:var(--spot);color:var(--on-spot)}
+.ranked li.hit::before{color:var(--on-spot)}
+.ranked em{font-style:normal;font-size:.76rem;font-weight:700}
+
+/* ---------- PART 03 ---------- */
+.surname{display:grid;gap:8px}
+.sn{display:grid;grid-template-columns:8.6rem minmax(0,1fr);gap:4px 12px;align-items:start;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.sn:last-child{border-bottom:0;padding-bottom:0}
+.sn .pre{font-family:var(--mono);font-weight:700;font-size:.95rem;line-height:1.5}
+.sn .pre small{display:block;font-family:var(--gothic);font-size:.72rem;font-weight:700;color:var(--spot)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+.chips code{padding:1px 7px;background:var(--paper-2);border:1px solid var(--line);font-size:.76rem;line-height:1.7;overflow-wrap:anywhere}
+.chips code.odd{border-color:var(--spot);color:var(--spot)}
+
+/* ---------- PART 04 ---------- */
+.gauges{display:grid;gap:10px}
+.gauge{display:grid;grid-template-columns:3.4rem minmax(0,1fr);gap:12px;align-items:center}
+.gauge .dir{
+  height:3.4rem;
+  display:grid;place-items:center;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--num);font-weight:800;font-size:2.2rem;line-height:1;
+}
+.gauge.low .dir{background:var(--spot);color:var(--on-spot)}
+.gauge b{display:block;font-weight:900;font-size:.98rem;line-height:1.45}
+.gauge span{font-size:.8rem;line-height:1.5;color:var(--ink-2)}
+.gauge.low b em{font-style:normal;color:var(--spot)}
+.path .nd{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+.path .ln{fill:none;stroke:var(--ink-2);stroke-width:2}
+.path .hot{fill:var(--spot)}
+.path .tx{font-family:var(--gothic);font-size:13px;font-weight:700;fill:var(--ink)}
+.path .tw{font-family:var(--gothic);font-size:13px;font-weight:900;fill:var(--on-spot)}
+.path .ts{font-family:var(--gothic);font-size:12px;font-weight:700;fill:var(--spot)}
+.path .ah{fill:var(--ink-2)}
+
+/* ---------- PART 05 ---------- */
+.bldg{display:grid;gap:0;border:3px solid var(--ink);border-top:0}
+.roof{height:0;border-bottom:22px solid var(--ink);border-left:30px solid transparent;border-right:30px solid transparent;margin:0 -3px}
+.floor{display:grid;grid-template-columns:3rem minmax(0,1fr);border-top:3px solid var(--ink)}
+.floor .fl{display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.5rem}
+.floor .fb{padding:10px 12px 12px;display:grid;gap:6px;min-width:0}
+.floor .fn{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px}
+.floor .fn b{font-weight:900;font-size:.98rem;line-height:1.4}
+.floor .fn span{padding:0 8px;font-size:.72rem;font-weight:900;border:1.5px solid var(--ink)}
+.floor.f3{background:color-mix(in srgb,var(--spot) 22%,var(--paper))}
+.floor.f3 .fn span{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.floor.f2{background:color-mix(in srgb,var(--spot) 9%,var(--paper))}
+.floor.f1{background:var(--paper)}
+.rooms{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.rooms li{padding:2px 8px;background:var(--paper);border:1.5px solid var(--ink);font-size:.78rem;font-weight:700;line-height:1.5}
+.rooms.seq{counter-reset:rm}
+.rooms.seq li{counter-increment:rm}
+.rooms.seq li::before{content:counter(rm);display:inline-block;min-width:1.2em;margin-right:5px;padding:0 3px;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;text-align:center}
+.rooms.also li{border-style:dashed}
+.street{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;background:var(--ink);color:var(--paper);font-size:.78rem;font-weight:700}
+
+/* ---------- PART 06 ---------- */
+.podium{list-style:none;margin:0;padding:0;display:grid;gap:5px;counter-reset:pd}
+.podium li{
+  counter-increment:pd;
+  width:calc(100% - var(--i) * 8%);
+  display:flex;align-items:center;gap:10px;
+  padding:6px 12px;
+  background:color-mix(in srgb,var(--spot) calc(36% - var(--i) * 6%),var(--paper));
+  font-size:.86rem;font-weight:700;line-height:1.45;
+}
+.podium li::before{content:counter(pd);font-family:var(--num);font-weight:800;font-size:1.25rem;min-width:1em}
+.podium li:first-child{background:var(--spot);color:var(--on-spot)}
+.podium li small{font-weight:500;font-size:.74rem;opacity:.85}
+.heat{display:grid;grid-template-columns:minmax(6.5rem,1.3fr) repeat(3,minmax(0,1fr));gap:3px;font-size:.82rem;line-height:1.35}
+.heat > div{padding:7px 8px;min-width:0;display:flex;align-items:center}
+.heat .h{font-weight:900;justify-content:center;background:var(--ink);color:var(--paper)}
+.heat .h.blank{background:none}
+.heat .k{font-weight:700;background:var(--paper-2)}
+.heat .j{justify-content:center;background:color-mix(in srgb,var(--blue) 14%,var(--paper));font-weight:700}
+.heat .q{justify-content:center;background:var(--spot);color:var(--on-spot);font-weight:900}
+.heat .n{justify-content:center;font-family:var(--num);font-weight:800;font-size:1.15rem;background:var(--paper-2)}
+.heat .trap{outline:3px solid var(--marker);outline-offset:-3px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.76rem;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:4px;vertical-align:-1px}
+.legend .lj{background:color-mix(in srgb,var(--blue) 14%,var(--paper));border:1px solid var(--line)}
+.legend .lq{background:var(--spot)}
+.fork{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fork > div{border:2px solid var(--ink);display:grid;grid-template-rows:auto 1fr;min-width:0}
+.fork .if{padding:8px 12px;background:var(--paper-2);font-size:.84rem;line-height:1.55}
+.fork .if b{display:block;font-size:.72rem;letter-spacing:.1em;color:var(--ink-2)}
+.fork .then{padding:10px 12px;display:grid;gap:4px;align-content:start}
+.fork .then b{font-weight:900;font-size:.98rem;line-height:1.45}
+.fork .then small{font-size:.78rem;line-height:1.55;color:var(--ink-2)}
+.fork .then .x{color:var(--spot);font-weight:700}
+
+/* ---------- PART 07 ---------- */
+.mini{width:100%;border-collapse:collapse;font-size:.82rem;line-height:1.5;min-width:340px}
+.mini th,.mini td{padding:7px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.mini thead th{border-bottom:2px solid var(--ink);font-size:.74rem;letter-spacing:.06em;color:var(--ink-2)}
+.mini td b{color:var(--spot)}
+.tblbox{overflow-x:auto}
+
+/* ---------- PART 08 ---------- */
+.cyc .nd{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+.cyc .nd.hot{fill:var(--spot);stroke:var(--spot)}
+.cyc .ln{fill:none;stroke:var(--ink-2);stroke-width:2}
+.cyc .ah{fill:var(--ink-2)}
+.cyc .tx{font-family:var(--gothic);font-size:13px;font-weight:900;fill:var(--ink)}
+.cyc .ts{font-family:var(--gothic);font-size:11.5px;font-weight:500;fill:var(--ink-2)}
+.cyc .tw{font-family:var(--gothic);font-size:13px;font-weight:900;fill:var(--on-spot)}
+.cyc .tws{font-family:var(--gothic);font-size:11.5px;font-weight:500;fill:var(--on-spot)}
+.cyc .mid{font-family:var(--hand);font-size:15px;fill:var(--spot)}
+.streak{display:grid;gap:10px}
+.st-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
+.marks{display:flex;gap:4px}
+.marks span{width:34px;height:34px;display:grid;place-items:center;font-weight:900;font-size:1rem;border:2px solid var(--ink)}
+.marks .x{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.marks .o{background:var(--paper)}
+.st-row p{font-size:.86rem;line-height:1.55}
+.st-row p b{font-weight:900}
+.tech{display:flex;flex-wrap:wrap;gap:6px}
+.tech span{padding:3px 10px;border:1.5px solid var(--ink);font-size:.8rem;font-weight:700}
+
+/* ---------- PART 09 ---------- */
+.onb{display:grid;gap:6px}
+.onb .row{display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:10px;align-items:start;padding:8px 10px;background:var(--paper-2)}
+.onb .os{font-weight:900;font-size:.88rem;line-height:1.45}
+.onb .how{display:flex;flex-wrap:wrap;gap:5px}
+.onb .how span{padding:1px 8px;background:var(--paper);border:1.5px solid var(--ink);font-size:.78rem;font-weight:700;line-height:1.6}
+.onb .how span.key{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.onb .how span.key small{font-weight:500}
+.tools4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tools4 div{border:2px solid var(--ink);padding:10px 12px 12px;display:grid;gap:4px;align-content:start;min-width:0}
+.tools4 .q{font-size:.82rem;line-height:1.55;color:var(--ink-2)}
+.tools4 b{font-weight:900;font-size:1.08rem;line-height:1.35}
+.tools4 small{font-size:.76rem;line-height:1.5;color:var(--ink-2)}
+.tools4 div.warn{border-color:var(--spot)}
+.tools4 div.warn b{color:var(--spot)}
+
+/* ---------- PART 10 ---------- */
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.three > div{border:2px solid var(--ink);display:grid;grid-template-rows:auto 1fr;min-width:0}
+.three .hd{padding:8px 10px;background:var(--ink);color:var(--paper);display:grid;gap:0}
+.three .hd b{font-weight:900;font-size:1.02rem;line-height:1.35}
+.three .hd small{font-size:.72rem;opacity:.85}
+.three ul{list-style:none;margin:0;padding:8px 10px 10px;display:grid;gap:5px;align-content:start;font-size:.78rem;line-height:1.5}
+.three li{padding-left:.9em;position:relative}
+.three li::before{content:"";position:absolute;left:0;top:.6em;width:.4em;height:.4em;background:var(--spot)}
+.route{display:grid;gap:8px}
+.route .lane{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 12px;border:2px solid var(--ink);font-size:.86rem;line-height:1.5}
+.route .lane .res{font-family:var(--num);font-weight:800;font-size:1.3rem;padding:0 10px}
+.route .lane.bad{border-style:dashed;color:var(--ink-2)}
+.route .lane.bad .res{color:var(--spot)}
+.route .lane.good{background:color-mix(in srgb,var(--spot) 10%,var(--paper));border-color:var(--spot)}
+.route .lane.good .res{background:var(--spot);color:var(--on-spot)}
+.lic{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;align-items:end}
+.lic li{display:grid;align-content:start;gap:4px;padding:8px 8px 10px;min-height:calc(4.6rem + var(--h) * 1.6rem);background:color-mix(in srgb,var(--spot) calc(var(--h) * 9%),var(--paper));border-top:4px solid var(--ink);font-size:.76rem;line-height:1.45;min-width:0}
+.lic li b{font-weight:900;font-size:.82rem}
+.lic li span{font-weight:700}
+.lic li.top{background:var(--spot);color:var(--on-spot);border-top-color:var(--spot)}
+
+/* ================= 目次 ================= */
+.toc-h{font-family:var(--num);font-weight:800;font-size:clamp(3rem,7vw,4.6rem);line-height:.9;letter-spacing:.02em}
+.toc-h small{display:block;font-family:var(--gothic);font-size:.9rem;font-weight:900;letter-spacing:.12em;color:var(--spot);margin-top:8px}
+.toc{list-style:none;margin:0;padding:0;display:grid}
+.toc li{border-bottom:1px solid var(--line)}
+.toc a{display:grid;grid-template-columns:3.4rem minmax(0,1fr);gap:12px;align-items:baseline;padding:8px 0;text-decoration:none}
+.toc a:hover .tt{color:var(--spot)}
+.toc .pg{font-family:var(--num);font-weight:800;font-size:1.5rem;line-height:1;color:var(--spot)}
+.toc .tt{font-weight:900;font-size:1rem;line-height:1.45}
+.toc .tt small{display:block;font-weight:500;font-size:.8rem;color:var(--ink-2)}
+.toc .end .pg{color:var(--ink)}
+.howto{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:ht}
+.howto li{counter-increment:ht;display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:12px;align-items:start}
+.howto li::before{content:counter(ht);display:grid;place-items:center;height:2.4rem;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:800;font-size:1.4rem}
+.howto b{display:block;font-weight:900;font-size:.98rem;line-height:1.45}
+.howto span{font-size:.84rem;line-height:1.6;color:var(--ink-2)}
+.sister{display:grid;gap:8px}
+.sister a{display:grid;gap:0;padding:10px 14px;border:2px solid var(--ink);text-decoration:none}
+.sister a:hover{background:var(--paper-2)}
+.sister a b{font-weight:900;font-size:.98rem}
+.sister a span{font-size:.8rem;color:var(--ink-2)}
+
+/* ================= 腕試し ================= */
+.quiz-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.score{font-weight:900;font-size:.92rem}
+.score b{font-family:var(--num);font-weight:800;font-size:1.6rem;color:var(--spot);margin:0 2px}
+.qz{display:grid;gap:10px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.qz:last-child{border-bottom:0;padding-bottom:0}
+.qz .qq{font-weight:700;font-size:.95rem;line-height:1.7}
+.qz .qq b{font-family:var(--num);font-weight:800;font-size:1.15rem;color:var(--spot);margin-right:6px}
+.opts{display:grid;gap:6px}
+.opt{
+  display:grid;grid-template-columns:1.8rem minmax(0,1fr);gap:8px;align-items:start;
+  width:100%;
+  padding:7px 10px;
+  border:1.5px solid var(--line);
+  background:var(--paper);
+  color:var(--ink);
+  font:inherit;font-size:.86rem;line-height:1.55;
+  text-align:left;
+  cursor:pointer;
+}
+.opt:hover{border-color:var(--ink)}
+.opt i{font-style:normal;font-family:var(--num);font-weight:800;font-size:1.05rem;line-height:1.35}
+.qz.done .opt{cursor:default}
+.qz.done .opt:hover{border-color:var(--line)}
+.opt.right{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 12%,var(--paper))}
+.opt.wrong{border-color:var(--spot);background:color-mix(in srgb,var(--spot) 12%,var(--paper))}
+.why{padding:10px 12px;background:var(--note);font-size:.84rem;line-height:1.7}
+.why b{font-weight:900}
+
+/* ================= 暗記カード・奥付 ================= */
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:2px dashed var(--ink-2)}
+.cards div{padding:10px 12px;font-size:.84rem;font-weight:700;line-height:1.55;border-bottom:2px dashed var(--ink-2);min-width:0}
+.cards div:nth-child(odd){border-right:2px dashed var(--ink-2)}
+.cards div:nth-last-child(-n+2){border-bottom:0}
+.cards div small{display:block;font-size:.7rem;font-weight:900;letter-spacing:.08em;color:var(--spot)}
+.cut{display:flex;align-items:center;gap:10px;font-size:.72rem;font-weight:700;letter-spacing:.2em;color:var(--ink-2)}
+.cut::before,.cut::after{content:"";flex:1;border-top:2px dashed var(--ink-2)}
+.series{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.series li{border:2px solid var(--ink);padding:10px 12px;display:grid;gap:2px}
+.series li b{font-family:var(--num);font-weight:800;font-size:1.05rem;letter-spacing:.06em}
+.series li span{font-weight:900;font-size:.95rem}
+.series li small{font-size:.76rem;color:var(--ink-2)}
+.series li.on{background:var(--spot);border-color:var(--spot);color:var(--on-spot)}
+.series li.on small{color:var(--on-spot)}
+.okuduke{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:12px 0;display:grid;gap:4px;font-size:.8rem;line-height:1.7}
+.okuduke dl{margin:0;display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:2px 10px}
+.okuduke dt{font-weight:900}
+.okuduke dd{margin:0;color:var(--ink-2)}
+.okuduke .ttl{font-weight:900;font-size:.95rem}
+
+/* ================= responsive ================= */
+@media (max-width:900px){
+  .cover{grid-template-columns:1fr}
+  .cover-art{order:-1}
+  .badge{width:86px}
+  .spread{grid-template-columns:1fr}
+  .spread::before{display:none}
+  .page.l{padding-bottom:40px}
+  .page.l .nombre{display:none}
+  .page.r{padding-top:24px}
+  .page.r .hashira{display:none}
+  .three{grid-template-columns:1fr}
+  .lic{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lic li{min-height:0}
+}
+@media (max-width:520px){
+  .duty,.tools4,.fork,.cards,.series{grid-template-columns:1fr}
+  .cards div:nth-child(odd){border-right:0}
+  .cards div:nth-last-child(2){border-bottom:2px dashed var(--ink-2)}
+  .map .row{grid-template-columns:1fr}
+  .map .arr{height:14px}
+  .map .arr::before{left:50%;right:auto;top:0;bottom:4px;width:2px;height:auto}
+  .map .arr::after{left:50%;right:auto;top:auto;bottom:0;margin:0 0 0 -6px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--spot);border-bottom:0}
+  .sn{grid-template-columns:1fr}
+  .onb .row{grid-template-columns:1fr;gap:4px}
+  .numstrip{grid-template-columns:1fr}
+  .numstrip div + div{border-left:0;border-top:1px solid var(--line)}
+  .ac-b{grid-template-columns:1fr}
+  .ac-b div + div{border-left:0;border-top:2px solid var(--ink)}
+  .podium li{width:100%}
+  .heat{font-size:.74rem}
+  .heat > div{padding:6px 5px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+}
+html{scroll-behavior:smooth}
+</style>
+
+<main class="book">
+
+<!-- ================= 表紙 ================= -->
+<header class="cover" id="top">
+  <div class="mast">
+    <div class="issue"><b>VOL.03</b><span>2026 AUTUMN</span><span>試験対策シリーズ</span></div>
+    <div class="logo"><span class="en">MS-102</span><span class="ja">図解ムック</span></div>
+    <div class="feature">
+      <span class="kick">特集</span>
+      <h1>Defender XDR<br>まるごと図解</h1>
+    </div>
+    <ul class="clines">
+      <li class="main"><span>配点 <em>30–35%</em>、最大の章を図で落とす</span></li>
+      <li><span>4つの Defender、守る相手は1つずつ</span></li>
+      <li><span>メールの守りは「階」で覚える</span></li>
+      <li><span>プリセットはカスタムより強い</span></li>
+      <li><span>「フィッシング＝検疫」の落とし穴</span></li>
+      <li><span>巻末 腕試し5問＋切り取り暗記カード</span></li>
+    </ul>
+  </div>
+  <div class="cover-art">
+    <svg class="hub" viewBox="0 0 520 520" role="img" aria-label="Defender XDR を中心に、Office 365・Endpoint・Identity・Cloud Apps の4製品が守る相手">
+      <circle class="ring" cx="260" cy="260" r="175"/>
+      <circle class="core" cx="260" cy="260" r="84"/>
+      <text class="c1" x="260" y="246" text-anchor="middle">Defender</text>
+      <text class="c2" x="260" y="292" text-anchor="middle">XDR</text>
+
+      <circle class="sat" cx="260" cy="85" r="74"/>
+      <text class="p" x="260" y="64" text-anchor="middle">for Office 365</text>
+      <text class="w2" x="260" y="92" text-anchor="middle">メールと</text>
+      <text class="w2" x="260" y="116" text-anchor="middle">共同作業</text>
+
+      <circle class="sat" cx="435" cy="260" r="74"/>
+      <text class="p" x="435" y="248" text-anchor="middle">for Endpoint</text>
+      <text class="w" x="435" y="278" text-anchor="middle">デバイス</text>
+
+      <circle class="sat" cx="260" cy="435" r="74"/>
+      <text class="p" x="260" y="423" text-anchor="middle">for Identity</text>
+      <text class="w" x="260" y="453" text-anchor="middle">オンプレ AD</text>
+
+      <circle class="sat" cx="85" cy="260" r="74"/>
+      <text class="p" x="85" y="248" text-anchor="middle">for Cloud Apps</text>
+      <text class="w" x="85" y="278" text-anchor="middle">SaaS</text>
+    </svg>
+    <div class="badge" aria-label="保存版"><b>保存版</b><small>図版 27点</small></div>
+  </div>
+  <div class="cover-foot">
+    <ul class="vols" aria-label="シリーズ">
+      <li>VOL.01 テナント</li>
+      <li>VOL.02 Entra ID</li>
+      <li class="on">VOL.03 Defender XDR</li>
+      <li>VOL.04 Purview</li>
+    </ul>
+    <span>公式スキル測定 2026.04.28 版準拠 ／ 試験は 2026.11.30 廃止予定</span>
+  </div>
+</header>
+
+<!-- ================= 目次 ================= -->
+<section class="spread" id="contents" aria-labelledby="h-toc">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <h2 class="toc-h" id="h-toc">CONTENTS<small>特集 Defender XDR まるごと図解</small></h2>
+    <ol class="toc">
+      <li><a href="#p01"><span class="pg">04</span><span class="tt">守る相手は、1製品に1つ<small>PART 01 ｜ Defender XDR の全体像</small></span></a></li>
+      <li><a href="#p02"><span class="pg">06</span><span class="tt">アラートは点、インシデントは線<small>PART 02 ｜ インシデント対応と自動化</small></span></a></li>
+      <li><a href="#p03"><span class="pg">08</span><span class="tt">探したクエリは、保存すれば見張り番<small>PART 03 ｜ 高度なハンティング</small></span></a></li>
+      <li><a href="#p04"><span class="pg">10</span><span class="tt">上げたいスコア、下げたいスコア<small>PART 04 ｜ 露出管理と脅威インテリジェンス</small></span></a></li>
+      <li><a href="#p05"><span class="pg">12</span><span class="tt">1階は標準装備、2階から上は Defender<small>PART 05 ｜ EOP と Defender for Office 365</small></span></a></li>
+      <li><a href="#p06"><span class="pg">14</span><span class="tt">プリセットは、カスタムより強い<small>PART 06 ｜ 脅威ポリシーとプリセット</small></span></a></li>
+      <li><a href="#p07"><span class="pg">16</span><span class="tt">送れなくなった人は、解除の前に調べる<small>PART 07 ｜ 検疫・制限付きエンティティ・許可／ブロック</small></span></a></li>
+      <li><a href="#p08"><span class="pg">18</span><span class="tt">引っかかった人には、自動で補習<small>PART 08 ｜ 攻撃シミュレーション トレーニング</small></span></a></li>
+      <li><a href="#p09"><span class="pg">20</span><span class="tt">端末は、入れて、決めて、止める<small>PART 09 ｜ Defender for Endpoint</small></span></a></li>
+      <li><a href="#p10"><span class="pg">22</span><span class="tt">見つける、深く見る、その場で止める<small>PART 10 ｜ Defender for Cloud Apps</small></span></a></li>
+      <li class="end"><a href="#quiz"><span class="pg">24</span><span class="tt">巻末 腕試し5問<small>本試験と同じ形式で、解説つき</small></span></a></li>
+      <li class="end"><a href="#cards"><span class="pg">26</span><span class="tt">切り取り暗記カード／奥付<small>直前の見直し用に12枚</small></span></a></li>
+    </ol>
+    <span class="nombre">02</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <div class="kicker"><span>この号の読み方</span></div>
+    <h3 class="catch" style="font-size:clamp(1.5rem,2.6vw,2rem)">図を先に見て、<br>文字はあとから。</h3>
+    <ol class="howto">
+      <li><div><b>右ページの図を眺める</b><span>まず全体の形をつかむ。図版番号の横の一文が、その図の結論です。</span></div></li>
+      <li><div><b>左ページの「押さえどころ」を読む</b><span>覚えるのは各 PART 3行だけ。<span class="mk">マーカー</span>の部分が選択肢の切り分けに効きます。</span></div></li>
+      <li><div><b>付箋の「ここが出る」で答え合わせ</b><span>設問の言い回しと、その答えの組み合わせで覚えます。</span></div></li>
+      <li><div><b>巻末の腕試しで確認する</b><span>5問解いて、間違えた PART に戻ります。</span></div></li>
+    </ol>
+    <div class="kicker" style="margin-top:6px"><span>シリーズの姉妹ページ</span></div>
+    <div class="sister">
+      <a href="https://claude.ai/artifact/16xzViiC6KQoFzSYZeesw6" target="_blank" rel="noopener"><b>MS-102 控えめの法則</b><span>全章に効く3つの合言葉。最初の1枚に。</span></a>
+      <a href="https://claude.ai/artifact/KDPE54u1mEf7dMf21PuYJp" target="_blank" rel="noopener"><b>MS-102 総合テキスト</b><span>この号の底本。細かい条件を確かめたいときに。</span></a>
+      <a href="https://claude.ai/artifact/Nzpf1jbjYVadj4nKQbn9CM" target="_blank" rel="noopener"><b>M365 ロール百貨店</b><span>誰が何をできるか、ロールの整理に。</span></a>
+    </div>
+    <span class="nombre">03</span>
+  </div>
+</section>
+
+<!-- ================= PART 01 ================= -->
+<section class="spread" id="p01" aria-labelledby="h-p01">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">PART 01</span><span>Defender XDR の全体像</span></div>
+    <h2 class="catch" id="h-p01">守る相手は、<br><em>1製品に1つ</em>。</h2>
+    <p class="lead">XDR は、端末・メール・ID・クラウド アプリで別々に起きた検出を、1つの攻撃として結びつけて見せる仕組みです。窓口は security.microsoft.com ひとつ。まず4つの Defender が何を守るのかを、一言で言えるようにしましょう。</p>
+    <div class="osae">
+      <span class="t">押さえどころ</span>
+      <ul>
+        <li><span class="mk">Defender for Identity と Entra ID Protection は別物</span>。前者はオンプレミス AD への攻撃を DC のセンサーで検知、後者はクラウドのサインインのリスクを判定。</li>
+        <li>Defender for Office 365 だけを任せたい担当者には、<span class="mk">Defender XDR 統合 RBAC</span> で範囲を絞ったカスタム ロール。全体管理者やセキュリティ管理者は広すぎる。</li>
+        <li>Defender for Identity をスタンドアロン センサーで使うなら、先に<span class="mk">ポート ミラーリング</span>を構成する。</li>
+      </ul>
+    </div>
+    <div class="deru">
+      <span class="t">ここが出る！</span>
+      <dl>
+        <div><dt>端末をマルウェアから一元的に守りたい</dt><dd>Defender for Endpoint</dd></div>
+        <div><dt>サーバーの system ログを集めて分析したい</dt><dd>Log Analytics ワークスペースとエージェントの両方（Intune は別物）</dd></div>
+      </dl>
+    </div>
+    <span class="nombre">04</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume" style="--k:0">01 全体像</span>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図1-1</span><span>4つの Defender と、それぞれの持ち場</span></div>
+      <div class="duty">
+        <div><span class="p">Defender for Endpoint</span><span class="who">デバイス<small>を守る</small></span><span class="what">EDR・次世代保護・攻撃対象領域の縮小・脆弱性管理</span></div>
+        <div><span class="p">Defender for Office 365</span><span class="who">メールと共同作業<small>を守る</small></span><span class="what">安全な添付ファイル／リンク・偽装保護・攻撃シミュレーション</span></div>
+        <div><span class="p">Defender for Identity</span><span class="who">オンプレミス AD<small>を守る</small></span><span class="what">DC のセンサーで横展開（Pass-the-Hash・DCSync）を検知</span></div>
+        <div><span class="p">Defender for Cloud Apps</span><span class="who">SaaS の利用<small>を守る</small></span><span class="what">シャドー IT の発見・アプリ コネクタ・セッション制御</span></div>
+      </div>
+      <figcaption>製品を選ばせる設問は、この表の「守る相手」で答えが決まる。</figcaption>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図1-2</span><span>バラバラのアラートが、1件のインシデントになる</span></div>
+      <div class="funnel">
+        <div class="al"><span>不審なメールの添付を開いた</span><i>MDO</i></div>
+        <div class="al"><span>PowerShell が起動した</span><i>MDE</i></div>
+        <div class="al"><span>異常な場所からサインインした</span><i>Entra ID Protection</i></div>
+        <span class="down" aria-hidden="true"></span>
+        <div class="inc"><b>インシデント 1件</b><small>3つのアラートではなく、1つの攻撃として提示される</small></div>
+      </div>
+      <figcaption>この「相関」が XDR の核。調査はインシデント単位で進める。</figcaption>
+    </figure>
+    <span class="nombre">05</span>
+  </div>
+</section>
+
+<!-- ================= PART 02 ================= -->
+<section class="spread" id="p02" aria-labelledby="h-p02">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">PART 02</span><span>インシデント対応と自動化</span></div>
+    <h2 class="catch" id="h-p02">アラートは点、<br><em>インシデントは線</em>。</h2>
+    <p class="lead">アラートは個々の検出、インシデントは関連するアラートを束ねた「攻撃1件」です。調査が終わったら分類を付けて閉じます。修復をどこまで自動でやるかは、デバイス グループごとの自動化レベルで決めます。</p>
+    <div class="osae">
+      <span class="t">押さえどころ</span>
+      <ul>
+        <li>分類は<span class="mk">真陽性・情報提供（予期されたアクティビティ）・偽陽性</span>の3系統。分類は検出精度へのフィードバックで、隔離したファイルは戻らない。</li>
+        <li><span class="mk">自動攻撃中断</span>は、確度の高いシグナルが揃うと調査の完了を待たずにデバイスの封じ込めやユーザーの無効化を行う。ランサムウェアや AiTM 攻撃で働く。</li>
+        <li>デバイス グループは<span class="mk">ランク順に評価</span>され、最初に一致したグループの設定が使われる。</li>
+      </ul>
+    </div>
+    <div class="deru">
+      <span class="t">ここが出る！</span>
+      <dl>
+        <div><dt>自動修復でファイルが隔離された。元に戻したい</dt><dd>アクション センターの履歴から元に戻す</dd></div>
+        <div><dt>一部のサーバーだけ自動修復を止めたい</dt><dd>そのサーバーのデバイス グループを作り、自動化レベルを下げる</dd></div>
+      </dl>
+    </div>
+    <span class="nombre">06</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume" style="--k:1">02 インシデント</span>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図2-1</span><span>自動化レベルは5段階。推奨は完全自動</span></div>
+      <ol class="auto">
+        <li style="--w:8%"><span class="bar"></span><span class="lab"><b>自動応答なし</b><span>自動調査そのものが動かない</span></span></li>
+        <li style="--w:30%"><span class="bar"></span><span class="lab"><b>半自動（すべてのフォルダーで承認）</b><span>修復はすべて承認待ち</span></span></li>
+        <li style="--w:52%"><span class="bar"></span><span class="lab"><b>半自動（コア フォルダーで承認）</b><span>OS のコア フォルダーだけ承認待ち</span></span></li>
+        <li style="--w:74%"><span class="bar"></span><span class="lab"><b>半自動（一時フォルダー以外で承認）</b><span>一時フォルダーだけ自動で修復</span></span></li>
+        <li class="rec" style="--w:100%"><span class="bar"></span><span class="lab"><b>完全自動</b><span>すべての修復を自動で実行</span></span></li>
+      </ol>
+      <figcaption>帯の長さは「人の承認なしで進む範囲」。設定はデバイス グループ単位。</figcaption>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図2-2</span><span>承認も取り消しも、アクション センターで</span></div>
+      <div class="ac">
+        <div class="ac-h">アクション センター</div>
+        <div class="ac-b">
+          <div><b>保留中</b>承認待ちの修復を確認して承認・却下する</div>
+          <div><b>履歴</b>実行済みの修復を確認し、<strong>元に戻す</strong>のはここ</div>
+        </div>
+      </div>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図2-3</span><span>デバイス グループは上から照合し、最初の一致で決まる</span></div>
+      <ol class="ranked">
+        <li><span>重要サーバー</span><em>半自動</em></li>
+        <li class="hit"><span>Windows 11 クライアント ← 例：この端末はここで決定</span><em>完全自動</em></li>
+        <li><span>既定のグループ（その他すべて）</span><em>既定の設定</em></li>
+      </ol>
+      <figcaption>グループ名は説明用の例。ランクの付け方で、どの設定が効くかが変わる。</figcaption>
+    </figure>
+    <span class="nombre">07</span>
+  </div>
+</section>
+
+<!-- ================= PART 03 ================= -->
+<section class="spread" id="p03" aria-labelledby="h-p03">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">PART 03</span><span>高度なハンティング</span></div>
+    <h2 class="catch" id="h-p03">探したクエリは、<br>保存すれば<em>見張り番</em>。</h2>
+    <p class="lead">高度なハンティングは、アラートになっていない事象まで KQL で掘り起こす機能です。対象は既定で直近30日。作ったクエリをカスタム検出ルールとして保存すると、定期的に実行してアラートを上げ続けてくれます。</p>
+    <div class="osae">
+      <span class="t">押さえどころ</span>
+      <ul>
+        <li>過去を探すのは<span class="mk">高度なハンティング</span>、これからも見張るのは<span class="mk">カスタム検出ルール</span>。「クエリを実行するだけ」の選択肢は要件を満たさない。</li>
+        <li>カスタム検出ルールには、デバイスの分離・ファイルの隔離・ユーザーの無効化などの<span class="mk">応答アクション</span>を組み込める。</li>
+        <li>テーブル名の頭の語で、どの製品のデータかが分かる（図3-2）。URL のクリックは <code>UrlClickEvents</code>。</li>
+      </ul>
+    </div>
+    <div class="deru">
+      <span class="t">ここが出る！</span>
+      <dl>
+        <div><dt>悪意ある URL をクリックした人を洗い出し、今後も自動でアラートを上げたい</dt><dd>KQL クエリを作り、カスタム検出ルールとして保存</dd></div>
+        <div><dt>メールの配送経路を追いたい</dt><dd>メッセージ トレース（クリックの記録は扱わない）</dd></div>
+      </dl>
+    </div>
+    <span class="nombre">08</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume" style="--k:2">03 ハンティング</span>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図3-1</span><span>一回の検索を、ずっと続く見張りに変える手順</span></div>
+      <ol class="flow">
+        <li><b>KQL でクエリを書く</b><small>アラートになっていない生データも検索できる。対象は直近30日。</small></li>
+        <li><b>カスタム検出ルールとして保存</b><small>実行間隔と、アラートの重大度・分類を決める。</small></li>
+        <li><b>定期実行でアラートを自動生成</b><small>条件に合う事象が出るたびにアラートが上がる。</small></li>
+        <li class="goal"><b>応答アクションまで自動で</b><small>デバイスの分離、ファイルの隔離、ユーザーの無効化など。</small></li>
+      </ol>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図3-2</span><span>テーブル名は、頭の語で出どころが分かる</span></div>
+      <div class="surname">
+        <div class="sn"><span class="pre">Device…<small>Defender for Endpoint</small></span><span class="chips"><code>DeviceProcessEvents</code><code>DeviceNetworkEvents</code><code>DeviceFileEvents</code><code>DeviceLogonEvents</code><code>DeviceRegistryEvents</code></span></div>
+        <div class="sn"><span class="pre">Email…<small>Defender for Office 365</small></span><span class="chips"><code>EmailEvents</code><code>EmailAttachmentInfo</code><code>EmailUrlInfo</code><code>EmailPostDeliveryEvents</code><code class="odd">UrlClickEvents</code></span></div>
+        <div class="sn"><span class="pre">Identity…<small>Defender for Identity・Entra</small></span><span class="chips"><code>IdentityInfo</code><code>IdentityLogonEvents</code><code>IdentityQueryEvents</code><code>IdentityDirectoryEvents</code></span></div>
+        <div class="sn"><span class="pre">CloudApp…<small>Defender for Cloud Apps</small></span><span class="chips"><code>CloudAppEvents</code></span></div>
+        <div class="sn"><span class="pre">Alert…<small>アラート共通</small></span><span class="chips"><code>AlertInfo</code><code>AlertEvidence</code></span></div>
+      </div>
+      <figcaption>色付きの <code>UrlClickEvents</code> だけは Email で始まらないがメール側のテーブル。</figcaption>
+    </figure>
+    <span class="nombre">09</span>
+  </div>
+</section>
+
+<!-- ================= PART 04 ================= -->
+<section class="spread" id="p04" aria-labelledby="h-p04">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">PART 04</span><span>露出管理と脅威インテリジェンス</span></div>
+    <h2 class="catch" id="h-p04">上げたいスコア、<br><em>下げたいスコア</em>。</h2>
+    <p class="lead">露出管理は「今どれだけ攻撃されやすいか」を測り、直す順番を決める場所です。似た名前のスコアが3つあり、1つだけ向きが逆になっています。話題の攻撃に自社がどこまで備えているかは、脅威分析で確かめます。</p>
+    <div class="osae">
+      <span class="t">押さえどころ</span>
+      <ul>
+        <li>セキュア スコアの推奨アクションは、<span class="mk">「リスクの受け入れ」「サードパーティで解決済み」</span>とマークできる。近い規模・業種の組織と比較もできる。</li>
+        <li>攻撃パスは資産どうしのつながりを図にしたもの。多くの経路が通る<span class="mk">チョーク ポイント</span>から塞ぐ。</li>
+        <li><span class="mk">脅威分析</span>は研究者のレポートと自組織への影響、<span class="mk">Defender TI</span> は IP・ドメイン・ハッシュを起点にした外部インフラの調査。</li>
+      </ul>
+    </div>
+    <div class="deru">
+      <span class="t">ここが出る！</span>
+      <dl>
+        <div><dt>新しいランサムウェア キャンペーンへの自社の露出を確認したい</dt><dd>脅威分析（Threat analytics）</dd></div>
+        <div><dt>3つのスコアのうち、低いほど良いのは</dt><dd>露出スコア</dd></div>
+      </dl>
+    </div>
+    <span class="nombre">10</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume" style="--k:3">04 スコア</span>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図4-1</span><span>3つのスコア。向きが逆なのは1つだけ</span></div>
+      <div class="gauges">
+        <div class="gauge"><span class="dir" aria-label="高いほど良い">↑</span><div><b>Microsoft セキュア スコア</b><span>テナント全体のセキュリティ設定の充実度。高いほど良い。</span></div></div>
+        <div class="gauge"><span class="dir" aria-label="高いほど良い">↑</span><div><b>デバイスのセキュリティ スコア</b><span>脆弱性の管理（MDVM）が算出する、端末の構成の健全性。高いほど良い。</span></div></div>
+        <div class="gauge low"><span class="dir" aria-label="低いほど良い">↓</span><div><b>露出スコア <em>低いほど良い</em></b><span>脆弱性に基づく「攻撃されやすさ」。</span></div></div>
+      </div>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図4-2</span><span>攻撃パスとチョーク ポイント</span></div>
+      <div class="svgbox">
+        <svg class="path" viewBox="0 0 460 220" role="img" aria-label="脆弱な端末・古いサーバー・フィッシングの3つの入口から、特権アカウントを経由して重要サーバーへ至る攻撃経路">
+          <defs><marker id="pa" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path class="ah" d="M0,0 L9,4.5 L0,9 z"/></marker></defs>
+          <path class="ln" d="M122 36 C180 36 170 96 196 104" marker-end="url(#pa)"/>
+          <path class="ln" d="M122 110 L192 110" marker-end="url(#pa)"/>
+          <path class="ln" d="M122 184 C180 184 170 124 196 116" marker-end="url(#pa)"/>
+          <path class="ln" d="M286 110 L326 110" marker-end="url(#pa)"/>
+          <rect class="nd" x="10" y="19" width="112" height="34"/>
+          <text class="tx" x="66" y="41" text-anchor="middle">脆弱な端末</text>
+          <rect class="nd" x="10" y="93" width="112" height="34"/>
+          <text class="tx" x="66" y="115" text-anchor="middle">古いサーバー</text>
+          <rect class="nd" x="10" y="167" width="112" height="34"/>
+          <text class="tx" x="66" y="189" text-anchor="middle">フィッシング</text>
+          <circle class="hot" cx="242" cy="110" r="44"/>
+          <text class="tw" x="242" y="106" text-anchor="middle">特権</text>
+          <text class="tw" x="242" y="124" text-anchor="middle">アカウント</text>
+          <rect class="nd" x="332" y="93" width="118" height="34"/>
+          <text class="tx" x="391" y="115" text-anchor="middle">重要サーバー</text>
+          <text class="ts" x="242" y="52" text-anchor="middle">チョーク ポイント</text>
+          <text class="ts" x="242" y="180" text-anchor="middle">ここを塞げば</text>
+          <text class="ts" x="242" y="198" text-anchor="middle">3本とも止まる</text>
+        </svg>
+      </div>
+      <figcaption>入口が別々でも、通り道が1点に集まる場所がある。そこを優先して守る。</figcaption>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図4-3</span><span>調べた結果、どこに登録して止める？</span></div>
+      <div class="map">
+        <div class="row"><span class="want">特定のファイル ハッシュを全社の端末でブロック</span><span class="arr"></span><span class="tool">MDE のインジケーター</span></div>
+        <div class="row"><span class="want">特定の送信者ドメインからのメールをブロック</span><span class="arr"></span><span class="tool">テナント許可／ブロック リスト</span></div>
+        <div class="row"><span class="want">話題の攻撃に、うちは大丈夫か確かめる</span><span class="arr"></span><span class="tool hot">脅威分析</span></div>
+      </div>
+    </figure>
+    <span class="nombre">11</span>
+  </div>
+</section>
+
+<!-- ================= PART 05 ================= -->
+<section class="spread" id="p05" aria-labelledby="h-p05">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">PART 05</span><span>EOP と Defender for Office 365</span></div>
+    <h2 class="catch" id="h-p05">1階は標準装備、<br><em>2階から上は Defender</em>。</h2>
+    <p class="lead">すべての Exchange Online には EOP が付いてきます。その上に Defender for Office 365 Plan 1、さらに Plan 2 が乗ります。上の階は下の階の機能もすべて使えます。「その機能は何階か」を当てる問題が定番です。</p>
+    <div class="osae">
+      <span class="t">押さえどころ</span>
+      <ul>
+        <li>SharePoint・OneDrive・Teams を守るのは<span class="mk">安全な添付ファイル</span>側。メール用ポリシーではなくグローバル設定でオンにする。</li>
+        <li>安全な添付ファイルは、クラウドの仮想環境で実際に開いて検査する。<span class="mk">動的配信</span>なら本文を先に届け、添付は検査後に届く。</li>
+        <li><span class="mk">デバイスのオンボードと Safe Documents は Defender for Endpoint 側</span>の話。「MDO でできないことは？」の誤答に紛れ込む。</li>
+      </ul>
+    </div>
+    <div class="deru">
+      <span class="t">ここが出る！</span>
+      <dl>
+        <div><dt>受信メールの送信元を認証したい</dt><dd>フィッシング対策ポリシー（EOP に含まれる）</dd></div>
+        <div><dt>攻撃シミュレーション／脅威エクスプローラーを使いたい</dt><dd>Defender for Office 365 Plan 2</dd></div>
+      </dl>
+    </div>
+    <div class="column">
+      <div class="t"><b>COLUMN</b><span>試験と実務で答えが分かれる</span></div>
+      <p>2026年7月1日から、Defender for Office 365 Plan 1 が Microsoft 365 E3 にも含まれるようになりました（Safe Documents は除く）。ただしスキル測定の基準日は4月28日で、この変更より前です。試験では<strong>「E3 は EOP まで、Defender for Office 365 は E5 かアドオン」</strong>という従来の切り分けで答えるのが無難です。</p>
+    </div>
+    <span class="nombre">12</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume" style="--k:4">05 メール保護</span>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図5-1</span><span>メール保護ビルの断面図</span></div>
+      <div class="bldg">
+        <div class="roof" aria-hidden="true"></div>
+        <div class="floor f3"><span class="fl">3F</span><div class="fb">
+          <div class="fn"><b>Defender for Office 365 Plan 2</b><span>E5</span></div>
+          <ul class="rooms"><li>脅威エクスプローラー</li><li>攻撃シミュレーション トレーニング</li><li>自動調査と対応（AIR）</li><li>キャンペーン ビュー</li><li>優先アカウント保護</li></ul>
+        </div></div>
+        <div class="floor f2"><span class="fl">2F</span><div class="fb">
+          <div class="fn"><b>Defender for Office 365 Plan 1</b><span>追加ライセンス</span></div>
+          <ul class="rooms"><li>安全な添付ファイル</li><li>安全なリンク</li><li>偽装保護（ユーザー・ドメイン）</li><li>リアルタイム検出</li><li>SharePoint・OneDrive・Teams 用の安全な添付ファイル</li></ul>
+        </div></div>
+        <div class="floor f1"><span class="fl">1F</span><div class="fb">
+          <div class="fn"><b>Exchange Online Protection（EOP）</b><span>全員に標準装備</span></div>
+          <ul class="rooms seq" aria-label="受信メールが通る順"><li>接続フィルター</li><li>マルウェア対策</li><li>メール フロー ルール</li><li>スパム対策</li><li>フィッシング対策（なりすまし）</li></ul>
+          <ul class="rooms also"><li>スプーフィング インテリジェンス</li><li>検疫</li><li>ゼロ時間自動消去（ZAP）</li></ul>
+        </div></div>
+        <div class="street"><span>受信メール →</span><span>→ 受信トレイ／検疫</span></div>
+      </div>
+      <figcaption>1F の番号は受信メールが通る順。Plan 2 では、リアルタイム検出の代わりに脅威エクスプローラーを使う。</figcaption>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図5-2</span><span>名前が似た2つの「安全な」機能</span></div>
+      <div class="map">
+        <div class="row"><span class="want">添付ファイルを、届く前に実際に開いて検査</span><span class="arr"></span><span class="tool">安全な添付ファイル<small>サンドボックスで実行</small></span></div>
+        <div class="row"><span class="want">URL を、クリックした瞬間にもう一度判定</span><span class="arr"></span><span class="tool">安全なリンク<small>Teams・Office アプリ内のリンクも対象</small></span></div>
+      </div>
+    </figure>
+    <span class="nombre">13</span>
+  </div>
+</section>
+
+<!-- ================= PART 06 ================= -->
+<section class="spread" id="p06" aria-labelledby="h-p06">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">PART 06</span><span>脅威ポリシーとプリセット</span></div>
+    <h2 class="catch" id="h-p06">プリセットは、<br><em>カスタムより強い</em>。</h2>
+    <p class="lead">メールの保護設定は「プリセットに任せる」か「カスタム ポリシーを作る」かの2通りです。同じ受信者に複数のポリシーが当たると、上位の1つだけが効きます。標準プリセットはほとんどの人向け、厳格プリセットは役員や経理など狙われやすい人向けです。</p>
+    <div class="osae">
+      <span class="t">押さえどころ</span>
+      <ul>
+        <li>カスタムが効かないときは、その人が<span class="mk">プリセットの対象になっていないか</span>を疑う。効かせたい人はプリセットから除外する。</li>
+        <li>送信元が p=reject を宣言したなりすましは、<span class="mk">フィッシング対策ポリシー</span>の「DMARC レコード ポリシーを尊重する」で拒否する（既定でオン）。</li>
+        <li>Defender ポータルで<span class="mk">新しく作ったポリシーは、フィッシングの既定が検疫</span>。既定のポリシーとは違う。</li>
+      </ul>
+    </div>
+    <div class="deru">
+      <span class="t">ここが出る！</span>
+      <dl>
+        <div><dt>役員だけ、標準より積極的に検疫したい。手間は最小で</dt><dd>役員を対象に厳格プリセットを有効にする</dd></div>
+        <div><dt>既定のポリシーで、フィッシングはどう処理される？</dt><dd>迷惑メールへ移動（高確度フィッシングは検疫）</dd></div>
+      </dl>
+    </div>
+    <span class="nombre">14</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume" style="--k:5">06 プリセット</span>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図6-1</span><span>ポリシーの優先順位。当たるのは上位の1つだけ</span></div>
+      <ol class="podium">
+        <li style="--i:0">厳格プリセット<small>最優先</small></li>
+        <li style="--i:1">標準プリセット</li>
+        <li style="--i:2">Defender for Office 365 の評価（試用）ポリシー</li>
+        <li style="--i:3">カスタム ポリシー<small>優先度の番号が小さい順</small></li>
+        <li style="--i:4">組み込みの保護<small>安全な添付・リンクのみ</small></li>
+        <li style="--i:5">既定のポリシー</li>
+      </ol>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図6-2</span><span>判定ごとの処理。<span class="hand">黄色の枠が罠！</span></span></div>
+      <div class="heat" role="table" aria-label="スパム対策ポリシーの判定ごとのアクション">
+        <div class="h blank" role="columnheader"></div><div class="h" role="columnheader">既定</div><div class="h" role="columnheader">標準</div><div class="h" role="columnheader">厳格</div>
+        <div class="k" role="rowheader">一括メール</div><div class="j">迷惑メール</div><div class="j">迷惑メール</div><div class="q">検疫</div>
+        <div class="k" role="rowheader">スパム</div><div class="j">迷惑メール</div><div class="j">迷惑メール</div><div class="q">検疫</div>
+        <div class="k" role="rowheader">高確度スパム</div><div class="j">迷惑メール</div><div class="q">検疫</div><div class="q">検疫</div>
+        <div class="k" role="rowheader">フィッシング</div><div class="j trap">迷惑メール</div><div class="q">検疫</div><div class="q">検疫</div>
+        <div class="k" role="rowheader">高確度フィッシング</div><div class="q">検疫</div><div class="q">検疫</div><div class="q">検疫</div>
+        <div class="k" role="rowheader">BCL しきい値</div><div class="n">7</div><div class="n">6</div><div class="n">5</div>
+        <div class="k" role="rowheader">検疫の保持</div><div class="n">15日</div><div class="n">30日</div><div class="n">30日</div>
+      </div>
+      <div class="legend"><span><i class="lj"></i>迷惑メール フォルダーへ移動</span><span><i class="lq"></i>検疫</span></div>
+      <figcaption>BCL（一括メールの苦情レベル）はしきい値以上で一括メール扱い。厳格ほど低い値で引っかける。</figcaption>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図6-3</span><span>「役員が狙われ続けている」問題の読み分け</span></div>
+      <div class="fork">
+        <div><div class="if"><b>問題文に</b>役員・VIP・ユーザー タグ・「他と差をつけた保護」がある</div><div class="then"><b>優先アカウント保護＋厳格プリセット</b><small>ユーザー タグで最大250人。Plan 2 が必要。秘書など委任アクセスを持つ人にも同じタグを。</small></div></div>
+        <div><div class="if"><b>問題文が</b>素直に「続いている脅威への対策」だけ</div><div class="then"><b>新しい安全なリンク ポリシーを追加</b><small><span class="x">既定のポリシーを変更する</span>は不正解。DLP や端末のオンボードは的外れ。</small></div></div>
+      </div>
+    </figure>
+    <span class="nombre">15</span>
+  </div>
+</section>
+
+<!-- ================= PART 07 ================= -->
+<section class="spread" id="p07" aria-labelledby="h-p07">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">PART 07</span><span>検疫・制限付きエンティティ・許可／ブロック</span></div>
+    <h2 class="catch" id="h-p07">送れなくなった人は、<br><em>解除の前に調べる</em>。</h2>
+    <p class="lead">送信スパムの上限を超えたユーザーは、制限付きエンティティとしてメールの送信を止められます。多くはアカウントが侵害されて、迷惑メールの踏み台にされた結果です。送信制限は「結果」で、原因は別のところにあります。</p>
+    <div class="osae">
+      <span class="t">押さえどころ</span>
+      <ul>
+        <li>検疫されたメールにユーザーが何をできるか（プレビュー・解放の要求・解放・削除）は<span class="mk">検疫ポリシー</span>で決める。</li>
+        <li>サードパーティの訓練メールや SecOps 用メールボックスは、メール フロー ルールで許可せず<span class="mk">高度な配信</span>で対象外にする。</li>
+        <li>調査ツールは、<span class="mk">脅威エクスプローラー（Plan 2）とリアルタイム検出（Plan 1）</span>。配送経路の追跡は Exchange 管理センターのメッセージ トレース。</li>
+      </ul>
+    </div>
+    <div class="deru">
+      <span class="t">ここが出る！</span>
+      <dl>
+        <div><dt>「メールが送れない」と連絡が来た</dt><dd>制限付きエンティティで確認 → 侵害を調べてパスワードをリセット → 解除</dd></div>
+        <div><dt>マルウェア判定のファイルを許可したい</dt><dd>一覧からは作れない。申請（Submissions）経由で許可エントリを作る</dd></div>
+      </dl>
+    </div>
+    <span class="nombre">16</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume" style="--k:6">07 検疫と制限</span>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図7-1</span><span>送信を止められたユーザーへの対応手順</span></div>
+      <ol class="flow">
+        <li><b>制限付きエンティティで対象か確認</b><small>Defender ポータル → アクションとレポート → 制限付きエンティティ</small></li>
+        <li><b>侵害を調べ、パスワードをリセット</b><small>サインイン セッションも取り消す。原因を断つのが先。</small></li>
+        <li class="goal"><b>ブロックを解除する</b><small>解除は最後。</small></li>
+      </ol>
+      <ul class="ng" aria-label="誤りの選択肢"><li>いきなり解除して再開を通知</li><li>送信の上限を引き上げる</li><li>厳格プリセットに追加する</li></ul>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図7-2</span><span>テナント許可／ブロック リストの早見表</span></div>
+      <div class="tblbox">
+        <table class="mini">
+          <thead><tr><th>対象</th><th>ブロックすると</th><th>許可エントリ</th></tr></thead>
+          <tbody>
+            <tr><td>ドメイン・メールアドレス</td><td>高確度フィッシングとして検疫</td><td>一覧から直接作れる</td></tr>
+            <tr><td>URL</td><td>高確度フィッシングとして検疫</td><td>一覧から直接作れる</td></tr>
+            <tr><td>ファイル（SHA256）</td><td>マルウェアとして検疫</td><td><b>申請経由でしか作れない</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="numstrip">
+        <div><b>30<small>日</small></b><span>ブロックの既定の期限。最長90日か無期限にもできる</span></div>
+        <div><b>5<small>分</small></b><span>追加したエントリが効き始めるまで</span></div>
+        <div><b>×</b><span>許可とブロックがぶつかったら、ブロックが勝つ</span></div>
+      </div>
+      <figcaption>ファイルは名前ではなく中身のハッシュで判定する。同じハッシュを MDE のインジケーターにも登録すれば、メールと端末の両方で止まる。</figcaption>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図7-3</span><span>検疫の保持期間は、理由で変わる</span></div>
+      <div class="map">
+        <div class="row"><span class="want">スパム対策ポリシーで検疫</span><span class="arr"></span><span class="tool">既定15日<small>1〜30日で変更可。プリセットは30日</small></span></div>
+        <div class="row"><span class="want">マルウェア対策・安全な添付ファイルで検疫</span><span class="arr"></span><span class="tool hot">30日固定</span></div>
+      </div>
+    </figure>
+    <span class="nombre">17</span>
+  </div>
+</section>
+
+<!-- ================= PART 08 ================= -->
+<section class="spread" id="p08" aria-labelledby="h-p08">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">PART 08</span><span>攻撃シミュレーション トレーニング</span></div>
+    <h2 class="catch" id="h-p08">引っかかった人には、<br><em>自動で補習</em>。</h2>
+    <p class="lead">本物そっくりの訓練メールを社員に送り、引っかかった人にトレーニングを割り当てる機能です。Defender for Office 365 Plan 2 が必要です。自動化すれば、手法やタイミングを変えながら続けて実施できます。</p>
+    <div class="osae">
+      <span class="t">押さえどころ</span>
+      <ul>
+        <li><span class="mk">トレーニング キャンペーン</span>は、シミュレーションをせずにトレーニングだけを割り当てる機能。結果はキャンペーンのレポートで見る。</li>
+        <li>週2回を選べるのは割り当て通知ではなく<span class="mk">リマインダー通知</span>（既定は毎週）。</li>
+        <li>サードパーティ製の訓練ツールを使うなら、<span class="mk">高度な配信</span>で「フィッシング シミュレーション」として登録する。</li>
+      </ul>
+    </div>
+    <div class="deru">
+      <span class="t">ここが出る！</span>
+      <dl>
+        <div><dt>2回以上引っかかった人に、追加のシミュレーションなしでトレーニングだけ割り当て、結果を見たい</dt><dd>対象は再犯者、割り当てはトレーニング キャンペーン、確認はキャンペーンのレポート</dd></div>
+      </dl>
+    </div>
+    <span class="nombre">18</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume" style="--k:7">08 訓練</span>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図8-1</span><span>シミュレーションの1周</span></div>
+      <div class="svgbox">
+        <svg class="cyc" viewBox="0 0 440 320" role="img" aria-label="手法とペイロードを選ぶ、訓練メールを送る、侵害した人にトレーニング、レポートで追う、の4段階の循環">
+          <defs><marker id="ca" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path class="ah" d="M0,0 L9,4.5 L0,9 z"/></marker></defs>
+          <path class="ln" d="M292 40 Q356 46 360 128" marker-end="url(#ca)"/>
+          <path class="ln" d="M360 186 Q354 272 294 278" marker-end="url(#ca)"/>
+          <path class="ln" d="M146 280 Q86 274 80 188" marker-end="url(#ca)"/>
+          <path class="ln" d="M80 132 Q86 46 146 40" marker-end="url(#ca)"/>
+          <rect class="nd" x="150" y="14" width="140" height="52"/>
+          <text class="tx" x="220" y="37" text-anchor="middle">手法とペイロード</text>
+          <text class="ts" x="220" y="55" text-anchor="middle">6種類の手法から選ぶ</text>
+          <rect class="nd" x="290" y="132" width="140" height="52"/>
+          <text class="tx" x="360" y="155" text-anchor="middle">訓練メールを送る</text>
+          <text class="ts" x="360" y="173" text-anchor="middle">対象ユーザーへ配信</text>
+          <rect class="nd hot" x="150" y="254" width="140" height="52"/>
+          <text class="tw" x="220" y="277" text-anchor="middle">引っかかった人に</text>
+          <text class="tws" x="220" y="295" text-anchor="middle">トレーニングを割り当て</text>
+          <rect class="nd" x="10" y="132" width="140" height="52"/>
+          <text class="tx" x="80" y="155" text-anchor="middle">レポートで追う</text>
+          <text class="ts" x="80" y="173" text-anchor="middle">侵害率・報告率・完了率</text>
+          <text class="mid" x="220" y="152" text-anchor="middle">自動化すれば</text>
+          <text class="mid" x="220" y="176" text-anchor="middle">ずっと回る</text>
+        </svg>
+      </div>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図8-2</span><span>「再犯者」の数え方。キーワードは連続</span></div>
+      <div class="streak">
+        <div class="st-row"><span class="marks" aria-label="失敗、失敗"><span class="x">×</span><span class="x">×</span></span><p><b>再犯者になる。</b>連続2回の侵害が既定のしきい値（設定タブで変更可）。</p></div>
+        <div class="st-row"><span class="marks" aria-label="失敗、合格、失敗"><span class="x">×</span><span class="o">○</span><span class="x">×</span></span><p><b>再犯者にならない。</b>間に合格をはさむとカウントは0に戻る。</p></div>
+      </div>
+      <figcaption>数えるのはシミュレーションの結果だけ。実際に届いた不審メールへの反応は数えない。</figcaption>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図8-3</span><span>選べる6つの手法</span></div>
+      <div class="tech"><span>資格情報の収集</span><span>マルウェアの添付</span><span>添付ファイル内のリンク</span><span>リンクによるマルウェア</span><span>ドライブ バイ URL</span><span>OAuth 同意の許可</span></div>
+    </figure>
+    <span class="nombre">19</span>
+  </div>
+</section>
+
+<!-- ================= PART 09 ================= -->
+<section class="spread" id="p09" aria-labelledby="h-p09">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">PART 09</span><span>Defender for Endpoint</span></div>
+    <h2 class="catch" id="h-p09">端末は、<br><em>入れて、決めて、止める</em>。</h2>
+    <p class="lead">Defender for Endpoint は、デバイスをオンボード（登録）してから守ります。何台あるか、どの OS かで登録方法が変わり、止めたいものによって使う道具が変わります。</p>
+    <div class="osae">
+      <span class="t">押さえどころ</span>
+      <ul>
+        <li>データの保存地域は<span class="mk">最初にデバイスをオンボードした時点で固定</span>。変えるには全台をオフボードしてから再オンボードする。</li>
+        <li>脆弱性の管理（MDVM）の推奨事項から、<span class="mk">Intune のセキュリティ タスク</span>として修復を依頼できる。</li>
+        <li>望ましくない可能性のあるアプリ（PUA）の保護は、<span class="mk">監査モードで数週間</span>様子を見てからブロックに切り替える。</li>
+      </ul>
+    </div>
+    <div class="deru">
+      <span class="t">ここが出る！</span>
+      <dl>
+        <div><dt>検証用に Windows 11 を5台だけオンボードしたい</dt><dd>ローカル スクリプト（10台以下の検証向け）</dd></div>
+        <div><dt>選択肢に「手動インストール」がある</dt><dd>そういうオンボード方法は用意されていない</dd></div>
+      </dl>
+    </div>
+    <span class="nombre">20</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume" style="--k:8">09 Endpoint</span>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図9-1</span><span>入れる：OS と台数で選ぶオンボード方法</span></div>
+      <div class="onb">
+        <div class="row"><span class="os">Windows 10／11</span><span class="how"><span class="key">ローカル スクリプト <small>10台以下の検証</small></span><span>グループ ポリシー</span><span>Intune</span><span>Configuration Manager</span><span>VDI 用スクリプト</span></span></div>
+        <div class="row"><span class="os">Windows Server</span><span class="how"><span>統合インストーラー／スクリプト</span><span>Configuration Manager</span><span>Defender for Cloud 経由</span></span></div>
+        <div class="row"><span class="os">macOS</span><span class="how"><span>Intune</span><span>JAMF Pro</span><span>その他の MDM</span></span></div>
+        <div class="row"><span class="os">Linux</span><span class="how"><span>スクリプト</span><span>Puppet・Ansible・Chef</span><span>Intune</span></span></div>
+        <div class="row"><span class="os">iOS／Android</span><span class="how"><span>Intune（アプリとして配布）</span></span></div>
+      </div>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図9-2</span><span>止める：目的で選ぶ4つの道具</span></div>
+      <div class="tools4">
+        <div><span class="q">このファイルを、全社で今すぐ止めたい</span><b>インジケーター</b><small>ハッシュ・IP／URL・証明書に許可／ブロック／警告</small></div>
+        <div class="warn"><span class="q">安全なファイルが誤検知され続ける</span><b>抑制ルール</b><small>アラートを黙らせるだけ。ブロックはしない</small></div>
+        <div><span class="q">デバイスのセキュリティ設定全般を変えたい</span><b>Intune の構成プロファイル</b><small>1ファイルの許可・ブロックには使わない</small></div>
+        <div><span class="q">侵害された端末を、今すぐネットワークから外したい</span><b>デバイスの分離</b><small>Defender との通信だけ残して切り離す</small></div>
+      </div>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図9-3</span><span>Endpoint で覚える3つの数字</span></div>
+      <div class="numstrip">
+        <div><b>180<small>日</small></b><span>デバイス・アラート データの保持（既定かつ上限）</span></div>
+        <div><b>30<small>日</small></b><span>高度なハンティングで検索できる範囲</span></div>
+        <div><b>7<small>日</small></b><span>オフボード パッケージの有効期限</span></div>
+      </div>
+    </figure>
+    <span class="nombre">21</span>
+  </div>
+</section>
+
+<!-- ================= PART 10 ================= -->
+<section class="spread" id="p10" aria-labelledby="h-p10">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">PART 10</span><span>Defender for Cloud Apps</span></div>
+    <h2 class="catch" id="h-p10">見つける、深く見る、<br><em>その場で止める</em>。</h2>
+    <p class="lead">Defender for Cloud Apps は、SaaS の使われ方を見える化して制御する CASB です。知らないアプリを見つける機能、使っているアプリを見張る機能、ブラウザーの操作をその場で止める機能の3つに分かれます。</p>
+    <div class="osae">
+      <span class="t">押さえどころ</span>
+      <ul>
+        <li><span class="mk">未承認アプリはセッション ポリシーでは止まらない</span>。プロキシを通らないから。未承認タグを付けて、Defender for Endpoint のネットワーク保護で止める（反映まで最大2時間）。</li>
+        <li>セッション制御が効くのは<span class="mk">ブラウザーのセッションだけ</span>。デスクトップ版やモバイル アプリはアクセス ポリシーなどで止める。</li>
+        <li>ファイル ポリシーを使うには、Microsoft 365 アプリ コネクタと<span class="mk">「ファイルの監視」</span>が必要。</li>
+      </ul>
+    </div>
+    <div class="deru">
+      <span class="t">ここが出る！</span>
+      <dl>
+        <div><dt>許可していないファイル共有サービスの利用状況を知りたい</dt><dd>Cloud Discovery（MDE 連携がいちばん手軽）</dd></div>
+        <div><dt>非管理デバイスからのダウンロードだけ禁止したい</dt><dd>条件付きアクセス アプリ制御のセッション制御</dd></div>
+        <div><dt>危険な OAuth アプリへの同意を取り消したい</dt><dd>OAuth アプリ ポリシー／アプリ ガバナンス</dd></div>
+      </dl>
+    </div>
+    <span class="nombre">22</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume" style="--k:9">10 Cloud Apps</span>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図10-1</span><span>3つの機能と、それぞれの道具</span></div>
+      <div class="three">
+        <div><div class="hd"><b>見つける</b><small>Cloud Discovery</small></div><ul><li>スナップショット レポート（ログを手動で）</li><li>ログ コレクター（継続的に）</li><li>MDE 連携（端末から直接）</li><li>リスク スコア 0〜10 で評価し、承認／未承認を付ける</li></ul></div>
+        <div><div class="hd"><b>深く見る</b><small>アプリ コネクタ（API）</small></div><ul><li>Microsoft 365・Box・Salesforce など</li><li>ファイル ポリシー</li><li>異常検出ポリシー</li><li>OAuth アプリ ポリシー</li></ul></div>
+        <div><div class="hd"><b>その場で止める</b><small>セッション制御（プロキシ）</small></div><ul><li>条件付きアクセス アプリ制御が前提</li><li>ダウンロードのブロック</li><li>秘密度ラベルを付けて保護</li><li>ステップアップ認証の要求</li></ul></div>
+      </div>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図10-2</span><span>未承認アプリは、どこで止まる？</span></div>
+      <div class="route">
+        <div class="lane bad"><span>セッション ポリシーで止める<br><small>未承認アプリはプロキシを通らない</small></span><span class="res">×</span></div>
+        <div class="lane bad"><span>条件付きアクセスで止める<br><small>Entra でサインインするアプリだけが対象</small></span><span class="res">×</span></div>
+        <div class="lane good"><span>未承認タグ → MDE のネットワーク保護<br><small>端末からのアクセスそのものを遮断</small></span><span class="res">○</span></div>
+      </div>
+    </figure>
+    <figure class="fig">
+      <div class="fig-h"><span class="no">図10-3</span><span>ライセンスで使える範囲が変わる</span></div>
+      <ol class="lic">
+        <li style="--h:0"><b>Office 365 E3</b><span>なし</span>Entra ID が Free のため</li>
+        <li style="--h:1"><b>Microsoft 365 E3</b><span>Cloud App Discovery</span>発見だけ（Entra ID P1 に含まれる）</li>
+        <li style="--h:2"><b>Office 365 E5</b><span>Office 365 Cloud App Security</span>Office 365 に絞った版</li>
+        <li class="top" style="--h:3"><b>Microsoft 365 E5</b><span>完全版</span>セッション制御・未承認アプリの遮断まで</li>
+      </ol>
+      <figcaption>「シャドー IT の発見だけを安く」なら Microsoft 365 E3。対処まで求められたら完全版。</figcaption>
+    </figure>
+    <span class="nombre">23</span>
+  </div>
+</section>
+
+<!-- ================= 腕試し ================= -->
+<section class="spread" id="quiz" aria-labelledby="h-quiz">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="quiz-h">
+      <div class="kicker"><span class="part">巻末</span><span>腕試し5問</span></div>
+      <span class="score" aria-live="polite">正解 <b id="score">0</b> / 5</span>
+    </div>
+    <h2 class="catch" id="h-quiz" style="font-size:clamp(1.6rem,2.8vw,2.1rem)">選んだ瞬間に、<br>答え合わせ。</h2>
+
+    <div class="qz" data-answer="B">
+      <p class="qq"><b>Q1</b>役員向けに、標準よりも積極的にメールを検疫する保護をかけたい。管理の手間を最小にするには？</p>
+      <div class="opts">
+        <button class="opt" type="button" data-k="A"><i>A</i><span>役員を対象にしたカスタムのスパム対策ポリシーを作り、優先度を1にする</span></button>
+        <button class="opt" type="button" data-k="B"><i>B</i><span>役員を対象に、厳格保護のプリセット セキュリティ ポリシーを有効にする</span></button>
+        <button class="opt" type="button" data-k="C"><i>C</i><span>組み込みの保護の除外に役員を追加する</span></button>
+        <button class="opt" type="button" data-k="D"><i>D</i><span>役員のメールボックスにメール フロー ルールを作る</span></button>
+      </div>
+      <p class="why" hidden><b>正解は B。</b>厳格プリセットは Microsoft が管理する推奨設定で、設定値を自分で維持する必要がない。A でも実現はできるが手間が増え、優先度を上げてもプリセットには勝てない。→ PART 06</p>
+    </div>
+
+    <div class="qz" data-answer="C">
+      <p class="qq"><b>Q2</b>あるユーザーが大量の迷惑メールを外部へ送り、メールを送信できなくなった。対応の順序として最も適切なのは？</p>
+      <div class="opts">
+        <button class="opt" type="button" data-k="A"><i>A</i><span>制限付きエンティティからブロックを解除し、再開を通知する</span></button>
+        <button class="opt" type="button" data-k="B"><i>B</i><span>送信スパム ポリシーの上限を引き上げる</span></button>
+        <button class="opt" type="button" data-k="C"><i>C</i><span>アカウントの侵害を調べてパスワードをリセットし、その後でブロックを解除する</span></button>
+        <button class="opt" type="button" data-k="D"><i>D</i><span>そのユーザーを厳格保護プリセットの対象に追加する</span></button>
+      </div>
+      <p class="why" hidden><b>正解は C。</b>送信制限は結果で、原因は侵害。原因を断ってから解除する。A はすぐ再発し、B は危険を広げ、D は受信側の保護で関係がない。→ PART 07</p>
+    </div>
+
+    <div class="qz" data-answer="D">
+      <p class="qq"><b>Q3</b>過去7日間に特定の悪意ある URL をクリックしたユーザーを特定し、今後も同じ条件で自動的にアラートを上げたい。適切な手順は？</p>
+      <div class="opts">
+        <button class="opt" type="button" data-k="A"><i>A</i><span>メッセージ トレースで検索し、結果を CSV でエクスポートする</span></button>
+        <button class="opt" type="button" data-k="B"><i>B</i><span>アラート ポリシーで既定のアラートを有効にする</span></button>
+        <button class="opt" type="button" data-k="C"><i>C</i><span>脅威分析レポートを確認する</span></button>
+        <button class="opt" type="button" data-k="D"><i>D</i><span>高度なハンティングで KQL クエリを作り、カスタム検出ルールとして保存する</span></button>
+      </div>
+      <p class="why" hidden><b>正解は D。</b>過去の検索は高度なハンティング（<code>UrlClickEvents</code>）、継続的な検知はカスタム検出ルール。メッセージ トレースはクリックを扱わず、既定のアラートでは個別の URL を条件にできない。→ PART 03</p>
+    </div>
+    <span class="nombre">24</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume end" style="--k:10">巻末</span>
+
+    <div class="qz" data-answer="A">
+      <p class="qq"><b>Q4</b>既定のスパム対策ポリシーだけを使っているテナントで、各判定のメールはどう処理される？</p>
+      <div class="opts">
+        <button class="opt" type="button" data-k="A"><i>A</i><span>スパム：迷惑メール／一括メール：迷惑メール／高確度フィッシング：検疫</span></button>
+        <button class="opt" type="button" data-k="B"><i>B</i><span>スパム：検疫／一括メール：迷惑メール／高確度フィッシング：迷惑メール</span></button>
+        <button class="opt" type="button" data-k="C"><i>C</i><span>スパム：迷惑メール／一括メール：受信トレイ／高確度フィッシング：検疫</span></button>
+        <button class="opt" type="button" data-k="D"><i>D</i><span>スパム：検疫／一括メール：検疫／高確度フィッシング：検疫</span></button>
+      </div>
+      <p class="why" hidden><b>正解は A。</b>既定では、スパム・一括メール（BCL 7 以上）・通常のフィッシングは迷惑メールへ移動、高確度フィッシングは常に検疫。D は厳格プリセットに近い。→ PART 06 図6-2</p>
+    </div>
+
+    <div class="qz" data-answer="B">
+      <p class="qq"><b>Q5</b>会社が許可していない外部のファイル共有サービスへのアクセスを、社内の Windows 端末から止めたい。全端末は Defender for Endpoint にオンボード済み。最も適切なのは？</p>
+      <div class="opts">
+        <button class="opt" type="button" data-k="A"><i>A</i><span>Defender for Cloud Apps でセッション ポリシーを作り、アップロードをブロックする</span></button>
+        <button class="opt" type="button" data-k="B"><i>B</i><span>そのアプリに「未承認」タグを付け、Defender for Endpoint のネットワーク保護でブロックする</span></button>
+        <button class="opt" type="button" data-k="C"><i>C</i><span>条件付きアクセス ポリシーでそのサービスへのアクセスをブロックする</span></button>
+        <button class="opt" type="button" data-k="D"><i>D</i><span>テナント許可／ブロック リストにそのサービスの URL を登録する</span></button>
+      </div>
+      <p class="why" hidden><b>正解は B。</b>未承認タグは MDE のインジケーターに同期され、ネットワーク保護で端末からのアクセスが遮断される。A と C は Entra でサインインする承認済みアプリにしか効かない。D はメール内の URL の判定で、Web アクセスは止めない。→ PART 10 図10-2</p>
+    </div>
+
+    <div class="column">
+      <div class="t"><b>NEXT</b><span>間違えたら、戻る場所</span></div>
+      <p>答えの下に、戻るべき PART を書いてあります。目次から飛べます。全問正解なら、次は切り取り暗記カードで仕上げましょう。</p>
+    </div>
+    <span class="nombre">25</span>
+  </div>
+</section>
+
+<!-- ================= 暗記カード・奥付 ================= -->
+<section class="spread" id="cards" aria-labelledby="h-cards">
+  <div class="page l">
+    <span class="hashira">MS-102 図解ムック VOL.03</span>
+    <div class="kicker"><span class="part">付録</span><span>切り取り暗記カード</span></div>
+    <h2 class="catch" id="h-cards" style="font-size:clamp(1.6rem,2.8vw,2.1rem)">直前の10分は、<br>この12枚だけ。</h2>
+    <p class="cut">キリトリ</p>
+    <div class="cards">
+      <div><small>PART 01</small>守る相手は、端末・メール・オンプレ AD・SaaS</div>
+      <div><small>PART 02</small>修復の取り消しは、アクション センターの履歴</div>
+      <div><small>PART 03</small>見張り続けるなら、カスタム検出ルール</div>
+      <div><small>PART 04</small>露出スコアだけは、低いほど良い</div>
+      <div><small>PART 05</small>安全なリンク／添付は Plan 1、エクスプローラーと攻撃シミュレーションは Plan 2</div>
+      <div><small>PART 06</small>厳格 ＞ 標準 ＞ 評価 ＞ カスタム ＞ 組み込み ＞ 既定</div>
+      <div><small>PART 06</small>既定では、フィッシングは迷惑メール、高確度フィッシングは検疫</div>
+      <div><small>PART 07</small>送信制限の解除は、侵害を調べてから</div>
+      <div><small>PART 07</small>ファイルの許可エントリは、申請経由だけ</div>
+      <div><small>PART 08</small>再犯者は、連続2回で</div>
+      <div><small>PART 09</small>誤検知は抑制ルール、全社ブロックはインジケーター</div>
+      <div><small>PART 10</small>未承認アプリは、MDE のネットワーク保護で止める</div>
+    </div>
+    <p class="cut">キリトリ</p>
+    <span class="nombre">26</span>
+  </div>
+  <div class="page r">
+    <span class="hashira">特集 Defender XDR</span>
+    <span class="tsume end" style="--k:10">巻末</span>
+    <div class="kicker"><span>シリーズ構成</span></div>
+    <ul class="series">
+      <li><b>VOL.01</b><span>テナント</span><small>配点 25–30% ／ 未刊</small></li>
+      <li><b>VOL.02</b><span>Entra ID</span><small>配点 25–30% ／ 未刊</small></li>
+      <li class="on"><b>VOL.03</b><span>Defender XDR</span><small>配点 30–35% ／ 本号</small></li>
+      <li><b>VOL.04</b><span>Purview</span><small>配点 10–15% ／ 未刊</small></li>
+    </ul>
+    <div class="okuduke">
+      <span class="ttl">MS-102 図解ムック VOL.03 特集 Defender XDR まるごと図解</span>
+      <dl>
+        <dt>発行</dt><dd>2026年10月</dd>
+        <dt>準拠</dt><dd>Microsoft 公式スキル測定（2026年4月28日版）</dd>
+        <dt>底本</dt><dd>MS-102 総合テキスト 第3章</dd>
+        <dt>ご注意</dt><dd>製品名・画面・ライセンス要件は変わることがあります。受験前に Microsoft Learn の学習ガイドで最新の情報を確認してください。MS-102 は 2026年11月30日に廃止予定です。</dd>
+      </dl>
+    </div>
+    <div class="sister">
+      <a href="#top"><b>表紙へ戻る</b><span>目次から別の PART へ</span></a>
+      <a href="https://learn.microsoft.com/ja-jp/credentials/certifications/exams/ms-102/" target="_blank" rel="noopener"><b>試験ページ（Microsoft Learn）</b><span>試験概要と廃止予定日の確認</span></a>
+    </div>
+    <span class="nombre">27</span>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+  var right = 0;
+  var scoreEl = document.getElementById('score');
+  Array.prototype.forEach.call(document.querySelectorAll('.qz'), function(q){
+    var ans = q.getAttribute('data-answer');
+    var why = q.querySelector('.why');
+    Array.prototype.forEach.call(q.querySelectorAll('.opt'), function(b){
+      b.addEventListener('click', function(){
+        if (q.classList.contains('done')) return;
+        q.classList.add('done');
+        var k = b.getAttribute('data-k');
+        Array.prototype.forEach.call(q.querySelectorAll('.opt'), function(o){
+          if (o.getAttribute('data-k') === ans) o.classList.add('right');
+          o.setAttribute('aria-disabled','true');
+        });
+        if (k === ans) { right++; scoreEl.textContent = String(right); }
+        else { b.classList.add('wrong'); }
+        why.hidden = false;
+      });
+    });
+  });
+})();
+</script>
